@@ -99,10 +99,9 @@
     background: linear-gradient(
       to right,
       rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0) 30%,
-      rgba(255, 255, 255, 0.4) 44%,
-      rgba(255, 255, 255, 0.92) 58%,
-      #ffffff 72%,
+      rgba(255, 255, 255, 0.2) 30%,
+      rgba(255, 255, 255, 0.85) 55%,
+      #ffffff 75%,
       #ffffff 100%
     );
   }
