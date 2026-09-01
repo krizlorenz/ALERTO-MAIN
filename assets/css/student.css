@@ -42,6 +42,30 @@
   .student-sidebar.sidebar-open {
     left: 0;
   }
+  .student-mobile-bar {
+    display: flex !important;
+    background: #ffffff;
+    border-bottom: 1px solid rgba(112, 13, 35, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 800;
+  }
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  z-index: 850;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-smooth);
+}
+
+.sidebar-backdrop.active {
+  opacity: 1;
+  visibility: visible;
 }
 
 .student-sidebar-brand {

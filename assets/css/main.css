@@ -212,3 +212,60 @@ button {
     padding-right: var(--container-pad-lg);
   }
 }
+
+/* ==========================================================================
+   Mobile & Tablet Cross-Device Adaptations (Android, iPhone, iPad, Tablets)
+   ========================================================================== */
+/* Touch targets & Tap handling */
+button,
+a,
+input[type="checkbox"],
+input[type="radio"],
+select,
+.resource-card,
+.resource-row-card,
+.table-action-btn,
+.portal-submit-btn,
+.auth-submit-btn,
+.request-submit-btn {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Minimum 44px touch target for primary clickable elements */
+button,
+.auth-submit-btn,
+.portal-submit-btn,
+.request-submit-btn,
+.header-back-link,
+.table-action-btn {
+  min-height: 44px;
+}
+
+/* Prevent iOS Safari automatic zooming on input focus */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="search"],
+  select,
+  textarea,
+  .portal-text-input,
+  .auth-input,
+  .auth-select,
+  .others-inline-input,
+  .landmark-large-input,
+  .emergency-textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* iOS Safe Area Insets for Notch / Dynamic Island / Home Bar */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+}
