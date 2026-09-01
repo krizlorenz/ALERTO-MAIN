@@ -130,6 +130,15 @@
   max-width: 580px;
 }
 
+@media (max-width: 959px) {
+  .login-hero-content {
+    align-items: center;
+    text-align: center;
+    margin: 0 auto;
+    max-width: 620px;
+  }
+}
+
 .login-eyebrow-tag {
   display: inline-block;
   font-size: var(--fs-xs);
@@ -149,12 +158,18 @@
 
 .login-hero-heading {
   font-family: var(--heading-font);
-  font-size: clamp(2.4rem, 4vw + 1rem, 3.8rem);
+  font-size: clamp(2.2rem, 3.5vw + 1rem, 3.8rem);
   font-weight: 800;
-  line-height: 1.08;
+  line-height: 1.1;
   letter-spacing: -0.035em;
   color: #171221;
   margin-bottom: var(--space-5);
+}
+
+@media (max-width: 959px) {
+  .login-hero-heading {
+    text-align: center;
+  }
 }
 
 .login-hero-heading .brand-highlight {
@@ -172,7 +187,15 @@
   color: var(--admin-text-secondary);
   line-height: 1.68;
   margin-bottom: var(--space-8);
-  max-width: 500px;
+  max-width: 520px;
+}
+
+@media (max-width: 959px) {
+  .login-hero-paragraph {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 /* 4 Feature Action Icons */
@@ -184,10 +207,17 @@
   max-width: 520px;
 }
 
+@media (max-width: 959px) {
+  .login-features-row {
+    margin: 0 auto;
+    max-width: 500px;
+  }
+}
+
 @media (max-width: 480px) {
   .login-features-row {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
   }
 }
 
@@ -213,6 +243,14 @@
   transition: all var(--transition-fast);
 }
 
+@media (max-width: 480px) {
+  .feature-icon-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+  }
+}
+
 .student-theme .feature-icon-circle {
   border-color: rgba(112, 13, 35, 0.12);
   color: #700d23;
@@ -222,6 +260,14 @@
 .feature-icon-circle img {
   width: 22px !important;
   height: 22px !important;
+}
+
+@media (max-width: 480px) {
+  .feature-icon-circle svg,
+  .feature-icon-circle img {
+    width: 18px !important;
+    height: 18px !important;
+  }
 }
 
 .feature-item-col:hover .feature-icon-circle {
@@ -242,6 +288,12 @@
   font-weight: 700;
   color: var(--admin-text);
   line-height: 1.25;
+}
+
+@media (max-width: 480px) {
+  .feature-item-label {
+    font-size: 0.65rem;
+  }
 }
 
 /* Right Side: Floating Card */
@@ -611,8 +663,26 @@
 }
 
 @media (max-width: 540px) {
+  .auth-page {
+    padding: var(--space-4) 14px;
+    justify-content: flex-start;
+  }
+  .register-card-container {
+    border-radius: 18px;
+    margin: 10px 0;
+  }
   .register-card-header {
-    padding: var(--space-6) var(--space-5);
+    padding: var(--space-5) 18px;
+  }
+  .register-card-body {
+    padding: var(--space-5) 16px;
+    gap: var(--space-3);
+  }
+  .auth-title-lockup {
+    gap: 12px;
+  }
+  .auth-text-meta h1 {
+    font-size: 1.35rem;
   }
 }
 

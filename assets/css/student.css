@@ -305,8 +305,31 @@
 }
 
 @media (max-width: 640px) {
+  .gcash-profile-card {
+    padding: var(--space-5) 18px;
+    border-radius: 18px;
+  }
+  .gcash-card-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+  .gcash-student-info-col {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+  }
+  .gcash-text-meta h2 {
+    justify-content: center;
+  }
+  .gcash-sub-meta {
+    justify-content: center;
+  }
   .gcash-status-badge-container {
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     border-top: 1px solid rgba(255, 255, 255, 0.15);
     padding-top: var(--space-3);
@@ -667,8 +690,20 @@
 }
 
 @media (max-width: 540px) {
+  .request-page-wrapper {
+    padding: var(--space-4) 14px;
+    justify-content: flex-start;
+  }
+  .request-card-container {
+    border-radius: 18px;
+    margin: 10px 0;
+  }
   .request-header {
-    padding: var(--space-5) var(--space-5);
+    padding: var(--space-5) 18px;
+  }
+  .request-form-body {
+    padding: var(--space-5) 16px;
+    gap: var(--space-4);
   }
 }
 
