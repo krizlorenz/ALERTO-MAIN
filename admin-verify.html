@@ -189,7 +189,7 @@
                   <td>Aug 8, 2026</td>
                   <td style="text-align: right;">
                     <button type="button" class="table-action-btn"
-                      onclick="openVerificationModal('24-00909', 'Kriz Bonifacio', 'kriz@gmail.com', 'BS Civil Engineering', '3rd Year', 'Pending', 'Aug 8, 2026', 'COEA Student Identification Card photo uploaded for verification.')">View</button>
+                      onclick="openVerificationModal('24-00909', 'Kriz Bonifacio', '0917 890 1234', 'kriz@gmail.com', 'BS Civil Engineering', '3rd Year', 'Pending', 'Aug 8, 2026', 'COEA Student Identification Card photo uploaded for verification.')">View</button>
                   </td>
                 </tr>
 
@@ -208,7 +208,7 @@
                   <td>Aug 8, 2026</td>
                   <td style="text-align: right;">
                     <button type="button" class="table-action-btn"
-                      onclick="openVerificationModal('2023-04412', 'Aries Quinto', 'aries.quinto@csu.edu.ph', 'BS Architecture', '2nd Year', 'Approved', 'Aug 8, 2026', 'COR and Certificate of Registration verified by department coordinator.')">View</button>
+                      onclick="openVerificationModal('2023-04412', 'Aries Quinto', '0918 555 4321', 'aries.quinto@csu.edu.ph', 'BS Architecture', '2nd Year', 'Approved', 'Aug 8, 2026', 'COR and Certificate of Registration verified by department coordinator.')">View</button>
                   </td>
                 </tr>
 
@@ -227,7 +227,7 @@
                   <td>Aug 7, 2026</td>
                   <td style="text-align: right;">
                     <button type="button" class="table-action-btn"
-                      onclick="openVerificationModal('2022-01930', 'Jade Biscuera', 'jade.biscuera@csu.edu.ph', 'BS Electrical Engineering', '4th Year', 'Approved', 'Aug 7, 2026', 'Active student status confirmed in university registry.')">View</button>
+                      onclick="openVerificationModal('2022-01930', 'Jade Biscuera', '0920 123 9876', 'jade.biscuera@csu.edu.ph', 'BS Electrical Engineering', '4th Year', 'Approved', 'Aug 7, 2026', 'Active student status confirmed in university registry.')">View</button>
                   </td>
                 </tr>
 
@@ -246,7 +246,7 @@
                   <td>Aug 6, 2026</td>
                   <td style="text-align: right;">
                     <button type="button" class="table-action-btn"
-                      onclick="openVerificationModal('2024-00192', 'Noriel Samoy', 'noriel.samoy@csu.edu.ph', 'BS Mechanical Engineering', '1st Year', 'Rejected', 'Aug 6, 2026', 'Uploaded identification document was unreadable or blurry.')">View</button>
+                      onclick="openVerificationModal('2024-00192', 'Noriel Samoy', '0935 777 8899', 'noriel.samoy@csu.edu.ph', 'BS Mechanical Engineering', '1st Year', 'Rejected', 'Aug 6, 2026', 'Uploaded identification document was unreadable or blurry.')">View</button>
                   </td>
                 </tr>
 
@@ -265,7 +265,7 @@
                   <td>Aug 6, 2026</td>
                   <td style="text-align: right;">
                     <button type="button" class="table-action-btn"
-                      onclick="openVerificationModal('2023-05182', 'Vhon Sarsale', 'vhon.sarsale@csu.edu.ph', 'BS Chemical Engineering', '2nd Year', 'Pending', 'Aug 6, 2026', 'Certificate of Registration submitted. Waiting for identity cross-check.')">View</button>
+                      onclick="openVerificationModal('2023-05182', 'Vhon Sarsale', '0949 333 2211', 'vhon.sarsale@csu.edu.ph', 'BS Chemical Engineering', '2nd Year', 'Pending', 'Aug 6, 2026', 'Certificate of Registration submitted. Waiting for identity cross-check.')">View</button>
                   </td>
                 </tr>
 
@@ -284,7 +284,7 @@
                   <td>Aug 5, 2026</td>
                   <td style="text-align: right;">
                     <button type="button" class="table-action-btn"
-                      onclick="openVerificationModal('2021-09823', 'Edward Calivoso', 'edward.calivoso@csu.edu.ph', 'BS Computer Engineering', '4th Year', 'Banned', 'Aug 5, 2026', 'Account flagged for administrative restriction due to policy violations.')">View</button>
+                      onclick="openVerificationModal('2021-09823', 'Edward Calivoso', '0908 444 1122', 'edward.calivoso@csu.edu.ph', 'BS Computer Engineering', '4th Year', 'Banned', 'Aug 5, 2026', 'Account flagged for administrative restriction due to policy violations.')">View</button>
                   </td>
                 </tr>
 
@@ -344,6 +344,11 @@
         <span style="color: var(--admin-muted);">Student ID:</span>
         <strong id="modalStudentNumber"
           style="font-family: monospace; color: var(--admin-purple-mid);">24-00909</strong>
+      </div>
+      <div
+        style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
+        <span style="color: var(--admin-muted);">Contact Number:</span>
+        <strong id="modalStudentContact" style="color: var(--admin-text); font-family: monospace;">0917 890 1234</strong>
       </div>
       <div
         style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
@@ -467,26 +472,44 @@
     }
 
     // Modal Handler
-    function openVerificationModal(studentId, name, email, program, year, status, submitted, notes) {
+    function openVerificationModal(studentId, name, contact, email, program, year, status, submitted, notes) {
       currentStudentId = studentId;
+
+      let contactVal = contact;
+      let emailVal = email;
+      let progVal = program;
+      let yrVal = year;
+      let statVal = status;
+      let notesVal = notes;
+
+      if (typeof contact === 'string' && contact.includes('@')) {
+        // Fallback for 8-argument signature
+        notesVal = submitted;
+        statVal = year;
+        yrVal = program;
+        progVal = email;
+        emailVal = contact;
+        contactVal = '0917 890 1234';
+      }
 
       document.getElementById('modalStudentTitle').textContent = name;
       document.getElementById('modalStudentNumber').textContent = studentId;
-      document.getElementById('modalStudentEmail').textContent = email;
-      document.getElementById('modalStudentProgram').textContent = program;
-      document.getElementById('modalStudentYear').textContent = year;
-      document.getElementById('modalStudentNotes').textContent = notes;
+      document.getElementById('modalStudentContact').textContent = contactVal || '0917 890 1234';
+      document.getElementById('modalStudentEmail').textContent = emailVal;
+      document.getElementById('modalStudentProgram').textContent = progVal;
+      document.getElementById('modalStudentYear').textContent = yrVal;
+      document.getElementById('modalStudentNotes').textContent = notesVal;
 
       const badgeEl = document.getElementById('modalStudentStatusBadge');
       let pillClass = 'pending';
-      const statusLower = status.toLowerCase().trim();
+      const statusLower = (statVal || '').toLowerCase().trim();
       if (statusLower === 'approved') pillClass = 'approved';
       else if (statusLower === 'rejected') pillClass = 'rejected';
       else if (statusLower === 'banned') pillClass = 'banned';
-      badgeEl.innerHTML = `<span class="status-pill ${pillClass}">${status}</span>`;
+      badgeEl.innerHTML = `<span class="status-pill ${pillClass}">${statVal}</span>`;
 
       // Render dynamic buttons based on whether status is pending or completed
-      renderVerificationModalActions(status);
+      renderVerificationModalActions(statVal);
 
       const modal = document.getElementById('verificationDetailModal');
       if (modal) modal.showModal();

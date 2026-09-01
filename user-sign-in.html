@@ -164,7 +164,30 @@
 
           </div>
 
-          <!-- 4. Institutional Email -->
+          <!-- 4. Contact Number -->
+          <div class="form-field-group">
+            <label for="studentContact" class="form-label">
+              <span>Contact Number</span>
+              <span class="form-label-tag">Mobile / Phone</span>
+            </label>
+            <div class="input-with-icon">
+              <!-- ICON PLACEHOLDER: Edit src="icons/phone.svg" below -->
+              <span class="input-icon-slot" aria-hidden="true">
+                <img src="icons/phone.svg" alt=""
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" style="display:none;">
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                  </path>
+                </svg>
+              </span>
+              <input type="tel" id="studentContact" class="auth-input" placeholder="e.g. 0912 345 6789" required
+                autocomplete="tel">
+            </div>
+          </div>
+
+          <!-- 5. Email Address -->
           <div class="form-field-group">
             <label for="studentEmail" class="form-label">
               <span>Email Address</span>
@@ -382,6 +405,7 @@
       document.getElementById('studentIdNumber').value = '24-00909';
       document.getElementById('studentProgram').value = 'BS in Civil Engineering';
       document.getElementById('studentYearLevel').value = '3rd Year';
+      document.getElementById('studentContact').value = '0917 890 1234';
       document.getElementById('studentEmail').value = 'kriz@gmail.com';
       document.getElementById('studentPassword').value = 'studentPass2026';
       document.getElementById('studentRepeatPassword').value = 'studentPass2026';
