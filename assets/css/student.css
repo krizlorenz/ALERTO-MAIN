@@ -602,3 +602,347 @@
   background: #8b122f;
   transform: translateY(-1px);
 }
+
+/* --------------------------------------------------------------------------
+   7. Assistance Request Form Styles (Single Column & Google Maps)
+   -------------------------------------------------------------------------- */
+.request-page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8) var(--container-pad);
+  background-color: #fcfafb;
+  background-image: radial-gradient(rgba(112, 13, 35, 0.08) 1.25px, transparent 1.25px);
+  background-size: 24px 24px;
+  background-attachment: fixed;
+}
+
+.request-card-container {
+  width: 100%;
+  max-width: 640px;
+  background: #ffffff;
+  border-radius: var(--radius-xl);
+  border: 1.5px solid rgba(112, 13, 35, 0.18);
+  box-shadow: 
+    0 24px 64px rgba(92, 9, 29, 0.14),
+    0 4px 16px rgba(92, 9, 29, 0.04);
+  overflow: hidden;
+  position: relative;
+  z-index: 5;
+  margin: auto 0;
+}
+
+.request-header {
+  background: #ffffff;
+  padding: var(--space-6) var(--space-8);
+  color: var(--admin-text);
+  border-bottom: 1.5px solid rgba(112, 13, 35, 0.12);
+  position: relative;
+}
+
+@media (max-width: 540px) {
+  .request-header {
+    padding: var(--space-5) var(--space-5);
+  }
+}
+
+.request-title-box {
+  margin-top: 12px;
+}
+
+.request-main-title {
+  font-family: var(--heading-font);
+  font-size: clamp(1.4rem, 2vw + 0.6rem, 1.85rem);
+  font-weight: 800;
+  color: #700d23;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.request-sub-title {
+  font-size: var(--fs-xs);
+  color: var(--admin-muted);
+  margin-top: 4px;
+}
+
+.request-header .auth-badge-terminal {
+  color: var(--admin-muted);
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+}
+
+.header-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #700d23;
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  text-decoration: none;
+  background: #fdebed;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(112, 13, 35, 0.18);
+  transition: all var(--transition-fast);
+}
+
+.header-back-link:hover {
+  background: #f9d8df;
+  transform: translateX(-2px);
+}
+
+.request-form-body {
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  background: #ffffff;
+}
+
+@media (max-width: 540px) {
+  .request-form-body {
+    padding: var(--space-6) var(--space-5);
+  }
+}
+
+/* 1. Resources Requested Single Column List */
+.resource-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resource-row-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1.5px solid #ede6ea;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.resource-row-card:hover {
+  border-color: #8b122f;
+  background: #fdf5f7;
+}
+
+.resource-row-card.selected {
+  border-color: #700d23;
+  background: #fdebed;
+}
+
+.resource-row-card input[type="checkbox"] {
+  accent-color: #700d23;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.resource-label-text {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--admin-text);
+}
+
+/* Others (specify) Row with inline input */
+.resource-row-card.others-row-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  cursor: default;
+}
+
+.others-check-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.others-inline-input {
+  flex: 1;
+  min-width: 180px;
+  padding: 9px 12px;
+  font-size: var(--fs-xs);
+  font-family: var(--body-font);
+  color: var(--admin-text);
+  background: #ffffff;
+  border: 1.5px solid #ede6ea;
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.others-inline-input:focus {
+  border-color: #8b122f;
+  box-shadow: 0 0 0 3px rgba(139, 18, 47, 0.1);
+}
+
+/* 2. Google Map Widget Card with Interactive Pinning */
+.google-map-widget-card {
+  border: 1.5px solid rgba(112, 13, 35, 0.18);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.google-map-control-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #faf8f9;
+  border-bottom: 1px solid rgba(112, 13, 35, 0.1);
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.map-location-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  color: #700d23;
+  background: #fdebed;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(112, 13, 35, 0.15);
+}
+
+.gps-locate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  color: #ffffff;
+  background: #700d23;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.gps-locate-btn:hover {
+  background: #8b122f;
+  transform: translateY(-1px);
+}
+
+.google-map-frame-wrapper {
+  width: 100%;
+  height: 240px;
+  position: relative;
+  background: #e5e3df;
+  z-index: 1;
+}
+
+/* Enlarge Landmark Option */
+.landmark-large-container {
+  padding: var(--space-4);
+  background: #ffffff;
+  border-top: 1px solid rgba(112, 13, 35, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.landmark-large-label {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: #700d23;
+}
+
+.landmark-large-input {
+  width: 100%;
+  padding: 13px 16px;
+  font-size: var(--fs-sm);
+  font-family: var(--body-font);
+  font-weight: 500;
+  color: var(--admin-text);
+  background: #faf8f9;
+  border: 2px solid rgba(112, 13, 35, 0.2);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: all var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.landmark-large-input:focus {
+  background: #ffffff;
+  border-color: #700d23;
+  box-shadow: 0 0 0 4px rgba(112, 13, 35, 0.12);
+}
+
+.map-pin-note {
+  padding: 8px 14px;
+  font-size: var(--fs-2xs);
+  color: var(--admin-muted);
+  background: #fbf9fa;
+  border-top: 1px solid rgba(112, 13, 35, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 3. Emergency Message Explanation */
+.emergency-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px 14px;
+  font-size: var(--fs-sm);
+  font-family: var(--body-font);
+  color: var(--admin-text);
+  background: #faf8f9;
+  border: 1.5px solid #ede6ea;
+  border-radius: var(--radius-sm);
+  outline: none;
+  resize: vertical;
+  line-height: 1.5;
+  transition: all var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.emergency-textarea:focus {
+  background: #ffffff;
+  border-color: #8b122f;
+  box-shadow: 0 0 0 3.5px rgba(139, 18, 47, 0.12);
+}
+
+.request-submit-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px var(--space-6);
+  background: linear-gradient(135deg, #5c091d 0%, #750e27 50%, #8b122f 100%);
+  color: #ffffff;
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 28px rgba(112, 13, 35, 0.28);
+  cursor: pointer;
+  margin-top: var(--space-2);
+  transition: all var(--transition-fast);
+}
+
+.request-submit-btn:hover {
+  background: linear-gradient(135deg, #4d0718 0%, #680b22 50%, #7d1029 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(112, 13, 35, 0.38);
+}
+
+

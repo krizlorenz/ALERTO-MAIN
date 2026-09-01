@@ -40,10 +40,10 @@
         </div>
       </a>
 
-      <!-- Student Navigation Menu (Only Dashboard & My Requests) -->
+      <!-- Student Navigation Menu (Dashboard Only) -->
       <nav class="student-nav-menu">
         
-        <!-- 1. Dashboard -->
+        <!-- Dashboard -->
         <a href="student-dashboard.html" class="student-nav-link active">
           <span class="student-nav-icon">
             <!-- ICON PLACEHOLDER: Edit src="icons/home.svg" below -->
@@ -54,19 +54,6 @@
             </svg>
           </span>
           <span>Dashboard</span>
-        </a>
-
-        <!-- 2. My Requests -->
-        <a href="#requestsTrackSection" class="student-nav-link">
-          <span class="student-nav-icon">
-            <!-- ICON PLACEHOLDER: Edit src="icons/bell.svg" below -->
-            <img src="icons/bell.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-            </svg>
-          </span>
-          <span>My Requests</span>
         </a>
 
       </nav>
@@ -180,7 +167,12 @@
               <h3>Request Status Update</h3>
               <p>Live progress breakdown for your active disaster relief request.</p>
             </div>
-            <span class="request-id-tag" id="activeRequestIdTag">REQ-00021</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <a href="student-request.html" class="unlock-action-btn" style="background: #700d23; box-shadow: 0 4px 12px rgba(112, 13, 35, 0.2);">
+                <span>+ Request Assistance</span>
+              </a>
+              <span class="request-id-tag" id="activeRequestIdTag">REQ-00021</span>
+            </div>
           </div>
 
           <!-- Stepped Progress Bar (Matches 2nd Picture) -->
