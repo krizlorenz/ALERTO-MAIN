@@ -16,6 +16,16 @@
   --admin-purple-soft: #efe9fc;
   --admin-purple-tint: #f8f5fe;
 
+  /* Student / User Crimson Palette (Matched to CSU Red Reference #5c091d / #700d23) */
+  --user-red-dark: #3a0410;
+  --user-red-deep: #5c091d;
+  --user-red-mid: #700d23;
+  --user-red: #8b122f;
+  --user-red-bright: #b2183c;
+  --user-red-glow: #d6224c;
+  --user-red-soft: #fdebed;
+  --user-red-tint: #fef5f7;
+
   /* Surfaces & Canvas */
   --admin-bg: #f8f7fc;
   --admin-surface: #ffffff;

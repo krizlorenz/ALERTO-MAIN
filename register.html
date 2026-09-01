@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Profile Registration | ALERTO - CSU-Carig Student Council</title>
+
+  <!-- Google Fonts: Poppins & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+
+<body>
+
+  <main class="auth-page">
+
+    <!-- Centered Registration Card Container -->
+    <div class="register-card-container">
+
+      <!-- Card Top Royal Purple Header -->
+      <div class="register-card-header">
+        <div class="auth-header-top-row">
+          <div class="auth-live-status">
+            <span class="live-pulse-dot" aria-hidden="true"></span>
+            <span>DRRM Head Setup</span>
+          </div>
+          <span class="auth-badge-terminal">CSU-CARIG • COEA</span>
+        </div>
+
+        <div class="auth-title-lockup">
+          <div class="auth-logo-box">
+            <!-- LOGO PLACEHOLDER: Edit src="logo/csulogo.png" with custom logo -->
+            <img src="logo/csulogo.png" alt="CSU Logo"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="auth-logo-fallback" style="display: none;">A</span>
+          </div>
+          <div class="auth-text-meta">
+            <h1>Create Admin Profile</h1>
+            <p>COEA-SC DRRM Community Head</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registration Form Body -->
+      <div class="register-card-body">
+        <form class="auth-form" id="adminRegisterForm" onsubmit="handleAdminRegister(event)">
+
+          <!-- 1. Full Name -->
+          <div class="form-field-group">
+            <label for="regFullName" class="form-label">
+              <span>Full Name</span>
+              <span class="form-label-tag">Officer in Charge</span>
+            </label>
+            <div class="input-with-icon">
+              <!-- ICON PLACEHOLDER: Edit src="icons/user.svg" below -->
+              <span class="input-icon-slot" aria-hidden="true">
+                <img src="icons/user.svg" alt=""
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" style="display:none;">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </span>
+              <input type="text" id="regFullName" class="auth-input" placeholder="e.g. Kriz Bonifacio" required
+                autocomplete="name">
+            </div>
+          </div>
+
+          <!-- 2. Student ID Number -->
+          <div class="form-field-group">
+            <label for="regStudentId" class="form-label">
+              <span>Student ID Number</span>
+              <span class="form-label-tag">Institutional ID</span>
+            </label>
+            <div class="input-with-icon">
+              <!-- ICON PLACEHOLDER: Edit src="icons/id-badge.svg" below -->
+              <span class="input-icon-slot" aria-hidden="true">
+                <img src="icons/id-badge.svg" alt=""
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" style="display:none;">
+                  <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                  <line x1="7" y1="8" x2="17" y2="8"></line>
+                  <line x1="7" y1="12" x2="13" y2="12"></line>
+                  <line x1="7" y1="16" x2="10" y2="16"></line>
+                </svg>
+              </span>
+              <input type="text" id="regStudentId" class="auth-input" placeholder="e.g. 2023-0142" required
+                autocomplete="username">
+            </div>
+          </div>
+
+          <!-- 3. Separated Program & Year Level (2-Column Grid) -->
+          <div class="form-dual-grid">
+
+            <!-- Program -->
+            <div class="form-field-group">
+              <label for="regProgram" class="form-label">
+                <span>Academic Program</span>
+              </label>
+              <div class="input-with-icon">
+                <!-- ICON PLACEHOLDER: Edit src="icons/cap.svg" below -->
+                <span class="input-icon-slot" aria-hidden="true">
+                  <img src="icons/cap.svg" alt=""
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" style="display:none;">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                  </svg>
+                </span>
+                <select id="regProgram" class="auth-select" required>
+                  <option value="" disabled selected>Select Program</option>
+                  <option value="BS in Civil Engineering">BS in Civil Engineering</option>
+                  <option value="BS in Electrical Engineering">BS in Electrical Engineering</option>
+                  <option value="BS in Geodetic Engineering">BS in Geodetic Engineering</option>
+                  <option value="BS in Computer Engineering">BS in Computer Engineering</option>
+                  <option value="BS in Chemical Engineering">BS in Chemical Engineering</option>
+                  <option value="BS in Architecture">BS in Architecture</option>
+                  <option value="BS in Electronics Engineering">BS in Electronics Engineering</option>
+                  <option value="BS in Agricultural and Biosystems Engineering">BS in Agricultural and Biosystems
+                    Engineering</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Year Level (1 to 5) -->
+            <div class="form-field-group">
+              <label for="regYearLevel" class="form-label">
+                <span>Year Level</span>
+              </label>
+              <div class="input-with-icon">
+                <!-- ICON PLACEHOLDER: Edit src="icons/star.svg" below -->
+                <span class="input-icon-slot" aria-hidden="true">
+                  <img src="icons/star.svg" alt=""
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" style="display:none;">
+                    <polygon
+                      points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                    </polygon>
+                  </svg>
+                </span>
+                <select id="regYearLevel" class="auth-select" required>
+                  <option value="" disabled selected>Select Year</option>
+                  <option value="1st Year">1st Year</option>
+                  <option value="2nd Year">2nd Year</option>
+                  <option value="3rd Year">3rd Year</option>
+                  <option value="4th Year">4th Year</option>
+                  <option value="5th Year">5th Year</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 4. Institutional Email -->
+          <div class="form-field-group">
+            <label for="regEmail" class="form-label">
+              <span>Institutional Email Address</span>
+              <span class="form-label-tag">CSU Domain</span>
+            </label>
+            <div class="input-with-icon">
+              <!-- ICON PLACEHOLDER: Edit src="icons/mail.svg" below -->
+              <span class="input-icon-slot" aria-hidden="true">
+                <img src="icons/mail.svg" alt=""
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" style="display:none;">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+              </span>
+              <input type="email" id="regEmail" class="auth-input" placeholder="e.g. kriz.bonifacio@csu.edu.ph" required
+                autocomplete="email">
+            </div>
+          </div>
+
+          <!-- 5. Create Password & Repeat Password (2-Column Grid) -->
+          <div class="form-dual-grid">
+
+            <!-- Create Password -->
+            <div class="form-field-group">
+              <label for="regPassword" class="form-label">
+                <span>Create Password</span>
+              </label>
+              <div class="input-with-icon">
+                <!-- ICON PLACEHOLDER: Edit src="icons/lock.svg" below -->
+                <span class="input-icon-slot" aria-hidden="true">
+                  <img src="icons/lock.svg" alt=""
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" style="display:none;">
+                    <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </span>
+                <input type="password" id="regPassword" class="auth-input has-toggle" placeholder="Create password" required
+                  autocomplete="new-password">
+                <button type="button" class="show-password-btn" id="showCreatePwdToggle" onclick="togglePasswordVisibility('regPassword', this)">Show</button>
+              </div>
+            </div>
+
+            <!-- Repeat Password -->
+            <div class="form-field-group">
+              <label for="regRepeatPassword" class="form-label">
+                <span>Repeat Password</span>
+              </label>
+              <div class="input-with-icon">
+                <!-- ICON PLACEHOLDER: Edit src="icons/shield-lock.svg" below -->
+                <span class="input-icon-slot" aria-hidden="true">
+                  <img src="icons/shield-lock.svg" alt=""
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" style="display:none;">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  </svg>
+                </span>
+                <input type="password" id="regRepeatPassword" class="auth-input has-toggle" placeholder="Confirm password" required
+                  autocomplete="new-password">
+                <button type="button" class="show-password-btn" id="showRepeatPwdToggle" onclick="togglePasswordVisibility('regRepeatPassword', this)">Show</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Quick Fill & Show Passwords Option -->
+          <div class="auth-extras-row">
+            <label class="remember-label">
+              <input type="checkbox" id="toggleBothPwdCheckbox" onchange="toggleBothPasswords(this.checked)">
+              <span>Show passwords</span>
+            </label>
+
+            <button type="button" class="quick-fill-btn" onclick="quickFillRegisterProfile()">
+              <!-- ICON PLACEHOLDER: Edit src="icons/bolt.svg" below -->
+              <img src="icons/bolt.svg" alt="" style="width:12px;height:12px;"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                style="display:none;">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+              </svg>
+              <span>Fill Sample DRRM Head</span>
+            </button>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="auth-submit-btn" id="regSubmitBtn">
+            <span>Sign in</span>
+            <!-- ICON PLACEHOLDER: Edit src="icons/arrow-right.svg" below -->
+            <img src="icons/arrow-right.svg" alt="" style="width:16px;height:16px;"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+
+        </form>
+
+        <!-- Footer link back to Sign In -->
+        <div class="auth-footer-block">
+          <div class="security-badge">
+            <!-- ICON PLACEHOLDER: Edit src="icons/shield-check.svg" below -->
+            <img src="icons/shield-check.svg" alt="" style="width:14px;height:14px;"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>COEA-SC DRRM Operations Security Standard</span>
+          </div>
+
+          <a href="login.html" class="auth-back-link">
+            <span>Already have an admin account? <strong>Sign In to Admin Portal &rarr;</strong></span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // Toggle Single Password Visibility
+    function togglePasswordVisibility(fieldId, btn) {
+      const field = document.getElementById(fieldId);
+      if (!field) return;
+
+      if (field.type === 'password') {
+        field.type = 'text';
+        if (btn) btn.textContent = 'Hide';
+      } else {
+        field.type = 'password';
+        if (btn) btn.textContent = 'Show';
+      }
+    }
+
+    // Toggle Both Passwords Visibility via Checkbox
+    function toggleBothPasswords(show) {
+      const pwd1 = document.getElementById('regPassword');
+      const pwd2 = document.getElementById('regRepeatPassword');
+      const btn1 = document.getElementById('showCreatePwdToggle');
+      const btn2 = document.getElementById('showRepeatPwdToggle');
+
+      if (pwd1) {
+        pwd1.type = show ? 'text' : 'password';
+        if (btn1) btn1.textContent = show ? 'Hide' : 'Show';
+      }
+      if (pwd2) {
+        pwd2.type = show ? 'text' : 'password';
+        if (btn2) btn2.textContent = show ? 'Hide' : 'Show';
+      }
+    }
+
+    // Quick Fill Register Profile
+    function quickFillRegisterProfile() {
+      document.getElementById('regFullName').value = 'Kriz Bonifacio';
+      document.getElementById('regStudentId').value = '2023-0142';
+      document.getElementById('regProgram').value = 'BS in Civil Engineering';
+      document.getElementById('regYearLevel').value = '4th Year';
+      document.getElementById('regEmail').value = 'kriz.bonifacio@csu.edu.ph';
+      document.getElementById('regPassword').value = 'alertoDRRM2026';
+      document.getElementById('regRepeatPassword').value = 'alertoDRRM2026';
+    }
+
+    // Handle Registration Submission
+    function handleAdminRegister(event) {
+      event.preventDefault();
+      const pwd = document.getElementById('regPassword').value;
+      const repeatPwd = document.getElementById('regRepeatPassword').value;
+
+      if (pwd !== repeatPwd) {
+        alert('Passwords do not match. Please ensure both password fields are identical.');
+        return;
+      }
+
+      const submitBtn = document.getElementById('regSubmitBtn');
+      submitBtn.innerHTML = '<span>Creating DRRM Admin Profile...</span>';
+      submitBtn.style.opacity = '0.85';
+      submitBtn.disabled = true;
+
+      setTimeout(() => {
+        submitBtn.innerHTML = '<span>Profile Registered! Redirecting to Sign In...</span>';
+        submitBtn.style.background = 'linear-gradient(135deg, #1e6b37, #238545)';
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 700);
+      }, 700);
+    }
+  </script>
+</body>
+
+</html>

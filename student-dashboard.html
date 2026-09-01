@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard | ALERTO - CSU-Carig Student Council</title>
+
+  <!-- Google Fonts: Poppins & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/student.css">
+</head>
+<body>
+
+  <div class="student-layout">
+    
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="sidebar-backdrop" id="studentSidebarBackdrop"></div>
+
+    <!-- =================================================================
+         CSU CRIMSON RED STUDENT SIDEBAR
+         ================================================================= -->
+    <aside class="student-sidebar" id="studentSidebar" aria-label="Student Navigation">
+      
+      <!-- Brand Header -->
+      <a href="student-dashboard.html" class="student-sidebar-brand">
+        <div class="student-logo-box">
+          <!-- LOGO PLACEHOLDER: Edit src="logo/csulogo.png" with custom logo -->
+          <img src="logo/csulogo.png" alt="CSU Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <span style="display: none; font-weight: 800; color: #ffffff;">A</span>
+        </div>
+        <div>
+          <div class="student-brand-name">ALERTO</div>
+          <div class="student-brand-sub">User Portal</div>
+        </div>
+      </a>
+
+      <!-- Student Navigation Menu (Only Dashboard & My Requests) -->
+      <nav class="student-nav-menu">
+        
+        <!-- 1. Dashboard -->
+        <a href="student-dashboard.html" class="student-nav-link active">
+          <span class="student-nav-icon">
+            <!-- ICON PLACEHOLDER: Edit src="icons/home.svg" below -->
+            <img src="icons/home.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </span>
+          <span>Dashboard</span>
+        </a>
+
+        <!-- 2. My Requests -->
+        <a href="#requestsTrackSection" class="student-nav-link">
+          <span class="student-nav-icon">
+            <!-- ICON PLACEHOLDER: Edit src="icons/bell.svg" below -->
+            <img src="icons/bell.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+          </span>
+          <span>My Requests</span>
+        </a>
+
+      </nav>
+
+      <!-- Sidebar Footer -->
+      <div class="student-sidebar-footer">
+        <a href="student-login.html">&larr; Log out</a>
+        <span>&copy; 2026 CSU-COEA Student Council</span>
+      </div>
+
+    </aside>
+
+    <!-- =================================================================
+         MAIN CONTENT AREA
+         ================================================================= -->
+    <div class="student-main-content">
+
+      <!-- Mobile Floating Menu Toggle -->
+      <div class="student-mobile-bar" style="display: none; padding: 12px 18px; align-items: center; justify-content: space-between;">
+        <button type="button" class="admin-mobile-toggle-btn" id="studentSidebarMobileToggle" aria-label="Open navigation menu" style="background:#5c091d; color:#ffffff;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <span style="font-family: var(--heading-font); font-weight: 800; color: #700d23; font-size: 1.05rem;">ALERTO</span>
+        <a href="student-login.html" style="font-size: var(--fs-2xs); color: #700d23; font-weight: 700;">Exit</a>
+      </div>
+
+      <div class="student-content-body">
+
+        <!-- =============================================================
+             1. GCASH-STYLE TOP IDENTITY VERIFICATION CARD
+             ============================================================= -->
+        <section class="gcash-profile-card" aria-label="Student Identity Verification Details">
+          <div class="gcash-card-inner">
+            
+            <!-- Left Info Lockup -->
+            <div class="gcash-student-info-col">
+              <div class="gcash-avatar-box">
+                <span>KB</span>
+              </div>
+              <div class="gcash-text-meta">
+                <h2>
+                  <span>Kriz Bonifacio</span>
+                  <span id="nameVerifiedCheck">
+                    <svg style="width: 20px; height: 20px; fill: #38d39f;" viewBox="0 0 24 24">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                  </span>
+                </h2>
+                <div class="gcash-sub-meta">
+                  <span>ID: <strong>2024-08912</strong></span>
+                  <span>&bull;</span>
+                  <span>BS Civil Engineering</span>
+                  <span>&bull;</span>
+                  <span>3rd Year</span>
+                </div>
+                <div style="font-size: var(--fs-2xs); color: rgba(255,255,255,0.75); margin-top: 2px;">
+                  kriz.bonifacio@csu.edu.ph
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Verification Decision Badge -->
+            <div class="gcash-status-badge-container">
+              <span class="verification-decision-label">Identity Verification Status</span>
+              <div id="verificationBadgeContainer">
+                <!-- Dynamically updated by JavaScript -->
+                <span class="verification-badge approved" id="currentVerificationPill">
+                  <!-- ICON PLACEHOLDER: Edit src="icons/check-badge.svg" below -->
+                  <img src="icons/check-badge.svg" alt="" style="width:14px;height:14px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;width:14px;height:14px;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>Approved (Verified)</span>
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Dynamic Locked Banner (Shown when not approved) -->
+        <div class="locked-overlay-card" id="verificationLockedBanner" style="display: none;">
+          <div class="locked-icon-text">
+            <div class="locked-icon-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <div>
+              <div class="locked-title" id="lockedBannerTitle">Verification Required</div>
+              <div class="locked-desc" id="lockedBannerDesc">
+                Your student profile must be Approved by the COEA Student Council before assistance requests can be submitted or tracked.
+              </div>
+            </div>
+          </div>
+          <a href="student-register.html" class="unlock-action-btn">Re-upload Documents &rarr;</a>
+        </div>
+
+        <!-- =============================================================
+             2. REQUEST STATUS UPDATE (STEPPED PROGRESS TRACKER)
+             ============================================================= -->
+        <section class="tracker-section-card" id="requestsTrackSection" aria-label="Assistance Request Progress Tracker">
+          
+          <div class="tracker-card-header">
+            <div>
+              <h3>Request Status Update</h3>
+              <p>Live progress breakdown for your active disaster relief request.</p>
+            </div>
+            <span class="request-id-tag" id="activeRequestIdTag">REQ-00021</span>
+          </div>
+
+          <!-- Stepped Progress Bar (Matches 2nd Picture) -->
+          <div class="stepper-track-container">
+            <div class="stepper-steps-wrapper">
+              
+              <!-- Step 1: Pending Verification -->
+              <div class="stepper-step completed" id="step1">
+                <div class="step-node-circle">
+                  <!-- ICON PLACEHOLDER: Edit src="icons/doc-check.svg" below -->
+                  <img src="icons/doc-check.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                  </svg>
+                </div>
+                <div class="step-text-title">Pending Verification</div>
+                <div class="step-text-time">Aug 8, 08:30</div>
+              </div>
+
+              <!-- Step 2: Approved -->
+              <div class="stepper-step completed" id="step2">
+                <div class="step-node-circle">
+                  <!-- ICON PLACEHOLDER: Edit src="icons/approved-check.svg" below -->
+                  <img src="icons/approved-check.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 14 14"></polyline>
+                  </svg>
+                </div>
+                <div class="step-text-title">Approved</div>
+                <div class="step-text-time">Aug 8, 10:15</div>
+              </div>
+
+              <!-- Step 3: In Progress -->
+              <div class="stepper-step active" id="step3">
+                <div class="step-node-circle">
+                  <!-- ICON PLACEHOLDER: Edit src="icons/truck.svg" below -->
+                  <img src="icons/truck.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <rect x="1" y="3" width="15" height="13"></rect>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                  </svg>
+                </div>
+                <div class="step-text-title">In Progress</div>
+                <div class="step-text-time">Aug 8, 14:00 (Dispatched)</div>
+              </div>
+
+              <!-- Step 4: Completed -->
+              <div class="stepper-step" id="step4">
+                <div class="step-node-circle">
+                  <!-- ICON PLACEHOLDER: Edit src="icons/handshake.svg" below -->
+                  <img src="icons/handshake.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div class="step-text-title">Completed</div>
+                <div class="step-text-time">Pending Delivery</div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Active Request Details Card -->
+          <div style="background: #faf7f8; border-radius: var(--radius-md); padding: var(--space-5) var(--space-6); border: 1px solid rgba(112, 13, 35, 0.1); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); font-size: var(--fs-xs);">
+            <div>
+              <span style="color: var(--admin-muted); display: block; margin-bottom: 2px;">Assistance Package:</span>
+              <strong style="color: #700d23; font-size: var(--fs-sm);">Food, Water Packs & First Aid</strong>
+            </div>
+            <div>
+              <span style="color: var(--admin-muted); display: block; margin-bottom: 2px;">Assigned Location:</span>
+              <strong style="color: var(--admin-text);">Carig Sur (Near Barangay Hall)</strong>
+            </div>
+            <div>
+              <span style="color: var(--admin-muted); display: block; margin-bottom: 2px;">Responding Unit:</span>
+              <strong style="color: #1e6b37;">COEA DRRM Team Alpha</strong>
+            </div>
+            <div>
+              <span style="color: var(--admin-muted); display: block; margin-bottom: 2px;">Estimated Dispatch:</span>
+              <strong style="color: var(--admin-text);">Within 1-2 Hours</strong>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Toggle Mobile Sidebar
+    const mobileToggle = document.getElementById('studentSidebarMobileToggle');
+    const sidebar = document.getElementById('studentSidebar');
+    const backdrop = document.getElementById('studentSidebarBackdrop');
+
+    if (mobileToggle && sidebar && backdrop) {
+      mobileToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('sidebar-open');
+        backdrop.classList.toggle('active');
+      });
+      backdrop.addEventListener('click', () => {
+        sidebar.classList.remove('sidebar-open');
+        backdrop.classList.remove('active');
+      });
+    }
+
+    // Dynamic State Switcher for Verification Decisions & Gating
+    let currentDecision = 'approved';
+
+    function setVerificationState(state) {
+      currentDecision = state;
+      const pill = document.getElementById('currentVerificationPill');
+      const nameCheck = document.getElementById('nameVerifiedCheck');
+      const lockedBanner = document.getElementById('verificationLockedBanner');
+      const trackerSection = document.getElementById('requestsTrackSection');
+      const bannerTitle = document.getElementById('lockedBannerTitle');
+      const bannerDesc = document.getElementById('lockedBannerDesc');
+
+      pill.className = `verification-badge ${state}`;
+
+      if (state === 'approved') {
+        pill.innerHTML = `
+          <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          <span>Approved (Verified)</span>
+        `;
+        nameCheck.style.display = 'inline-block';
+        lockedBanner.style.display = 'none';
+        trackerSection.classList.remove('locked');
+      } 
+      else if (state === 'pending') {
+        pill.innerHTML = `
+          <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 14 14"></polyline>
+          </svg>
+          <span>Pending Verification</span>
+        `;
+        nameCheck.style.display = 'none';
+        bannerTitle.textContent = 'Verification in Progress';
+        bannerDesc.textContent = 'Your documents have been submitted and are waiting for review by the COEA Student Council.';
+        lockedBanner.style.display = 'flex';
+        trackerSection.classList.add('locked');
+      } 
+      else if (state === 'rejected') {
+        pill.innerHTML = `
+          <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          <span>Verification Rejected</span>
+        `;
+        nameCheck.style.display = 'none';
+        bannerTitle.textContent = 'Verification Rejected';
+        bannerDesc.textContent = 'Your uploaded identification or assessment document was unclear or unverified. Please re-upload valid credentials.';
+        lockedBanner.style.display = 'flex';
+        trackerSection.classList.add('locked');
+      } 
+      else if (state === 'banned') {
+        pill.innerHTML = `
+          <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+          </svg>
+          <span>Account Restricted (Banned)</span>
+        `;
+        nameCheck.style.display = 'none';
+        bannerTitle.textContent = 'Account Restricted';
+        bannerDesc.textContent = 'This student profile has been restricted from emergency assistance coordination due to administrative policy.';
+        lockedBanner.style.display = 'flex';
+        trackerSection.classList.add('locked');
+      }
+    }
+
+    // Request Assistance Click Guard
+    function handleRequestAssistanceClick() {
+      if (currentDecision !== 'approved') {
+        alert('Action Locked: You must have an Approved student profile to file an assistance request.');
+      } else {
+        alert('Opening Assistance Request filing form.');
+      }
+    }
+  </script>
+</body>
+</html>

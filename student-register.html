@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile Registration | ALERTO - CSU-Carig Student Council</title>
+
+  <!-- Google Fonts: Poppins & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/auth.css">
+</head>
+
+<body>
+
+  <main class="auth-page student-theme">
+
+    <!-- Centered Registration Card Container -->
+    <div class="register-card-container">
+
+      <!-- Card Top Crimson Red Header -->
+      <div class="register-card-header">
+        <div class="auth-header-top-row">
+          <div class="auth-live-status">
+            <span class="live-pulse-dot" aria-hidden="true"></span>
+            <span>Student Verification</span>
+          </div>
+          <span class="auth-badge-terminal">CSU-CARIG • COEA</span>
+        </div>
+
+        <div class="auth-title-lockup">
+          <div class="auth-logo-box">
+            <!-- LOGO PLACEHOLDER: Edit src="logo/csulogo.png" with custom logo -->
+            <img src="logo/csulogo.png" alt="CSU Logo"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <span class="auth-logo-fallback" style="display: none;">A</span>
+          </div>
+          <div class="auth-text-meta">
+            <h1>Create Student Profile</h1>
+            <p>CSU-COEA Disaster Relief & Assistance Access</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registration Form Body -->
+      <div class="register-card-body">
+        <form class="auth-form" id="studentRegisterForm" onsubmit="handleStudentRegister(event)">
+
+          <!-- 1. Full Name -->
+          <div class="form-field-group">
+            <label for="studentFullName" class="form-label">
+              <span>Full Name</span>
+              <span class="form-label-tag">Enrolled Student</span>
+            </label>
+            <div class="input-with-icon">
+              <!-- ICON PLACEHOLDER: Edit src="icons/user.svg" below -->
+              <span class="input-icon-slot" aria-hidden="true">
+                <img src="icons/user.svg" alt=""
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" style="display:none;">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </span>
+              <input type="text" id="studentFullName" class="auth-input" placeholder="e.g. Kriz Bonifacio" required
+                autocomplete="name">
+            </div>
+          </div>
+
+          <!-- 2. Student ID Number -->
+          <div class="form-field-group">
+            <label for="studentIdNumber" class="form-label">
+              <span>Student ID Number</span>
+              <span class="form-label-tag">CSU ID Card</span>
+            </label>
+            <div class="input-with-icon">
+              <!-- ICON PLACEHOLDER: Edit src="icons/id-badge.svg" below -->
+              <span class="input-icon-slot" aria-hidden="true">
+                <img src="icons/id-badge.svg" alt=""
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" style="display:none;">
+                  <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                  <line x1="7" y1="8" x2="17" y2="8"></line>
+                  <line x1="7" y1="12" x2="13" y2="12"></line>
+                  <line x1="7" y1="16" x2="10" y2="16"></line>
+                </svg>
+              </span>
+              <input type="text" id="studentIdNumber" class="auth-input" placeholder="e.g. 2024-08912" required
+                autocomplete="username">
+            </div>
+          </div>
+
+          <!-- 3. Separated Program & Year Level (2-Column Grid) -->
+          <div class="form-dual-grid">
+
+            <!-- Program -->
+            <div class="form-field-group">
+              <label for="studentProgram" class="form-label">
+                <span>Academic Program</span>
+              </label>
+              <div class="input-with-icon">
+                <!-- ICON PLACEHOLDER: Edit src="icons/cap.svg" below -->
+                <span class="input-icon-slot" aria-hidden="true">
+                  <img src="icons/cap.svg" alt=""
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" style="display:none;">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                  </svg>
+                </span>
+                <select id="studentProgram" class="auth-select" required>
+                  <option value="" disabled selected>Select Program</option>
+                  <option value="BS in Civil Engineering">BS in Civil Engineering</option>
+                  <option value="BS in Electrical Engineering">BS in Electrical Engineering</option>
+                  <option value="BS in Geodetic Engineering">BS in Geodetic Engineering</option>
+                  <option value="BS in Computer Engineering">BS in Computer Engineering</option>
+                  <option value="BS in Chemical Engineering">BS in Chemical Engineering</option>
+                  <option value="BS in Architecture">BS in Architecture</option>
+                  <option value="BS in Electronics Engineering">BS in Electronics Engineering</option>
+                  <option value="BS in Agricultural and Biosystems Engineering">BS in Agricultural and Biosystems
+                    Engineering</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Year Level (1 to 5) -->
+            <div class="form-field-group">
+              <label for="studentYearLevel" class="form-label">
+                <span>Year Level</span>
+              </label>
+              <div class="input-with-icon">
+                <!-- ICON PLACEHOLDER: Edit src="icons/star.svg" below -->
+                <span class="input-icon-slot" aria-hidden="true">
+                  <img src="icons/star.svg" alt=""
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" style="display:none;">
+                    <polygon
+                      points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                    </polygon>
+                  </svg>
+                </span>
+                <select id="studentYearLevel" class="auth-select" required>
+                  <option value="" disabled selected>Select Year</option>
+                  <option value="1st Year">1st Year</option>
+                  <option value="2nd Year">2nd Year</option>
+                  <option value="3rd Year">3rd Year</option>
+                  <option value="4th Year">4th Year</option>
+                  <option value="5th Year">5th Year</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 4. Institutional Email -->
+          <div class="form-field-group">
+            <label for="studentEmail" class="form-label">
+              <span>Email Address</span>
+              <span class="form-label-tag">email</span>
+            </label>
+            <div class="input-with-icon">
+              <!-- ICON PLACEHOLDER: Edit src="icons/mail.svg" below -->
+              <span class="input-icon-slot" aria-hidden="true">
+                <img src="icons/mail.svg" alt=""
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" style="display:none;">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+              </span>
+              <input type="email" id="studentEmail" class="auth-input" placeholder="e.g. kriz.bonifacio@gmail.com"
+                required autocomplete="email">
+            </div>
+          </div>
+
+          <!-- 5. Verification Documents: School ID / Government Valid ID (Selfie) & Assessment Form (COR) -->
+          <div class="form-dual-grid">
+
+            <!-- School ID / Valid ID Selfie -->
+            <div class="form-field-group">
+              <label class="form-label">
+                <span>Selfie with School ID/Government ID</span>
+                <span class="form-label-tag">JPG, PNG</span>
+              </label>
+              <div class="upload-card-box" onclick="document.getElementById('validIdFileInput').click()">
+                <input type="file" id="validIdFileInput" class="hidden-file-input" accept="image/*,.pdf"
+                  onchange="handleFileSelected(this, 'validIdBadge', 'validIdText')">
+                <div class="upload-card-icon" aria-hidden="true">
+                  <!-- ICON PLACEHOLDER: Edit src="icons/camera.svg" below -->
+                  <img src="icons/camera.svg" alt=""
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" style="display:none;">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                    <circle cx="12" cy="13" r="4"></circle>
+                  </svg>
+                </div>
+                <span class="upload-main-text" id="validIdText">Upload Selfie with ID</span>
+                <span class="upload-sub-text">Click to select image file</span>
+                <span class="file-selected-badge" id="validIdBadge">File attached &check;</span>
+              </div>
+            </div>
+
+            <!-- Assessment Form (COR) -->
+            <div class="form-field-group">
+              <label class="form-label">
+                <span>Assessment Form (COR)</span>
+                <span class="form-label-tag">PDF, JPG</span>
+              </label>
+              <div class="upload-card-box" onclick="document.getElementById('assessmentFileInput').click()">
+                <input type="file" id="assessmentFileInput" class="hidden-file-input" accept=".pdf,image/*"
+                  onchange="handleFileSelected(this, 'corBadge', 'corText')">
+                <div class="upload-card-icon" aria-hidden="true">
+                  <!-- ICON PLACEHOLDER: Edit src="icons/document.svg" below -->
+                  <img src="icons/document.svg" alt=""
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" style="display:none;">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                  </svg>
+                </div>
+                <span class="upload-main-text" id="corText">Upload Assessment Form</span>
+                <span class="upload-sub-text">Certificate of Registration</span>
+                <span class="file-selected-badge" id="corBadge">File attached &check;</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 6. Create Password & Repeat Password (2-Column Grid) -->
+          <div class="form-dual-grid">
+
+            <!-- Create Password -->
+            <div class="form-field-group">
+              <label for="studentPassword" class="form-label">
+                <span>Create Password</span>
+              </label>
+              <div class="input-with-icon">
+                <!-- ICON PLACEHOLDER: Edit src="icons/lock.svg" below -->
+                <span class="input-icon-slot" aria-hidden="true">
+                  <img src="icons/lock.svg" alt=""
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" style="display:none;">
+                    <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </span>
+                <input type="password" id="studentPassword" class="auth-input has-toggle" placeholder="Create password"
+                  required autocomplete="new-password">
+                <button type="button" class="show-password-btn" id="showStudentCreatePwdToggle"
+                  onclick="togglePasswordVisibility('studentPassword', this)">Show</button>
+              </div>
+            </div>
+
+            <!-- Repeat Password -->
+            <div class="form-field-group">
+              <label for="studentRepeatPassword" class="form-label">
+                <span>Repeat Password</span>
+              </label>
+              <div class="input-with-icon">
+                <!-- ICON PLACEHOLDER: Edit src="icons/shield-lock.svg" below -->
+                <span class="input-icon-slot" aria-hidden="true">
+                  <img src="icons/shield-lock.svg" alt=""
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" style="display:none;">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                  </svg>
+                </span>
+                <input type="password" id="studentRepeatPassword" class="auth-input has-toggle"
+                  placeholder="Confirm password" required autocomplete="new-password">
+                <button type="button" class="show-password-btn" id="showStudentRepeatPwdToggle"
+                  onclick="togglePasswordVisibility('studentRepeatPassword', this)">Show</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Quick Fill & Show Passwords Option -->
+          <div class="auth-extras-row">
+            <label class="remember-label">
+              <input type="checkbox" id="studentToggleBothPwdCheckbox"
+                onchange="toggleBothStudentPasswords(this.checked)">
+              <span>Show passwords</span>
+            </label>
+
+            <button type="button" class="quick-fill-btn" onclick="quickFillStudentProfile()">
+              <!-- ICON PLACEHOLDER: Edit src="icons/bolt.svg" below -->
+              <img src="icons/bolt.svg" alt="" style="width:12px;height:12px;"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                style="display:none;">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+              </svg>
+              <span>Fill Sample Student</span>
+            </button>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="auth-submit-btn" id="studentRegSubmitBtn">
+            <span>Sign in</span>
+            <!-- ICON PLACEHOLDER: Edit src="icons/arrow-right.svg" below -->
+            <img src="icons/arrow-right.svg" alt="" style="width:16px;height:16px;"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+
+        </form>
+
+        <!-- Footer link back to Student Sign In -->
+        <div class="auth-footer-block">
+          <div class="security-badge">
+            <!-- ICON PLACEHOLDER: Edit src="icons/shield-check.svg" below -->
+            <img src="icons/shield-check.svg" alt="" style="width:14px;height:14px;"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>CSU-COEA Student Verification & Relief Coordination Standard</span>
+          </div>
+
+          <a href="student-login.html" class="auth-back-link">
+            <span>Already registered? <strong>Sign In to Student Portal &rarr;</strong></span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    // Handle File Pickers
+    function handleFileSelected(input, badgeId, textId) {
+      if (input.files && input.files[0]) {
+        const fileName = input.files[0].name;
+        document.getElementById(textId).textContent = fileName.length > 22 ? fileName.substring(0, 20) + '...' : fileName;
+        document.getElementById(badgeId).style.display = 'inline-block';
+      }
+    }
+
+    // Toggle Single Password Visibility
+    function togglePasswordVisibility(fieldId, btn) {
+      const field = document.getElementById(fieldId);
+      if (!field) return;
+
+      if (field.type === 'password') {
+        field.type = 'text';
+        if (btn) btn.textContent = 'Hide';
+      } else {
+        field.type = 'password';
+        if (btn) btn.textContent = 'Show';
+      }
+    }
+
+    // Toggle Both Passwords Visibility via Checkbox
+    function toggleBothStudentPasswords(show) {
+      const pwd1 = document.getElementById('studentPassword');
+      const pwd2 = document.getElementById('studentRepeatPassword');
+      const btn1 = document.getElementById('showStudentCreatePwdToggle');
+      const btn2 = document.getElementById('showStudentRepeatPwdToggle');
+
+      if (pwd1) {
+        pwd1.type = show ? 'text' : 'password';
+        if (btn1) btn1.textContent = show ? 'Hide' : 'Show';
+      }
+      if (pwd2) {
+        pwd2.type = show ? 'text' : 'password';
+        if (btn2) btn2.textContent = show ? 'Hide' : 'Show';
+      }
+    }
+
+    // Quick Fill Student Profile
+    function quickFillStudentProfile() {
+      document.getElementById('studentFullName').value = 'Kriz Bonifacio';
+      document.getElementById('studentIdNumber').value = '2024-08912';
+      document.getElementById('studentProgram').value = 'BS in Civil Engineering';
+      document.getElementById('studentYearLevel').value = '3rd Year';
+      document.getElementById('studentEmail').value = 'kriz.bonifacio@csu.edu.ph';
+      document.getElementById('studentPassword').value = 'studentPass2026';
+      document.getElementById('studentRepeatPassword').value = 'studentPass2026';
+      document.getElementById('validIdText').textContent = 'csu_id_selfie.png';
+      document.getElementById('validIdBadge').style.display = 'inline-block';
+      document.getElementById('corText').textContent = 'cor_assessment_2026.pdf';
+      document.getElementById('corBadge').style.display = 'inline-block';
+    }
+
+    // Handle Student Registration Submission
+    function handleStudentRegister(event) {
+      event.preventDefault();
+      const pwd = document.getElementById('studentPassword').value;
+      const repeatPwd = document.getElementById('studentRepeatPassword').value;
+
+      if (pwd !== repeatPwd) {
+        alert('Passwords do not match. Please ensure both password fields are identical.');
+        return;
+      }
+
+      const submitBtn = document.getElementById('studentRegSubmitBtn');
+      submitBtn.innerHTML = '<span>Submitting Profile for Verification...</span>';
+      submitBtn.style.opacity = '0.85';
+      submitBtn.disabled = true;
+
+      setTimeout(() => {
+        submitBtn.innerHTML = '<span>Profile Submitted! Redirecting to Sign In...</span>';
+        submitBtn.style.background = 'linear-gradient(135deg, #1e6b37, #238545)';
+        setTimeout(() => {
+          window.location.href = 'student-login.html';
+        }, 700);
+      }, 700);
+    }
+  </script>
+</body>
+
+</html>

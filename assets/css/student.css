@@ -1,0 +1,604 @@
+/* ==========================================================================
+   ALERTO - Student Portal Dashboard Stylesheet
+   CSU Crimson Red Theme with GCash-style Verification Banner & Stepped Tracker
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Student Layout Structure
+   -------------------------------------------------------------------------- */
+.student-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #fcfafb;
+  background-image: radial-gradient(rgba(112, 13, 35, 0.06) 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+
+/* --------------------------------------------------------------------------
+   2. Crimson Student Sidebar
+   -------------------------------------------------------------------------- */
+.student-sidebar {
+  width: 270px;
+  background: linear-gradient(180deg, #5c091d 0%, #4a0616 100%);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 900;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 900px) {
+  .student-sidebar {
+    position: fixed;
+    left: -280px;
+    transition: left var(--transition-smooth);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.35);
+  }
+  .student-sidebar.sidebar-open {
+    left: 0;
+  }
+}
+
+.student-sidebar-brand {
+  padding: var(--space-6) var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.student-logo-box {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.student-logo-box img {
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: contain;
+}
+
+.student-brand-name {
+  font-family: var(--heading-font);
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.student-brand-sub {
+  font-size: var(--fs-2xs);
+  color: rgba(255, 255, 255, 0.72);
+  margin-top: 2px;
+}
+
+.student-nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-3);
+  flex: 1;
+}
+
+.student-nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 11px var(--space-4);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.student-nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.student-nav-link.active {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.student-nav-icon {
+  width: 20px !important;
+  height: 20px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.student-nav-icon svg,
+.student-nav-icon img {
+  width: 18px !important;
+  height: 18px !important;
+  object-fit: contain;
+}
+
+.student-sidebar-footer {
+  padding: var(--space-4) var(--space-4) var(--space-6);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--fs-2xs);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.student-sidebar-footer a {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+}
+
+.student-sidebar-footer a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   3. Main Content Container
+   -------------------------------------------------------------------------- */
+.student-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.student-content-body {
+  padding: var(--space-6) var(--space-6) var(--space-12);
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .student-content-body {
+    padding: var(--space-4) var(--space-4) var(--space-10);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. GCash-Style Horizontal Top Verification Card
+   -------------------------------------------------------------------------- */
+.gcash-profile-card {
+  width: 100%;
+  background: linear-gradient(135deg, #5c091d 0%, #700d23 50%, #8b122f 100%);
+  border-radius: 22px;
+  padding: var(--space-6) var(--space-8);
+  color: #ffffff;
+  box-shadow: 0 12px 32px rgba(92, 9, 29, 0.22);
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 640px) {
+  .gcash-profile-card {
+    padding: var(--space-5) var(--space-5);
+    border-radius: 18px;
+  }
+}
+
+/* Background Subtle Gradient Orbs */
+.gcash-profile-card::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.gcash-card-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  position: relative;
+  z-index: 2;
+  flex-wrap: wrap;
+}
+
+.gcash-student-info-col {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.gcash-avatar-box {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--heading-font);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.gcash-text-meta h2 {
+  font-family: var(--heading-font);
+  font-size: clamp(1.25rem, 2vw + 0.5rem, 1.6rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gcash-sub-meta {
+  font-size: var(--fs-xs);
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.gcash-status-badge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+@media (max-width: 640px) {
+  .gcash-status-badge-container {
+    align-items: flex-start;
+    width: 100%;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: var(--space-3);
+  }
+}
+
+/* Verification State Pill */
+.verification-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.verification-badge svg,
+.verification-badge img {
+  width: 15px !important;
+  height: 15px !important;
+}
+
+.verification-badge.approved {
+  background: #ffffff;
+  color: #1e6b37;
+  border: 1.5px solid rgba(30, 107, 55, 0.3);
+}
+
+.verification-badge.pending {
+  background: #fff8eb;
+  color: #9c6008;
+  border: 1.5px solid rgba(156, 96, 8, 0.3);
+}
+
+.verification-badge.rejected {
+  background: #fdf0f2;
+  color: #9c2438;
+  border: 1.5px solid rgba(156, 36, 56, 0.3);
+}
+
+.verification-badge.banned {
+  background: #2e2838;
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.verification-decision-label {
+  font-size: var(--fs-2xs);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* Interactive State Preview Switcher Bar */
+.demo-switcher-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(112, 13, 35, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  font-size: var(--fs-2xs);
+  color: var(--admin-muted);
+  flex-wrap: wrap;
+}
+
+.demo-switcher-btn {
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.demo-switcher-btn.btn-approved {
+  background: #edf7f0;
+  color: #1e6b37;
+  border-color: #c2e7cd;
+}
+
+.demo-switcher-btn.btn-pending {
+  background: #fdf5ea;
+  color: #9c6008;
+  border-color: #f7ddb2;
+}
+
+.demo-switcher-btn.btn-rejected {
+  background: #fdf0f2;
+  color: #9c2438;
+  border-color: #f8c9d1;
+}
+
+.demo-switcher-btn.btn-banned {
+  background: #eae8ed;
+  color: #2e2838;
+  border-color: #d2cdd9;
+}
+
+.demo-switcher-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.95);
+}
+
+/* --------------------------------------------------------------------------
+   5. Stepped Progress Tracker (Matches User Reference Image)
+   -------------------------------------------------------------------------- */
+.tracker-section-card {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: var(--space-8);
+  border: 1.5px solid rgba(112, 13, 35, 0.12);
+  box-shadow: 0 8px 30px rgba(35, 20, 65, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  transition: all var(--transition-smooth);
+  position: relative;
+}
+
+@media (max-width: 640px) {
+  .tracker-section-card {
+    padding: var(--space-6) var(--space-5);
+  }
+}
+
+.tracker-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.tracker-card-header h3 {
+  font-family: var(--heading-font);
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  color: var(--admin-text);
+}
+
+.tracker-card-header p {
+  font-size: var(--fs-xs);
+  color: var(--admin-muted);
+  margin-top: 2px;
+}
+
+.request-id-tag {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: #700d23;
+  background: #fdebed;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(112, 13, 35, 0.15);
+}
+
+/* Horizontal Stepped Progress Bar */
+.stepper-track-container {
+  width: 100%;
+  padding: var(--space-4) 0;
+  overflow-x: auto;
+}
+
+.stepper-steps-wrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-width: 580px;
+  position: relative;
+}
+
+/* Stepper Connecting Bar */
+.stepper-steps-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 24px;
+  left: 36px;
+  right: 36px;
+  height: 4px;
+  background: #ede6ea;
+  z-index: 1;
+}
+
+.stepper-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.step-node-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #ede6ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--admin-muted);
+  margin-bottom: var(--space-3);
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.step-node-circle svg,
+.step-node-circle img {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.step-text-title {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  color: var(--admin-text);
+  margin-bottom: 2px;
+}
+
+.step-text-time {
+  font-size: var(--fs-2xs);
+  color: var(--admin-muted);
+}
+
+/* Active Completed Steps */
+.stepper-step.completed .step-node-circle {
+  background: #1e6b37;
+  border-color: #1e6b37;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(30, 107, 55, 0.3);
+}
+
+.stepper-step.active .step-node-circle {
+  background: #ffffff;
+  border-color: #1e6b37;
+  color: #1e6b37;
+  box-shadow: 0 0 0 4px rgba(30, 107, 55, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   6. Gated / Disabled Locked State
+   -------------------------------------------------------------------------- */
+.tracker-section-card.locked {
+  background: #fbf9fa;
+  border-color: #ede6ea;
+  opacity: 0.65;
+  filter: grayscale(0.8);
+  pointer-events: none;
+  user-select: none;
+}
+
+.locked-overlay-card {
+  background: #fff8eb;
+  border: 1.5px solid #f7ddb2;
+  border-radius: var(--radius-md);
+  padding: var(--space-5) var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.locked-icon-text {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.locked-icon-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fdf5ea;
+  color: #9c6008;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.locked-title {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: #9c6008;
+}
+
+.locked-desc {
+  font-size: var(--fs-xs);
+  color: #7a4b04;
+  margin-top: 2px;
+}
+
+.unlock-action-btn {
+  padding: 8px 18px;
+  background: #700d23;
+  color: #ffffff;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+}
+
+.unlock-action-btn:hover {
+  background: #8b122f;
+  transform: translateY(-1px);
+}
