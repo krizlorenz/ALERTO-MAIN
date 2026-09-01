@@ -1,0 +1,9 @@
+.env
+/storage/uploads/*
+/storage/logs/*
+
+.vscode/
+.idea/
+
+.DS_Store
+Thumbs.db
