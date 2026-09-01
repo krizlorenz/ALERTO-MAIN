@@ -1,0 +1,180 @@
+/* ==========================================================================
+   ALERTO - Design System & Custom Admin Palette
+   CSU-CARIG Student Council - College of Engineering and Architecture (COEA)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap');
+
+:root {
+  /* Handcrafted Institutional Violet Palette */
+  --admin-purple-dark: #1f1238;
+  --admin-purple-mid: #321e5e;
+  --admin-purple: #6236d4;
+  --admin-purple-bright: #784ded;
+  --admin-purple-soft: #f1edfc;
+  --admin-purple-tint: #f9f7fe;
+  
+  /* Surfaces & Canvas */
+  --admin-bg: #f8f7fb;
+  --admin-surface: #ffffff;
+  --admin-surface-subtle: #fbfafc;
+  
+  /* Text & Typography */
+  --admin-text: #16121e;
+  --admin-text-secondary: #484054;
+  --admin-muted: #736b80;
+  --admin-subtle: #9890a4;
+  
+  /* Borders */
+  --admin-border: #ede8f5;
+  --admin-border-subtle: #f3f0f8;
+  --admin-border-focus: #c5b4f7;
+  
+  /* Status Palette */
+  --status-success: #1e7a46;
+  --status-success-bg: #eaf7ef;
+  --status-success-border: #c4ecd3;
+
+  --status-warning: #c27803;
+  --status-warning-bg: #fef7ea;
+  --status-warning-border: #fbe2b5;
+
+  --status-info: #167e9b;
+  --status-info-bg: #e6f6fa;
+  --status-info-border: #bce9f3;
+
+  --status-danger: #bd3a52;
+  --status-danger-bg: #fdeef1;
+  --status-danger-border: #f8ccd5;
+
+  /* Natural Tailored Shadows */
+  --shadow-subtle: 0 1px 3px rgba(31, 18, 56, 0.04), 0 4px 12px rgba(31, 18, 56, 0.03);
+  --shadow-card: 0 2px 6px rgba(31, 18, 56, 0.03), 0 10px 28px rgba(31, 18, 56, 0.045);
+  --shadow-card-hover: 0 4px 12px rgba(31, 18, 56, 0.06), 0 16px 36px rgba(98, 54, 212, 0.1);
+  --shadow-header: 0 2px 16px rgba(31, 18, 56, 0.04);
+  
+  /* Radii */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 9999px;
+  
+  /* Fonts */
+  --heading-font: "Poppins", system-ui, -apple-system, sans-serif;
+  --body-font: "Inter", system-ui, -apple-system, sans-serif;
+
+  /* Fluid Font Sizes */
+  --fs-2xs: 0.7rem;
+  --fs-xs: 0.775rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 0.95rem;
+  --fs-md: 1.05rem;
+  --fs-lg: 1.2rem;
+  --fs-xl: 1.45rem;
+  --fs-2xl: 1.85rem;
+  --fs-3xl: 2.35rem;
+  --fs-4xl: 2.95rem;
+
+  /* Spacing Scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Layout */
+  --content-max-width: 1360px;
+  --container-pad: 18px;
+  --container-pad-md: 32px;
+  --container-pad-lg: 48px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 240ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset & Box Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--body-font);
+  font-size: var(--fs-base);
+  line-height: 1.55;
+  color: var(--admin-text);
+  background-color: var(--admin-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--heading-font);
+  color: var(--admin-text);
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: -0.015em;
+}
+
+p {
+  color: var(--admin-text-secondary);
+  line-height: 1.62;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-pad);
+  padding-right: var(--container-pad);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: var(--container-pad-md);
+    padding-right: var(--container-pad-md);
+  }
+}
+
+@media (min-width: 1100px) {
+  .container {
+    padding-left: var(--container-pad-lg);
+    padding-right: var(--container-pad-lg);
+  }
+}
