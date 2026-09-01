@@ -1,26 +1,70 @@
 /* ==========================================================================
-   ALERTO - Components (Responsive Right-Aligned Navbar, Status Tags, Wavy Footer)
+   ALERTO - Components (Royal Purple Navbar with Subtle Lines, Status Badges)
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   1. Navbar
+   1. Navbar (Royal Purple #352264 with Subtle Hairline Grid Overlay)
    -------------------------------------------------------------------------- */
 .navbar {
-  background-color: var(--admin-surface);
-  border-bottom: 1px solid var(--admin-border);
-  box-shadow: var(--shadow-header);
+  background-color: #352264;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.016) 1px, transparent 1px),
+    linear-gradient(135deg, #2d1c54 0%, #352264 55%, #422a7a 100%);
+  background-size: 28px 28px, 28px 28px, 100% 100%;
+  box-shadow: 0 4px 20px rgba(45, 28, 84, 0.15);
   position: sticky;
   top: 0;
   z-index: 1000;
-  padding: var(--space-3) 0;
+  padding: 10px 0;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Subtle Bottom Hairline Accent */
+.navbar::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.18) 35%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.18) 65%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
 }
 
 .navbar-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
+  width: 100%;
+  padding: 0 var(--space-4);
   min-height: 52px;
+}
+
+@media (min-width: 640px) {
+  .navbar-inner {
+    padding: 0 var(--space-6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .navbar-inner {
+    padding: 0 var(--space-8);
+  }
+}
+
+@media (min-width: 1400px) {
+  .navbar-inner {
+    padding: 0 48px;
+  }
 }
 
 .brand {
@@ -39,8 +83,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--admin-purple-soft);
-  border: 1px solid var(--admin-border);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
 }
 
@@ -53,7 +98,7 @@
 .brand .logo-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--admin-purple), var(--admin-purple-mid));
+  background: #5e35d8;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -72,25 +117,29 @@
   font-family: var(--heading-font);
   font-size: var(--fs-xl);
   font-weight: 800;
-  color: var(--admin-purple-mid);
+  color: #ffffff;
   line-height: 1.05;
   letter-spacing: -0.02em;
 }
 
 .brand-sub {
   font-size: var(--fs-2xs);
-  color: var(--admin-muted);
+  color: rgba(255, 255, 255, 0.72);
   font-weight: 500;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
   margin-top: 2px;
 }
 
-/* Nav Menu Aligned to Far Right */
+/* Nav Menu Pushed to Far Right Edge */
 .main-nav {
   display: none;
   align-items: center;
-  gap: var(--space-6);
+  gap: 4px;
   margin-left: auto;
+  background: rgba(0, 0, 0, 0.14);
+  padding: 4px 6px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 @media (min-width: 860px) {
@@ -100,52 +149,48 @@
 }
 
 .main-nav a {
-  font-size: var(--fs-sm);
-  font-weight: 500;
-  color: var(--admin-text-secondary);
-  padding: var(--space-2) var(--space-1);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
+  padding: 7px 18px;
+  border-radius: var(--radius-pill);
   position: relative;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
+  letter-spacing: 0.01em;
 }
 
 .main-nav a:hover {
-  color: var(--admin-purple);
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.12);
 }
 
 .main-nav a.active {
-  color: var(--admin-purple);
-  font-weight: 600;
+  color: #ffffff;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.28);
 }
 
-.main-nav a.active::after {
-  content: "";
-  position: absolute;
-  bottom: -6px;
-  left: 0;
-  right: 0;
-  height: 2.5px;
-  background-color: var(--admin-purple);
-  border-radius: var(--radius-pill);
-}
-
-/* Mobile Hamburger Toggle with 44px Touch Target */
+/* --------------------------------------------------------------------------
+   2. Modern Animated Hamburger Toggle
+   -------------------------------------------------------------------------- */
 .menu-toggle {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 5px;
-  width: 44px;
-  height: 44px;
-  padding: 10px 8px;
-  background: transparent;
+  width: 42px;
+  height: 42px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   margin-left: auto;
-  border-radius: var(--radius-xs);
-  transition: background-color var(--transition-fast);
-}
-
-.menu-toggle:active {
-  background-color: var(--admin-purple-soft);
+  position: relative;
+  transition: all var(--transition-fast);
 }
 
 @media (min-width: 860px) {
@@ -154,13 +199,44 @@
   }
 }
 
+.menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.menu-toggle:active {
+  transform: scale(0.94);
+}
+
 .menu-toggle span {
   display: block;
-  width: 100%;
   height: 2.5px;
-  background: var(--admin-text);
+  background: #ffffff;
   border-radius: var(--radius-pill);
-  transition: transform var(--transition-smooth), opacity var(--transition-fast);
+  transition: transform var(--transition-spring), width var(--transition-spring), opacity var(--transition-fast), background-color var(--transition-fast);
+}
+
+.menu-toggle span:nth-child(1) {
+  width: 20px;
+}
+
+.menu-toggle span:nth-child(2) {
+  width: 14px;
+}
+
+.menu-toggle span:nth-child(3) {
+  width: 20px;
+}
+
+/* Modern Morphing Active State */
+.menu-toggle.active {
+  background: #5e35d8;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.menu-toggle.active span {
+  background: #ffffff;
+  width: 20px;
 }
 
 .menu-toggle.active span:nth-child(1) {
@@ -169,60 +245,74 @@
 
 .menu-toggle.active span:nth-child(2) {
   opacity: 0;
+  transform: scale(0);
 }
 
 .menu-toggle.active span:nth-child(3) {
   transform: translateY(-7.5px) rotate(-45deg);
 }
 
-/* Mobile Dropdown Nav */
+/* Royal Purple Mobile Dropdown Nav */
 .mobile-nav-menu {
   display: none;
-  background-color: var(--admin-surface);
-  border-bottom: 1px solid var(--admin-border);
-  padding: var(--space-3) 0 var(--space-4) 0;
-  box-shadow: var(--shadow-card);
+  background: #352264;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding: var(--space-4);
+  box-shadow: 0 16px 40px rgba(35, 20, 65, 0.3);
 }
 
 .mobile-nav-menu.active {
   display: block;
+  animation: slideDown 240ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .mobile-nav-menu ul {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: var(--space-2);
 }
 
 .mobile-nav-menu a {
   display: flex;
   align-items: center;
-  padding: var(--space-3) var(--container-pad);
+  padding: var(--space-3) var(--space-4);
   font-size: var(--fs-base);
   font-weight: 500;
-  color: var(--admin-text);
-  border-radius: var(--radius-sm);
+  color: rgba(255, 255, 255, 0.88);
+  border-radius: var(--radius-md);
   transition: all var(--transition-fast);
 }
 
 .mobile-nav-menu a:active,
 .mobile-nav-menu a.active {
-  background-color: var(--admin-purple-soft);
-  color: var(--admin-purple);
-  font-weight: 600;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 /* --------------------------------------------------------------------------
-   2. Status Badges & Pills
+   3. Distinct Institutional Status Badges (Non-AI, Clear Distinction)
    -------------------------------------------------------------------------- */
 .status-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 3px 12px;
+  padding: 4px 12px;
   border-radius: var(--radius-pill);
   font-size: var(--fs-2xs);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -233,41 +323,87 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
-.status-pill.purple {
-  background-color: var(--admin-purple-soft);
-  color: var(--admin-purple);
-  border: 1px solid rgba(98, 54, 212, 0.16);
+/* 1. Pending (Warm Ochre / Amber Muted) */
+.status-pill.warning,
+.status-pill.pending {
+  background-color: var(--status-pending-bg);
+  color: var(--status-pending-text);
+  border: 1px solid var(--status-pending-border);
 }
-.status-pill.purple::before {
-  background-color: var(--admin-purple);
-}
-
-.status-pill.warning {
-  background-color: var(--status-warning-bg);
-  color: var(--status-warning);
-  border: 1px solid var(--status-warning-border);
-}
-.status-pill.warning::before {
-  background-color: var(--status-warning);
+.status-pill.warning::before,
+.status-pill.pending::before {
+  background-color: var(--status-pending-dot);
 }
 
-.status-pill.success {
-  background-color: var(--status-success-bg);
-  color: var(--status-success);
-  border: 1px solid var(--status-success-border);
+/* 2. Approved (Pine / Forest Sage) */
+.status-pill.success,
+.status-pill.approved {
+  background-color: var(--status-approved-bg);
+  color: var(--status-approved-text);
+  border: 1px solid var(--status-approved-border);
 }
-.status-pill.success::before {
-  background-color: var(--status-success);
+.status-pill.success::before,
+.status-pill.approved::before {
+  background-color: var(--status-approved-dot);
+}
+
+/* 3. In Progress (Slate Indigo / Dusk Violet) */
+.status-pill.purple,
+.status-pill.in-progress {
+  background-color: var(--status-progress-bg);
+  color: var(--status-progress-text);
+  border: 1px solid var(--status-progress-border);
+}
+.status-pill.purple::before,
+.status-pill.in-progress::before {
+  background-color: var(--status-progress-dot);
+}
+
+/* 4. Completed (Emerald Teal) */
+.status-pill.info,
+.status-pill.completed {
+  background-color: var(--status-completed-bg);
+  color: var(--status-completed-text);
+  border: 1px solid var(--status-completed-border);
+}
+.status-pill.info::before,
+.status-pill.completed::before {
+  background-color: var(--status-completed-dot);
+}
+
+/* 5. Rejected (Burgundy / Crimson Rose) */
+.status-pill.danger,
+.status-pill.rejected {
+  background-color: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
+  border: 1px solid var(--status-rejected-border);
+}
+.status-pill.danger::before,
+.status-pill.rejected::before {
+  background-color: var(--status-rejected-dot);
+}
+
+/* 6. Banned (Muted Charcoal / Deep Slate) */
+.status-pill.dark,
+.status-pill.banned {
+  background-color: var(--status-banned-bg);
+  color: var(--status-banned-text);
+  border: 1px solid var(--status-banned-border);
+}
+.status-pill.dark::before,
+.status-pill.banned::before {
+  background-color: var(--status-banned-dot);
 }
 
 /* --------------------------------------------------------------------------
-   3. Stat Card Icon Slots
+   4. Stat Card Icon Slots
    -------------------------------------------------------------------------- */
 .stat-icon-slot {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-xs);
   display: flex;
   align-items: center;
@@ -288,42 +424,48 @@
 }
 
 .stat-icon-slot.icon-purple {
-  background-color: var(--admin-purple-soft);
-  color: var(--admin-purple);
+  background: var(--status-progress-bg);
+  color: var(--status-progress-text);
+  border: 1px solid var(--status-progress-border);
 }
 
 .stat-icon-slot.icon-warning {
-  background-color: var(--status-warning-bg);
-  color: var(--status-warning);
+  background: var(--status-pending-bg);
+  color: var(--status-pending-text);
+  border: 1px solid var(--status-pending-border);
 }
 
 .stat-icon-slot.icon-success {
-  background-color: var(--status-success-bg);
-  color: var(--status-success);
+  background: var(--status-approved-bg);
+  color: var(--status-approved-text);
+  border: 1px solid var(--status-approved-border);
 }
 
 .stat-icon-slot.icon-danger {
-  background-color: var(--status-danger-bg);
-  color: var(--status-danger);
+  background: var(--status-rejected-bg);
+  color: var(--status-rejected-text);
+  border: 1px solid var(--status-rejected-border);
 }
 
 .stat-icon-slot.icon-info {
-  background-color: var(--status-info-bg);
-  color: var(--status-info);
+  background: var(--status-completed-bg);
+  color: var(--status-completed-text);
+  border: 1px solid var(--status-completed-border);
 }
 
 .stat-icon-slot.icon-dark {
-  background-color: #eeeaf4;
-  color: var(--admin-purple-mid);
+  background: var(--status-banned-bg);
+  color: var(--status-banned-text);
+  border: 1px solid var(--status-banned-border);
 }
 
 /* --------------------------------------------------------------------------
-   4. Wavy Violet Footer
+   5. Wavy Violet Footer
    -------------------------------------------------------------------------- */
 .site-footer-wrapper {
   margin-top: auto;
   position: relative;
-  background-color: var(--admin-purple-dark);
+  background: #352264;
 }
 
 .footer-wave-divider {
@@ -347,8 +489,8 @@
 }
 
 .site-footer {
-  background-color: var(--admin-purple-dark);
-  color: rgba(255, 255, 255, 0.85);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88);
   padding-bottom: var(--space-8);
 }
 
@@ -383,12 +525,12 @@
   width: 40px;
   height: 40px;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .footer-logo-img {
@@ -400,7 +542,7 @@
 .footer-logo-placeholder {
   width: 100%;
   height: 100%;
-  background: var(--admin-purple);
+  background: #5e35d8;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -419,13 +561,13 @@
 
 .footer-brand-text .footer-brand-subtitle {
   font-size: var(--fs-2xs);
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(255, 255, 255, 0.72);
   margin-top: 2px;
 }
 
 .footer-description {
   font-size: var(--fs-sm);
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.78);
   line-height: 1.6;
 }
 
@@ -440,7 +582,7 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -449,7 +591,7 @@
 }
 
 .social-circle-btn:hover {
-  background: var(--admin-purple);
+  background: #5e35d8;
   transform: translateY(-2px);
 }
 
@@ -475,7 +617,7 @@
 }
 
 .footer-nav-list a {
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.78);
   font-size: var(--fs-sm);
   transition: color var(--transition-fast), transform var(--transition-fast);
   display: inline-block;
@@ -488,7 +630,7 @@
 }
 
 .footer-bottom-bar {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: var(--space-6);
   display: flex;
   flex-direction: column;
@@ -496,7 +638,7 @@
   justify-content: space-between;
   gap: var(--space-2);
   font-size: var(--fs-2xs);
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.6);
   text-align: center;
 }
 

@@ -1,65 +1,84 @@
 /* ==========================================================================
-   ALERTO - Design System & Custom Admin Palette
+   ALERTO - Design System & Dot Grid Canvas
    CSU-CARIG Student Council - College of Engineering and Architecture (COEA)
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap');
 
 :root {
-  /* Handcrafted Institutional Violet Palette */
-  --admin-purple-dark: #1f1238;
-  --admin-purple-mid: #321e5e;
-  --admin-purple: #6236d4;
-  --admin-purple-bright: #784ded;
-  --admin-purple-soft: #f1edfc;
-  --admin-purple-tint: #f9f7fe;
-  
+  /* Institutional Royal Violet Palette (Matched to Reference Swatch #352264) */
+  --admin-purple-dark: #2b1a4e;
+  --admin-purple-deep: #352264;
+  --admin-purple-mid: #412a7a;
+  --admin-purple: #5e35d8;
+  --admin-purple-bright: #7544fa;
+  --admin-purple-glow: #8e62ff;
+  --admin-purple-soft: #efe9fc;
+  --admin-purple-tint: #f8f5fe;
+
   /* Surfaces & Canvas */
-  --admin-bg: #f8f7fb;
+  --admin-bg: #f8f7fc;
   --admin-surface: #ffffff;
-  --admin-surface-subtle: #fbfafc;
-  
+  --admin-surface-glass: rgba(255, 255, 255, 0.94);
+  --admin-surface-subtle: #faf9fd;
+
   /* Text & Typography */
-  --admin-text: #16121e;
-  --admin-text-secondary: #484054;
-  --admin-muted: #736b80;
-  --admin-subtle: #9890a4;
-  
+  --admin-text: #171221;
+  --admin-text-secondary: #4a4257;
+  --admin-muted: #726b80;
+  --admin-subtle: #9c94aa;
+  --admin-text-inverse: #ffffff;
+
   /* Borders */
-  --admin-border: #ede8f5;
-  --admin-border-subtle: #f3f0f8;
-  --admin-border-focus: #c5b4f7;
-  
-  /* Status Palette */
-  --status-success: #1e7a46;
-  --status-success-bg: #eaf7ef;
-  --status-success-border: #c4ecd3;
+  --admin-border: #ede7f5;
+  --admin-border-subtle: #f4effa;
+  --admin-border-focus: #c2aff5;
 
-  --status-warning: #c27803;
-  --status-warning-bg: #fef7ea;
-  --status-warning-border: #fbe2b5;
+  /* Refined, Human-Crafted Editorial Status Palette (Non-AI, Distinct & Legible) */
+  --status-pending-bg: #fdf5ea;
+  --status-pending-text: #9c6008;
+  --status-pending-border: #f7ddb2;
+  --status-pending-dot: #b87309;
 
-  --status-info: #167e9b;
-  --status-info-bg: #e6f6fa;
-  --status-info-border: #bce9f3;
+  --status-approved-bg: #edf7f0;
+  --status-approved-text: #1e6b37;
+  --status-approved-border: #c2e7cd;
+  --status-approved-dot: #238545;
 
-  --status-danger: #bd3a52;
-  --status-danger-bg: #fdeef1;
-  --status-danger-border: #f8ccd5;
+  --status-progress-bg: #f0eef9;
+  --status-progress-text: #4e358b;
+  --status-progress-border: #d8d0f3;
+  --status-progress-dot: #6143aa;
+
+  --status-completed-bg: #e6f6f5;
+  --status-completed-text: #106f69;
+  --status-completed-border: #b8e9e6;
+  --status-completed-dot: #158b83;
+
+  --status-rejected-bg: #fdf0f2;
+  --status-rejected-text: #9c2438;
+  --status-rejected-border: #f8c9d1;
+  --status-rejected-dot: #b82b43;
+
+  --status-banned-bg: #eae8ed;
+  --status-banned-text: #2e2838;
+  --status-banned-border: #d2cdd9;
+  --status-banned-dot: #443c52;
 
   /* Natural Tailored Shadows */
-  --shadow-subtle: 0 1px 3px rgba(31, 18, 56, 0.04), 0 4px 12px rgba(31, 18, 56, 0.03);
-  --shadow-card: 0 2px 6px rgba(31, 18, 56, 0.03), 0 10px 28px rgba(31, 18, 56, 0.045);
-  --shadow-card-hover: 0 4px 12px rgba(31, 18, 56, 0.06), 0 16px 36px rgba(98, 54, 212, 0.1);
-  --shadow-header: 0 2px 16px rgba(31, 18, 56, 0.04);
-  
+  --shadow-subtle: 0 1px 3px rgba(35, 20, 65, 0.03), 0 4px 12px rgba(35, 20, 65, 0.03);
+  --shadow-card: 0 4px 20px rgba(35, 20, 65, 0.05), 0 1px 3px rgba(35, 20, 65, 0.02);
+  --shadow-card-hover: 0 12px 36px rgba(92, 48, 212, 0.12), 0 2px 8px rgba(35, 20, 65, 0.04);
+  --shadow-header: 0 4px 20px rgba(35, 20, 65, 0.12);
+
   /* Radii */
   --radius-xs: 6px;
   --radius-sm: 10px;
   --radius-md: 14px;
   --radius-lg: 20px;
+  --radius-xl: 26px;
   --radius-pill: 9999px;
-  
+
   /* Fonts */
   --heading-font: "Poppins", system-ui, -apple-system, sans-serif;
   --body-font: "Inter", system-ui, -apple-system, sans-serif;
@@ -97,6 +116,7 @@
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-smooth: 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 320ms cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
 
 /* Reset & Box Sizing */
@@ -114,12 +134,16 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Body with Modern Geometric Dot Grid Pattern */
 body {
   font-family: var(--body-font);
   font-size: var(--fs-base);
   line-height: 1.55;
   color: var(--admin-text);
   background-color: var(--admin-bg);
+  background-image: radial-gradient(rgba(53, 34, 100, 0.08) 1.25px, transparent 1.25px);
+  background-size: 24px 24px;
+  background-attachment: fixed;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -141,7 +165,7 @@ p {
 a {
   color: inherit;
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 img, svg {
