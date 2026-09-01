@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. Admin Sidebar Mobile Toggle (requests.html, verifications.html)
+  // 2. Admin Sidebar Mobile Toggle (admin-request.html, admin-verify.html)
   const sidebarMobileToggle = document.getElementById('sidebarMobileToggle');
   const adminSidebar = document.getElementById('adminSidebar');
   const sidebarBackdrop = document.getElementById('sidebarBackdrop');

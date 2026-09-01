@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALERTO - CSU-Carig Student Council</title>
+
+  <!-- Google Fonts: Poppins & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/landing.css">
+</head>
+
+<body>
+
+  <!-- Navbar (Brand on Far Left Edge, Nav Links on Far Right Edge) -->
+  <header class="navbar">
+    <div class="navbar-inner">
+      <a href="admin-homepage.html" class="brand" aria-label="ALERTO Home">
+        <!-- Logo Placeholder Container -->
+        <div class="logo-container">
+          <img src="logo/csulogo.png" alt="CSU Logo" class="logo-img"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="logo-placeholder" style="display: none;" aria-hidden="true">A</div>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">ALERTO</span>
+          <span class="brand-sub">CSU-CARIG Student Council</span>
+        </div>
+      </a>
+
+      <!-- Right-Aligned Navigation Links -->
+      <nav class="main-nav" id="mainNav" aria-label="Main Navigation">
+        <a href="admin-homepage.html" class="active">Home</a>
+        <a href="admin-verify.html">Student Verifications</a>
+        <a href="admin-request.html">Assistance Requests</a>
+      </nav>
+
+      <!-- Modern Animated Mobile Hamburger Toggle -->
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Frosted Glass Mobile Dropdown Navigation -->
+  <div class="mobile-nav-menu" id="mobileNavMenu">
+    <ul>
+      <li><a href="admin-homepage.html" class="active">Home</a></li>
+      <li><a href="admin-verify.html">Student Verifications</a></li>
+      <li><a href="admin-request.html">Assistance Requests</a></li>
+    </ul>
+  </div>
+
+  <main>
+    <!-- Full-Bleed Atmospheric Gradient Hero Slide -->
+    <section class="hero" aria-labelledby="hero-title">
+
+      <!-- Background Media: Preserves Natural Aspect Ratio & Sunlight Highlight -->
+      <div class="hero-bg-media">
+        <img src="images/coea.png" alt="CSU COEA Building" class="hero-bg-img" onerror="this.style.display='none';">
+        <div class="hero-gradient-overlay" aria-hidden="true"></div>
+      </div>
+
+      <!-- Hero Content (Positioned in Right Half over Clean White Canvas) -->
+      <div class="hero-container">
+        <div class="hero-content">
+          <span class="hero-pill">ALERTO: Always Ready. Always Here.</span>
+          <h1 class="hero-title" id="hero-title">
+            Coordinated relief,
+            <span class="hero-title-highlight">when it matters most.</span>
+          </h1>
+          <p class="hero-copy">
+            ALERTO is a web-based platform that lets affected students request assistance, follow official advisories,
+            and stay informed — while giving the COEA Student Council a clear, centralized way to review, prioritize,
+            and respond.
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 2-Box Admin Operations Dashboard Section -->
+    <section class="dashboard-section" aria-labelledby="dashboardOverviewHeading">
+      <div class="container">
+
+        <div class="dashboard-header-block">
+          <span class="dashboard-eyebrow">Operations & Oversight</span>
+          <h2 class="dashboard-main-title" id="dashboardOverviewHeading">Council Operations Overview</h2>
+          <p class="dashboard-main-subtitle">Real-time status breakdown for student profile verifications and active
+            relief assistance requests.</p>
+        </div>
+
+        <!-- 2-Box Grid -->
+        <div class="dashboard-grid">
+
+          <!-- =================================================================
+               BOX 1 (LEFT): Student Profile Verification (Entire Board Clickable)
+               ================================================================= -->
+          <a href="admin-verify.html" class="overview-board-link"
+            aria-label="Open Student Profile Verification Management">
+            <div class="board-header">
+              <div class="board-title-group">
+                <h3>
+                  <span>Student Profile Verification</span>
+                  <span class="board-arrow-indicator">&#8599;</span>
+                </h3>
+                <p>Manage and verify student identification & accounts</p>
+              </div>
+              <span class="status-pill purple">Records</span>
+            </div>
+
+            <div class="board-cards-stack">
+
+              <!-- TOP: Primary Featured Stat (Pending Requests) -->
+              <div class="top-featured-row">
+                <div class="inner-stat-card featured-stat">
+                  <div class="stat-card-header">
+                    <div class="stat-card-label-group">
+                      <!-- Icon Slot Placeholder -->
+                      <div class="stat-icon-slot icon-purple">
+                        <img src="icons/pending.png" alt=""
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                      </div>
+                      <span class="stat-card-title">Pending Requests</span>
+                    </div>
+                  </div>
+                  <div class="stat-card-number">14</div>
+                  <div class="stat-card-desc">Waiting for student ID & credentials verification</div>
+                </div>
+              </div>
+
+              <!-- BELOW: Secondary Status Breakdown (3 Columns) -->
+              <div class="bottom-breakdown-grid">
+
+                <!-- Approved -->
+                <div class="inner-stat-card">
+                  <div class="stat-card-header">
+                    <div class="stat-card-label-group">
+                      <!-- Icon Slot Placeholder -->
+                      <div class="stat-icon-slot icon-success">
+                        <img src="icons/approved.png" alt=""
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                      </div>
+                      <span class="stat-card-title">Approved</span>
+                    </div>
+                  </div>
+                  <div class="stat-card-number">128</div>
+                  <div class="stat-card-desc">Verified active students</div>
+                </div>
+
+                <!-- Rejected -->
+                <div class="inner-stat-card">
+                  <div class="stat-card-header">
+                    <div class="stat-card-label-group">
+                      <!-- Icon Slot Placeholder -->
+                      <div class="stat-icon-slot icon-danger">
+                        <img src="icons/rejected.png" alt=""
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="15" y1="9" x2="9" y2="15"></line>
+                          <line x1="9" y1="9" x2="15" y2="15"></line>
+                        </svg>
+                      </div>
+                      <span class="stat-card-title">Rejected</span>
+                    </div>
+                  </div>
+                  <div class="stat-card-number">6</div>
+                  <div class="stat-card-desc">Invalid ID details</div>
+                </div>
+
+                <!-- Banned -->
+                <div class="inner-stat-card">
+                  <div class="stat-card-header">
+                    <div class="stat-card-label-group">
+                      <!-- Icon Slot Placeholder -->
+                      <div class="stat-icon-slot icon-dark">
+                        <img src="icons/banned.png" alt=""
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                        </svg>
+                      </div>
+                      <span class="stat-card-title">Banned</span>
+                    </div>
+                  </div>
+                  <div class="stat-card-number">2</div>
+                  <div class="stat-card-desc">Restricted access</div>
+                </div>
+
+              </div>
+            </div>
+          </a>
+
+          <!-- =================================================================
+               BOX 2 (RIGHT): Assistance Requests (Entire Board Clickable)
+               ================================================================= -->
+          <a href="admin-request.html" class="overview-board-link" aria-label="Open Assistance Requests Management">
+            <div class="board-header">
+              <div class="board-title-group">
+                <h3>
+                  <span>Assistance Requests</span>
+                  <span class="board-arrow-indicator">&#8599;</span>
+                </h3>
+                <p>Track, review, and coordinate disaster relief aid</p>
+              </div>
+              <span class="status-pill warning">Relief Ops</span>
+            </div>
+
+            <div class="board-cards-stack">
+
+              <!-- TOP: Primary Featured Stats (Total & Pending) -->
+              <div class="top-featured-row dual-featured">
+
+                <!-- Total Requests -->
+                <div class="inner-stat-card featured-stat">
+                  <div class="stat-card-header">
+                    <div class="stat-card-label-group">
+                      <!-- Icon Slot Placeholder -->
+                      <div class="stat-icon-slot icon-purple">
+                        <img src="icons/total-requests.png" alt=""
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                          <line x1="8" y1="21" x2="16" y2="21"></line>
+                          <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                      </div>
+                      <span class="stat-card-title">Total Requests</span>
+                    </div>
+                  </div>
+                  <div class="stat-card-number">48</div>
+                  <div class="stat-card-desc">Lifetime recorded relief submissions</div>
+                </div>
+
+                <!-- Pending Requests -->
+                <div class="inner-stat-card featured-stat pending-highlight">
+                  <div class="stat-card-header">
+                    <div class="stat-card-label-group">
+                      <!-- Icon Slot Placeholder -->
+                      <div class="stat-icon-slot icon-warning">
+                        <img src="icons/pending.png" alt=""
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                      </div>
+                      <span class="stat-card-title">Pending Action</span>
+                    </div>
+                  </div>
+                  <div class="stat-card-number">8</div>
+                  <div class="stat-card-desc">Needs dispatch response & allocation</div>
+                </div>
+
+              </div>
+
+              <!-- BELOW: Secondary Status Breakdown (3 Columns) -->
+              <div class="bottom-breakdown-grid">
+
+                <!-- Approved -->
+                <div class="inner-stat-card">
+                  <div class="stat-card-header">
+                    <div class="stat-card-label-group">
+                      <!-- Icon Slot Placeholder -->
+                      <div class="stat-icon-slot icon-success">
+                        <img src="icons/approved.png" alt=""
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                      </div>
+                      <span class="stat-card-title">Approved</span>
+                    </div>
+                  </div>
+                  <div class="stat-card-number">24</div>
+                  <div class="stat-card-desc">Ready for relief pack dispatch</div>
+                </div>
+
+                <!-- In Progress -->
+                <div class="inner-stat-card">
+                  <div class="stat-card-header">
+                    <div class="stat-card-label-group">
+                      <!-- Icon Slot Placeholder -->
+                      <div class="stat-icon-slot icon-primary">
+                        <img src="icons/in-progress.png" alt=""
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                        </svg>
+                      </div>
+                      <span class="stat-card-title">In Progress</span>
+                    </div>
+                  </div>
+                  <div class="stat-card-desc">Being dispatched</div>
+                </div>
+
+                <!-- Completed -->
+                <div class="inner-stat-card">
+                  <div class="stat-card-header">
+                    <div class="stat-card-label-group">
+                      <!-- Icon Slot Placeholder -->
+                      <div class="stat-icon-slot icon-success">
+                        <img src="icons/completed.png" alt=""
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <polyline points="9 12 11 14 15 10"></polyline>
+                        </svg>
+                      </div>
+                      <span class="stat-card-title">Completed</span>
+                    </div>
+                  </div>
+                  <div class="stat-card-number">5</div>
+                  <div class="stat-card-desc">Aid delivered</div>
+                </div>
+
+              </div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Wavy Violet Footer -->
+  <div class="site-footer-wrapper">
+    <!-- SVG Wavy Layered Divider -->
+    <div class="footer-wave-divider" aria-hidden="true">
+      <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M0,0 C150,55 350,-25 500,30 C650,85 900,10 1200,45 L1200,120 L0,120 Z"
+          fill="rgba(98, 54, 212, 0.35)">
+        </path>
+        <path d="M0,20 C180,75 320,5 520,50 C720,95 920,25 1200,60 L1200,120 L0,120 Z" fill="#1e1136"></path>
+      </svg>
+    </div>
+
+    <!-- Footer Content -->
+    <footer class="site-footer">
+      <div class="container">
+
+        <div class="footer-main-grid">
+
+          <!-- Brand & Description Column -->
+          <div class="footer-brand-col">
+            <div class="footer-brand-row">
+              <div class="footer-logo-box">
+                <img src="logo/csulogo.png" alt="CSU Logo" class="footer-logo-img"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="footer-logo-placeholder" style="display: none;" aria-hidden="true">A</div>
+              </div>
+              <div class="footer-brand-text">
+                <div class="footer-brand-title">ALERTO</div>
+                <div class="footer-brand-subtitle">CSU-CARIG Student Council</div>
+              </div>
+            </div>
+
+            <p class="footer-description">
+              A school-based disaster assistance and relief coordination platform developed for the CSU-COEA community.
+            </p>
+
+            <!-- Social Circle Links -->
+            <div class="footer-social-row" aria-label="Social links">
+              <!-- Email -->
+              <a href="mailto:alerto@csu.edu.ph" class="social-circle-btn" aria-label="Email CSU Student Council">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                </svg>
+              </a>
+              <!-- Facebook -->
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-circle-btn"
+                aria-label="Facebook Page">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z" />
+                </svg>
+              </a>
+              <!-- Messenger -->
+              <a href="https://m.me" target="_blank" rel="noopener noreferrer" class="social-circle-btn"
+                aria-label="Messenger Support">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.48 5.43 3.8 7.04V22l3.75-2.06c.79.22 1.62.34 2.45.34 5.52 0 10-4.03 10-9s-4.48-9-10-9zm1.06 12.15l-2.67-2.85-5.21 2.85 5.73-6.08 2.74 2.85 5.14-2.85-5.73 6.08z" />
+                </svg>
+              </a>
+              <!-- Instagram -->
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-circle-btn"
+                aria-label="Instagram Profile">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Quick Links Column (Only Home, Student Verifications, Assistance Requests) -->
+          <div class="footer-links-col">
+            <h4>Quick Links</h4>
+            <ul class="footer-nav-list">
+              <li><a href="admin-homepage.html">Home</a></li>
+              <li><a href="admin-verify.html">Student Verifications</a></li>
+              <li><a href="admin-request.html">Assistance Requests</a></li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Footer Bottom Bar -->
+        <div class="footer-bottom-bar">
+          <span>@ALERTO - Cagayan State University-COEA Student Council</span>
+          <span>Always Ready. Always Here.</span>
+        </div>
+
+      </div>
+    </footer>
+  </div>
+
+  <!-- Client Script -->
+  <script src="assets/js/main.js"></script>
+</body>
+
+</html>
