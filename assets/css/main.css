@@ -232,8 +232,7 @@ select,
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Minimum 44px touch target for primary clickable elements */
-button,
+/* Minimum 44px touch target for primary CTA buttons */
 .auth-submit-btn,
 .portal-submit-btn,
 .request-submit-btn,

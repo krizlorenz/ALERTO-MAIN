@@ -52,6 +52,33 @@
   }
 }
 
+.admin-mobile-toggle-btn,
+.student-mobile-toggle-btn {
+  width: 38px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--radius-sm);
+  background: #5c091d !important;
+  color: #ffffff !important;
+  border: none !important;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.admin-mobile-toggle-btn svg,
+.student-mobile-toggle-btn svg {
+  width: 20px !important;
+  height: 20px !important;
+  max-width: 20px !important;
+  max-height: 20px !important;
+  display: block;
+}
+
 .sidebar-backdrop {
   position: fixed;
   inset: 0;
