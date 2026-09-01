@@ -171,22 +171,20 @@
                 Log in
               </button>
 
-              <!-- Security Notice Box -->
-              <div class="portal-restricted-box">
-                <!-- ICON PLACEHOLDER: Edit src="icons/lock-small.svg" below -->
-                <img src="icons/lock-small.svg" alt="" class="restricted-lock-icon" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg class="restricted-lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                  <rect x="3" y="11" width="18" height="11" rx="2"></rect>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-                <span class="restricted-text">
-                  CSU-COEA Student Identity Verification Required for relief assistance access.
-                </span>
-              </div>
-
-              <!-- Switch to Student Registration Page -->
-              <div class="register-switch-link">
-                First time logging in? <a href="user-sign-in.html">Sign in</a>
+              <!-- Centered Card Footer Options -->
+              <div class="login-card-footer-stack">
+                <div class="register-switch-link">
+                  First time logging in? <a href="user-sign-in.html">Sign in</a>
+                </div>
+                <div class="role-switch-centered">
+                  <a href="admin-login.html" class="role-switch-pill admin-pill">
+                    <!-- ICON PLACEHOLDER: Edit src="icons/shield-lock.svg" below -->
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <span>Login as Admin &rarr;</span>
+                  </a>
+                </div>
               </div>
 
             </form>

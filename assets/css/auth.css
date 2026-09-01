@@ -549,11 +549,15 @@
 }
 
 .register-switch-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   text-align: center;
   margin-top: var(--space-4);
   font-size: var(--fs-xs);
   color: var(--admin-muted);
+  flex-wrap: wrap;
 }
 
 .register-switch-link a {
@@ -568,6 +572,70 @@
 
 .register-switch-link a:hover {
   text-decoration: underline;
+}
+
+/* Centered Card Footer Stack */
+.login-card-footer-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  width: 100%;
+}
+
+.login-card-footer-stack .register-switch-link {
+  margin-top: 0;
+}
+
+.role-switch-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.role-switch-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: var(--fs-2xs);
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.role-switch-pill.admin-pill {
+  color: #352264;
+  background: #f4effa;
+  border: 1px solid rgba(53, 34, 100, 0.2);
+}
+
+.role-switch-pill.admin-pill:hover {
+  background: #ebe0f7;
+  color: #2b1754;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(53, 34, 100, 0.12);
+}
+
+.role-switch-pill.student-pill {
+  color: #700d23;
+  background: #fdebed;
+  border: 1px solid rgba(112, 13, 35, 0.2);
+}
+
+.role-switch-pill.student-pill:hover {
+  background: #fbd6dc;
+  color: #520818;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(112, 13, 35, 0.12);
 }
 
 .login-wave-footer {
