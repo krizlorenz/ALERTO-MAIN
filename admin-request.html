@@ -10,6 +10,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 
+  <!-- Interactive Map Engine (Supports Google Maps Tiles & Live Pinning) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
   <!-- Core Stylesheets -->
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/components.css">
@@ -149,7 +153,7 @@
               <thead>
                 <tr>
                   <th scope="col">ID</th>
-                  <th scope="col">Requester</th>
+                  <th scope="col">Name</th>
                   <th scope="col">Assistance</th>
                   <th scope="col">Location</th>
                   <th scope="col">Status</th>
@@ -160,11 +164,11 @@
               <tbody id="requestsTableBody">
                 
                 <!-- Row 1: Kriz Bonifacio -->
-                <tr data-status="pending" data-search="REQ-00021 Kriz Bonifacio Food, Water Packs Carig Sur">
+                <tr data-status="pending" data-search="REQ-00021 Kriz Bonifacio Food, Water Packs Carig Sur 24-00909">
                   <td><span class="table-id-badge">REQ-00021</span></td>
                   <td>
                     <div class="table-primary-text">Kriz Bonifacio</div>
-                    <div class="table-secondary-text">COEA-2023-0142</div>
+                    <div class="table-secondary-text">24-00909</div>
                   </td>
                   <td>
                     <span class="table-primary-text">Food, Water Packs</span>
@@ -173,7 +177,7 @@
                   <td><span class="status-pill pending">Pending</span></td>
                   <td>Aug 8, 2026</td>
                   <td style="text-align: right;">
-                    <button type="button" class="table-action-btn btn-filled" onclick="openRequestModal('REQ-00021', 'Kriz Bonifacio', 'COEA-2023-0142', 'Food, Water Packs', 'Carig Sur (Near Barangay Hall)', 'Pending', 'Aug 8, 2026', 'Family of 4 stranded due to floodwaters reaching knee level.')">Review</button>
+                    <button type="button" class="table-action-btn" onclick="openRequestModal('REQ-00021', 'Kriz Bonifacio', '24-00909', 'Food, Water Packs', 'Carig Sur (Near Barangay Hall)', 'Pending', 'Aug 8, 2026', 'Family of 4 stranded due to floodwaters reaching knee level.', 17.6542, 121.7513)">View</button>
                   </td>
                 </tr>
 
@@ -191,7 +195,7 @@
                   <td><span class="status-pill in-progress">In Progress</span></td>
                   <td>Aug 8, 2026</td>
                   <td style="text-align: right;">
-                    <button type="button" class="table-action-btn" onclick="openRequestModal('REQ-00022', 'Aries Quinto', 'COEA-2022-0891', 'First Aid / Medicine', 'Caritan Norte, Zone 2', 'In Progress', 'Aug 8, 2026', 'Requires basic first aid kit and hypertension medication refill.')">View</button>
+                    <button type="button" class="table-action-btn" onclick="openRequestModal('REQ-00022', 'Aries Quinto', 'COEA-2022-0891', 'First Aid / Medicine', 'Caritan Norte, Zone 2', 'In Progress', 'Aug 8, 2026', 'Requires basic first aid kit and hypertension medication refill.', 17.6588, 121.7482)">View</button>
                   </td>
                 </tr>
 
@@ -209,7 +213,7 @@
                   <td><span class="status-pill completed">Completed</span></td>
                   <td>Aug 7, 2026</td>
                   <td style="text-align: right;">
-                    <button type="button" class="table-action-btn" onclick="openRequestModal('REQ-00023', 'Jade Biscuera', 'COEA-2024-0055', 'Relief Goods', 'San Gabriel, Centro', 'Completed', 'Aug 7, 2026', 'Food packs and sanitary kits successfully delivered by Team B.')">View</button>
+                    <button type="button" class="table-action-btn" onclick="openRequestModal('REQ-00023', 'Jade Biscuera', 'COEA-2024-0055', 'Relief Goods', 'San Gabriel, Centro', 'Completed', 'Aug 7, 2026', 'Food packs and sanitary kits successfully delivered by Team B.', 17.6412, 121.7354)">View</button>
                   </td>
                 </tr>
 
@@ -227,7 +231,7 @@
                   <td><span class="status-pill approved">Approved</span></td>
                   <td>Aug 7, 2026</td>
                   <td style="text-align: right;">
-                    <button type="button" class="table-action-btn" onclick="openRequestModal('REQ-00024', 'Noriel Samoy', 'COEA-2021-0331', 'Emergency Shelter', 'Annafunan East', 'Approved', 'Aug 7, 2026', 'Approved for temporary shelter coordination at CSU Covered Court.')">View</button>
+                    <button type="button" class="table-action-btn" onclick="openRequestModal('REQ-00024', 'Noriel Samoy', 'COEA-2021-0331', 'Emergency Shelter', 'Annafunan East', 'Approved', 'Aug 7, 2026', 'Approved for temporary shelter coordination at CSU Covered Court.', 17.6321, 121.7219)">View</button>
                   </td>
                 </tr>
 
@@ -245,7 +249,7 @@
                   <td><span class="status-pill pending">Pending</span></td>
                   <td>Aug 6, 2026</td>
                   <td style="text-align: right;">
-                    <button type="button" class="table-action-btn btn-filled" onclick="openRequestModal('REQ-00025', 'Vhon Sarsale', 'COEA-2023-1102', 'Food Relief Pack', 'Pengue-Ruyu, Purok 3', 'Pending', 'Aug 6, 2026', 'Power outage in area, requires emergency dry food packs and clean water.')">Review</button>
+                    <button type="button" class="table-action-btn" onclick="openRequestModal('REQ-00025', 'Vhon Sarsale', 'COEA-2023-1102', 'Food Relief Pack', 'Pengue-Ruyu, Purok 3', 'Pending', 'Aug 6, 2026', 'Power outage in area, requires emergency dry food packs and clean water.', 17.6145, 121.7012)">View</button>
                   </td>
                 </tr>
 
@@ -263,7 +267,7 @@
                   <td><span class="status-pill in-progress">In Progress</span></td>
                   <td>Aug 6, 2026</td>
                   <td style="text-align: right;">
-                    <button type="button" class="table-action-btn" onclick="openRequestModal('REQ-00026', 'Edward Calivoso', 'COEA-2024-0418', 'Hygiene & Medical Kit', 'Carig Norte, Diversion Road', 'In Progress', 'Aug 6, 2026', 'Dispatched for personal care relief items.')">View</button>
+                    <button type="button" class="table-action-btn" onclick="openRequestModal('REQ-00026', 'Edward Calivoso', 'COEA-2024-0418', 'Hygiene & Medical Kit', 'Carig Norte, Diversion Road', 'In Progress', 'Aug 6, 2026', 'Dispatched for personal care relief items.', 17.6254, 121.7150)">View</button>
                   </td>
                 </tr>
 
@@ -303,32 +307,54 @@
   </div>
 
   <!-- Detail Review Modal Dialog -->
-  <dialog id="requestDetailModal" style="border: none; border-radius: var(--radius-lg); padding: 0; max-width: 540px; width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3); background: #ffffff; margin: auto;">
+  <dialog id="requestDetailModal" style="border: none; border-radius: var(--radius-lg); padding: 0; max-width: 580px; width: 92vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3); background: #ffffff; margin: auto;">
     <div style="padding: var(--space-6); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between;">
       <div>
         <span class="admin-page-eyebrow" id="modalRequestEyebrow">Request Details</span>
         <h3 id="modalRequestId" style="font-size: var(--fs-lg); color: var(--admin-text);">REQ-00021</h3>
       </div>
-      <button type="button" onclick="document.getElementById('requestDetailModal').close()" style="font-size: 1.5rem; color: var(--admin-muted); cursor: pointer; padding: 4px 8px;">&times;</button>
+      <button type="button" onclick="closeRequestModal()" style="font-size: 1.5rem; color: var(--admin-muted); cursor: pointer; padding: 4px 8px; border: none; background: transparent;">&times;</button>
     </div>
 
-    <div style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); font-size: var(--fs-sm);">
+    <div style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); font-size: var(--fs-sm); max-height: 75vh; overflow-y: auto;">
       <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
-        <span style="color: var(--admin-muted);">Requester:</span>
+        <span style="color: var(--admin-muted);">Name:</span>
         <strong id="modalRequesterName" style="color: var(--admin-text);">Kriz Bonifacio</strong>
       </div>
       <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
         <span style="color: var(--admin-muted);">Student ID:</span>
-        <span id="modalStudentId" style="font-family: monospace; font-weight: 600;">COEA-2023-0142</span>
+        <span id="modalStudentId" style="font-family: monospace; font-weight: 600;">24-00909</span>
       </div>
       <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
         <span style="color: var(--admin-muted);">Assistance Needed:</span>
         <strong id="modalAssistanceType" style="color: var(--admin-purple-mid);">Food, Water Packs</strong>
       </div>
-      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
-        <span style="color: var(--admin-muted);">Location:</span>
-        <span id="modalLocation">Carig Sur</span>
+      
+      <!-- Incident Location with Interactive Minimap Button -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2); flex-wrap: wrap; gap: 6px;">
+        <span style="color: var(--admin-muted);">Location & Landmark:</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <strong id="modalLocation" style="color: var(--admin-text);">Carig Sur (Near Barangay Hall)</strong>
+          <button type="button" class="table-action-btn" id="toggleRequestMinimapBtn" onclick="toggleRequestMinimap()" style="padding: 2px 8px; font-size: 0.72rem; color: #352264; border-color: rgba(53, 34, 100, 0.25); background: #f6f3fc; display: inline-flex; align-items: center; gap: 4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+              <line x1="8" y1="2" x2="8" y2="18"></line>
+              <line x1="16" y1="6" x2="16" y2="22"></line>
+            </svg>
+            <span id="requestMinimapBtnText">View Minimap</span>
+          </button>
+        </div>
       </div>
+
+      <!-- Collapsible Request Incident Minimap -->
+      <div id="requestMinimapCard" style="display: none; background: #faf8fc; border: 1.5px solid rgba(53, 34, 100, 0.15); border-radius: var(--radius-md); padding: var(--space-3); margin-top: -2px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: var(--fs-2xs);">
+          <span style="font-weight: 700; color: #352264;" id="requestMinimapCoordsLabel">📍 17.6542° N, 121.7513° E (Carig Sur)</span>
+          <span style="color: var(--admin-muted);">Emergency Pin Location</span>
+        </div>
+        <div id="adminRequestMinimap" style="height: 180px; width: 100%; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); z-index: 1;"></div>
+      </div>
+
       <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
         <span style="color: var(--admin-muted);">Status:</span>
         <span id="modalStatusBadge"><span class="status-pill pending">Pending</span></span>
@@ -336,22 +362,75 @@
       <div>
         <span style="color: var(--admin-muted); display: block; margin-bottom: 4px;">Incident Notes & Description:</span>
         <div id="modalDescription" style="background: var(--admin-bg); padding: var(--space-3); border-radius: var(--radius-sm); color: var(--admin-text-secondary); line-height: 1.5;">
-          Family of 4 stranded due to floodwaters.
+          Family of 4 stranded due to floodwaters reaching knee level.
         </div>
       </div>
     </div>
 
-    <div style="padding: var(--space-4) var(--space-6); background: var(--admin-bg); border-top: 1px solid var(--admin-border); display: flex; justify-content: flex-end; gap: var(--space-3);">
-      <button type="button" class="table-action-btn" onclick="document.getElementById('requestDetailModal').close()">Close</button>
-      <button type="button" class="table-action-btn btn-filled" onclick="alert('Action recorded: Request marked for relief dispatch.'); document.getElementById('requestDetailModal').close()">Assign Relief Aid</button>
+    <div style="padding: var(--space-4) var(--space-6); background: var(--admin-bg); border-top: 1px solid var(--admin-border); display: flex; justify-content: flex-end; gap: var(--space-3);" id="requestModalFooterActions">
+      <!-- Populated dynamically based on request status -->
     </div>
   </dialog>
 
-  <!-- Client Script for Search & Sidebar -->
+  <!-- Client Script for Search, Sidebar & Request Minimap -->
   <script src="assets/js/main.js"></script>
   <script>
+    let reqMinimap = null;
+    let reqMarker = null;
+    let reqLat = 17.6542;
+    let reqLng = 121.7513;
+    let currentRequestId = '';
+    let currentRequestStatus = '';
+
+    function closeRequestModal() {
+      const modal = document.getElementById('requestDetailModal');
+      if (modal) modal.close();
+      const minimapCard = document.getElementById('requestMinimapCard');
+      if (minimapCard) minimapCard.style.display = 'none';
+      const btnText = document.getElementById('requestMinimapBtnText');
+      if (btnText) btnText.textContent = 'View Minimap';
+    }
+
+    // Dynamic Action Buttons Generator based on Status
+    function renderModalActions(status) {
+      const footerEl = document.getElementById('requestModalFooterActions');
+      if (!footerEl) return;
+      const statusLower = (status || '').toLowerCase().trim();
+
+      if (statusLower === 'pending' || statusLower === 'pending request') {
+        footerEl.innerHTML = `
+          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Cancel</button>
+          <button type="button" class="table-action-btn btn-filled" onclick="handleApproveRequest()">Approve</button>
+        `;
+      } else if (statusLower === 'approved') {
+        footerEl.innerHTML = `
+          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Cancel</button>
+          <button type="button" class="table-action-btn btn-filled" onclick="handleAssignReliefAid()">Assign Relief Aid</button>
+        `;
+      } else if (statusLower === 'in progress') {
+        footerEl.innerHTML = `
+          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Cancel</button>
+          <button type="button" class="table-action-btn btn-filled" onclick="handleCompleteRequest()">Complete</button>
+        `;
+      } else if (statusLower === 'completed') {
+        footerEl.innerHTML = `
+          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
+          <button type="button" class="table-action-btn btn-filled" onclick="handleArchiveRequest()">Archive</button>
+        `;
+      } else {
+        footerEl.innerHTML = `
+          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
+        `;
+      }
+    }
+
     // Modal Handler
-    function openRequestModal(id, requester, studentId, assistance, location, status, submitted, desc) {
+    function openRequestModal(id, requester, studentId, assistance, location, status, submitted, desc, lat, lng) {
+      currentRequestId = id;
+      currentRequestStatus = status;
+      reqLat = lat || 17.6542;
+      reqLng = lng || 121.7513;
+
       document.getElementById('modalRequestId').textContent = id;
       document.getElementById('modalRequesterName').textContent = requester;
       document.getElementById('modalStudentId').textContent = studentId;
@@ -359,16 +438,150 @@
       document.getElementById('modalLocation').textContent = location;
       document.getElementById('modalDescription').textContent = desc;
 
+      const coordsEl = document.getElementById('requestMinimapCoordsLabel');
+      if (coordsEl) coordsEl.textContent = `📍 ${reqLat.toFixed(4)}° N, ${reqLng.toFixed(4)}° E (${location})`;
+
       const badgeEl = document.getElementById('modalStatusBadge');
       let pillClass = 'pending';
-      const statusLower = status.toLowerCase();
+      const statusLower = status.toLowerCase().trim();
       if (statusLower === 'completed') pillClass = 'completed';
       else if (statusLower === 'approved') pillClass = 'approved';
       else if (statusLower === 'in progress') pillClass = 'in-progress';
       badgeEl.innerHTML = `<span class="status-pill ${pillClass}">${status}</span>`;
 
+      // Render the status-specific action buttons
+      renderModalActions(status);
+
+      // Hide minimap by default on open
+      const minimapCard = document.getElementById('requestMinimapCard');
+      if (minimapCard) minimapCard.style.display = 'none';
+      const btnText = document.getElementById('requestMinimapBtnText');
+      if (btnText) btnText.textContent = 'View Minimap';
+
       const modal = document.getElementById('requestDetailModal');
       if (modal) modal.showModal();
+    }
+
+    // Status Transition Action Handlers
+    function updateRowStatusInTable(reqId, newStatus) {
+      const rows = document.querySelectorAll('#requestsTableBody tr');
+      const pillClass = newStatus.toLowerCase().replace(/\s+/g, '-');
+      
+      rows.forEach(row => {
+        const idBadge = row.querySelector('.table-id-badge');
+        if (idBadge && idBadge.textContent.trim() === reqId) {
+          row.setAttribute('data-status', newStatus.toLowerCase());
+          const statusCell = row.children[4];
+          if (statusCell) {
+            statusCell.innerHTML = `<span class="status-pill ${pillClass}">${newStatus}</span>`;
+          }
+          const actionBtn = row.querySelector('.table-action-btn');
+          if (actionBtn) {
+            const currentOnclick = actionBtn.getAttribute('onclick') || '';
+            const updatedOnclick = currentOnclick.replace(/'(Pending|Approved|In Progress|Completed)'/i, `'${newStatus}'`);
+            actionBtn.textContent = 'View';
+            actionBtn.className = 'table-action-btn';
+          }
+        }
+      });
+    }
+
+    function handleApproveRequest() {
+      currentRequestStatus = 'Approved';
+      const badgeEl = document.getElementById('modalStatusBadge');
+      if (badgeEl) badgeEl.innerHTML = '<span class="status-pill approved">Approved</span>';
+      renderModalActions('Approved');
+      updateRowStatusInTable(currentRequestId, 'Approved');
+      alert(`Request ${currentRequestId} has been APPROVED.`);
+      closeRequestModal();
+    }
+
+    function handleAssignReliefAid() {
+      currentRequestStatus = 'In Progress';
+      const badgeEl = document.getElementById('modalStatusBadge');
+      if (badgeEl) badgeEl.innerHTML = '<span class="status-pill in-progress">In Progress</span>';
+      renderModalActions('In Progress');
+      updateRowStatusInTable(currentRequestId, 'In Progress');
+      alert(`Relief Aid assigned for ${currentRequestId}. Status updated to IN PROGRESS.`);
+      closeRequestModal();
+    }
+
+    function handleCompleteRequest() {
+      currentRequestStatus = 'Completed';
+      const badgeEl = document.getElementById('modalStatusBadge');
+      if (badgeEl) badgeEl.innerHTML = '<span class="status-pill completed">Completed</span>';
+      renderModalActions('Completed');
+      updateRowStatusInTable(currentRequestId, 'Completed');
+      alert(`Request ${currentRequestId} has been marked as COMPLETED.`);
+      closeRequestModal();
+    }
+
+    function handleArchiveRequest() {
+      if (confirm(`Archive assistance request ${currentRequestId}?\n\nThis will move the request to the relief archive registry.`)) {
+        alert(`Request ${currentRequestId} has been successfully ARCHIVED.`);
+        closeRequestModal();
+      }
+    }
+
+    // Toggle Minimap Inside Request Modal
+    function toggleRequestMinimap() {
+      const minimapCard = document.getElementById('requestMinimapCard');
+      const btnText = document.getElementById('requestMinimapBtnText');
+      if (!minimapCard) return;
+
+      if (minimapCard.style.display === 'none' || minimapCard.style.display === '') {
+        minimapCard.style.display = 'block';
+        if (btnText) btnText.textContent = 'Hide Minimap';
+
+        // Initialize or update Leaflet map
+        setTimeout(() => {
+          if (!reqMinimap) {
+            reqMinimap = L.map('adminRequestMinimap', {
+              zoomControl: true,
+              attributionControl: false
+            }).setView([reqLat, reqLng], 16);
+
+            // Google Maps Standard Road Tile Layer
+            L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+              maxZoom: 20,
+              subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+            }).addTo(reqMinimap);
+
+            // Google Maps Style Red Pin Icon
+            const googleRedPinIcon = L.divIcon({
+              className: 'custom-google-pin',
+              html: `
+                <div style="position: relative; cursor: pointer; transform: translate(-50%, -100%);">
+                  <svg width="32" height="42" viewBox="0 0 24 32" fill="none">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20s12-11 12-20c0-6.63-5.37-12-12-12z" fill="#ea4335"/>
+                    <circle cx="12" cy="11" r="4.5" fill="#ffffff"/>
+                    <circle cx="12" cy="11" r="2" fill="#b31412"/>
+                  </svg>
+                </div>
+              `,
+              iconSize: [32, 42],
+              iconAnchor: [16, 42],
+              popupAnchor: [0, -36]
+            });
+
+            reqMarker = L.marker([reqLat, reqLng], {
+              icon: googleRedPinIcon
+            }).addTo(reqMinimap);
+
+            reqMarker.bindPopup(`<strong>Incident Location</strong><br>${document.getElementById('modalLocation').textContent}`);
+          } else {
+            reqMinimap.setView([reqLat, reqLng], 16);
+            if (reqMarker) {
+              reqMarker.setLatLng([reqLat, reqLng]);
+              reqMarker.setPopupContent(`<strong>Incident Location</strong><br>${document.getElementById('modalLocation').textContent}`);
+            }
+            reqMinimap.invalidateSize();
+          }
+        }, 100);
+      } else {
+        minimapCard.style.display = 'none';
+        if (btnText) btnText.textContent = 'View Minimap';
+      }
     }
 
     // Search and Filter logic

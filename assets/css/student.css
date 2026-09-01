@@ -604,6 +604,83 @@
   box-shadow: 0 0 0 4px rgba(30, 107, 55, 0.2);
 }
 
+/* Responsive Auto-Fit for Mobile Screens (No scroll, perfectly fitted) */
+@media (max-width: 768px) {
+  .stepper-track-container {
+    padding: var(--space-2) 0;
+  }
+
+  .stepper-steps-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .stepper-steps-wrapper::before {
+    top: 19px;
+    left: 20px;
+    right: 20px;
+    height: 3px;
+  }
+
+  .step-node-circle {
+    width: 38px;
+    height: 38px;
+    margin-bottom: var(--space-2);
+    border-width: 2.5px;
+  }
+
+  .step-node-circle svg,
+  .step-node-circle img {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .step-text-title {
+    font-size: 0.72rem;
+    line-height: 1.2;
+  }
+
+  .step-text-time {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tracker-section-card {
+    padding: var(--space-4) 14px;
+    border-radius: 16px;
+  }
+
+  .stepper-steps-wrapper::before {
+    top: 16px;
+    left: 14px;
+    right: 14px;
+    height: 2.5px;
+  }
+
+  .step-node-circle {
+    width: 32px;
+    height: 32px;
+    border-width: 2px;
+    margin-bottom: 5px;
+  }
+
+  .step-node-circle svg,
+  .step-node-circle img {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  .step-text-title {
+    font-size: 0.64rem;
+    letter-spacing: -0.01em;
+  }
+
+  .step-text-time {
+    font-size: 0.58rem;
+  }
+}
+
 /* --------------------------------------------------------------------------
    6. Gated / Disabled Locked State
    -------------------------------------------------------------------------- */

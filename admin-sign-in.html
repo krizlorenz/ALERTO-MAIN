@@ -95,7 +95,7 @@
                   <line x1="7" y1="16" x2="10" y2="16"></line>
                 </svg>
               </span>
-              <input type="text" id="regStudentId" class="auth-input" placeholder="e.g. 2023-0142" required
+              <input type="text" id="regStudentId" class="auth-input" placeholder="e.g. 24-00909" required
                 autocomplete="username">
             </div>
           </div>
@@ -167,7 +167,7 @@
           <!-- 4. Institutional Email -->
           <div class="form-field-group">
             <label for="regEmail" class="form-label">
-              <span>Institutional Email Address</span>
+              <span>Email Address</span>
               <span class="form-label-tag">CSU Domain</span>
             </label>
             <div class="input-with-icon">
@@ -181,7 +181,7 @@
                   <polyline points="22,6 12,13 2,6"></polyline>
                 </svg>
               </span>
-              <input type="email" id="regEmail" class="auth-input" placeholder="e.g. kriz.bonifacio@csu.edu.ph" required
+              <input type="email" id="regEmail" class="auth-input" placeholder="e.g. kriz@gmail.com" required
                 autocomplete="email">
             </div>
           </div>
@@ -205,9 +205,14 @@
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                   </svg>
                 </span>
-                <input type="password" id="regPassword" class="auth-input has-toggle" placeholder="Create password" required
-                  autocomplete="new-password">
-                <button type="button" class="show-password-btn" id="showCreatePwdToggle" onclick="togglePasswordVisibility('regPassword', this)">Show</button>
+                <input type="password" id="regPassword" class="auth-input has-eye" placeholder="Create password"
+                  required autocomplete="new-password">
+                <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'regPassword')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
               </div>
             </div>
 
@@ -226,21 +231,21 @@
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                   </svg>
                 </span>
-                <input type="password" id="regRepeatPassword" class="auth-input has-toggle" placeholder="Confirm password" required
-                  autocomplete="new-password">
-                <button type="button" class="show-password-btn" id="showRepeatPwdToggle" onclick="togglePasswordVisibility('regRepeatPassword', this)">Show</button>
+                <input type="password" id="regRepeatPassword" class="auth-input has-eye"
+                  placeholder="Confirm password" required autocomplete="new-password">
+                <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'regRepeatPassword')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
               </div>
             </div>
 
           </div>
 
-          <!-- Quick Fill & Show Passwords Option -->
-          <div class="auth-extras-row">
-            <label class="remember-label">
-              <input type="checkbox" id="toggleBothPwdCheckbox" onchange="toggleBothPasswords(this.checked)">
-              <span>Show passwords</span>
-            </label>
-
+          <!-- Quick Fill Option -->
+          <div class="auth-extras-row" style="justify-content: flex-end;">
             <button type="button" class="quick-fill-btn" onclick="quickFillRegisterProfile()">
               <!-- ICON PLACEHOLDER: Edit src="icons/bolt.svg" below -->
               <img src="icons/bolt.svg" alt="" style="width:12px;height:12px;"
@@ -293,44 +298,25 @@
   </main>
 
   <script>
-    // Toggle Single Password Visibility
-    function togglePasswordVisibility(fieldId, btn) {
-      const field = document.getElementById(fieldId);
-      if (!field) return;
-
-      if (field.type === 'password') {
-        field.type = 'text';
-        if (btn) btn.textContent = 'Hide';
-      } else {
-        field.type = 'password';
-        if (btn) btn.textContent = 'Show';
-      }
-    }
-
-    // Toggle Both Passwords Visibility via Checkbox
-    function toggleBothPasswords(show) {
-      const pwd1 = document.getElementById('regPassword');
-      const pwd2 = document.getElementById('regRepeatPassword');
-      const btn1 = document.getElementById('showCreatePwdToggle');
-      const btn2 = document.getElementById('showRepeatPwdToggle');
-
-      if (pwd1) {
-        pwd1.type = show ? 'text' : 'password';
-        if (btn1) btn1.textContent = show ? 'Hide' : 'Show';
-      }
-      if (pwd2) {
-        pwd2.type = show ? 'text' : 'password';
-        if (btn2) btn2.textContent = show ? 'Hide' : 'Show';
-      }
+    // Toggle Password Visibility with Eye Icon
+    function togglePasswordEye(btn, inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const isPwd = input.type === 'password';
+      input.type = isPwd ? 'text' : 'password';
+      btn.setAttribute('aria-label', isPwd ? 'Hide password' : 'Show password');
+      btn.innerHTML = isPwd
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
     }
 
     // Quick Fill Register Profile
     function quickFillRegisterProfile() {
       document.getElementById('regFullName').value = 'Kriz Bonifacio';
-      document.getElementById('regStudentId').value = '2023-0142';
+      document.getElementById('regStudentId').value = '24-00909';
       document.getElementById('regProgram').value = 'BS in Civil Engineering';
       document.getElementById('regYearLevel').value = '4th Year';
-      document.getElementById('regEmail').value = 'kriz.bonifacio@csu.edu.ph';
+      document.getElementById('regEmail').value = 'kriz@gmail.com';
       document.getElementById('regPassword').value = 'alertoDRRM2026';
       document.getElementById('regRepeatPassword').value = 'alertoDRRM2026';
     }

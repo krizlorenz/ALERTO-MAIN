@@ -175,21 +175,21 @@
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                   </span>
-                  <input type="password" id="adminUserPassword" class="portal-text-input"
+                  <input type="password" id="adminUserPassword" class="portal-text-input has-eye"
                     placeholder="Enter your password" required autocomplete="current-password">
-                  <button type="button" class="show-password-btn" id="showPwdToggle"
-                    onclick="togglePasswordVisibility()">Show</button>
+                  <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'adminUserPassword')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
                 </div>
               </div>
 
-              <!-- Options Row: Remember Me & Forgot Password -->
-              <div class="login-options-row">
-                <label class="remember-label">
-                  <input type="checkbox" id="rememberMeCheckbox" checked>
-                  <span>Remember me</span>
-                </label>
+              <!-- Options Row: Forgot Password -->
+              <div class="login-options-row" style="justify-content: flex-end;">
                 <a href="javascript:void(0)"
-                  onclick="alert('Password reset instructions will be sent to your institutional email.')"
+                  onclick="alert('Password reset instructions will be sent to your email address.')"
                   class="forgot-link">Forgot password?</a>
               </div>
 
@@ -221,7 +221,8 @@
                 <div class="role-switch-centered">
                   <a href="user-login.html" class="role-switch-pill student-pill">
                     <!-- ICON PLACEHOLDER: Edit src="icons/user.svg" below -->
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
@@ -248,19 +249,16 @@
   </div>
 
   <script>
-    // Toggle Password Visibility
-    function togglePasswordVisibility() {
-      const pwdInput = document.getElementById('adminUserPassword');
-      const toggleBtn = document.getElementById('showPwdToggle');
-      if (!pwdInput || !toggleBtn) return;
-
-      if (pwdInput.type === 'password') {
-        pwdInput.type = 'text';
-        toggleBtn.textContent = 'Hide';
-      } else {
-        pwdInput.type = 'password';
-        toggleBtn.textContent = 'Show';
-      }
+    // Toggle Password Visibility with Eye Icon
+    function togglePasswordEye(btn, inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const isPwd = input.type === 'password';
+      input.type = isPwd ? 'text' : 'password';
+      btn.setAttribute('aria-label', isPwd ? 'Hide password' : 'Show password');
+      btn.innerHTML = isPwd
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
     }
 
     // Handle Sign In Submit

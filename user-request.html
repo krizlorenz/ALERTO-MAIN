@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,23 +9,27 @@
   <!-- Google Fonts: Poppins & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
 
   <!-- Interactive Map Engine (Supports Google Maps Tiles & Live Pinning) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
   <!-- Core Stylesheets -->
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/components.css">
   <link rel="stylesheet" href="assets/css/student.css">
 </head>
+
 <body>
 
   <main class="request-page-wrapper">
-    
+
     <!-- Centered Assistance Request Card Container (Crisp White Theme) -->
     <div class="request-card-container">
-      
+
       <!-- Card Top Crisp White Header -->
       <div class="request-header">
         <div class="auth-header-top-row">
@@ -42,49 +47,54 @@
 
       <!-- Assistance Request Form Body -->
       <form class="request-form-body" id="assistanceRequestForm" onsubmit="handleRequestSubmit(event)">
-        
+
         <!-- =============================================================
              A. RESOURCE REQUESTED (Single-Column List with Side Others Field)
              ============================================================= -->
         <div class="form-field-group">
           <label class="form-label">
-            <span>Resource Requested</span>
-            <span class="form-label-tag">Select all needed</span>
+            <span>Request Resources (Select all that apply).</span>
           </label>
 
           <div class="resource-cards-list">
-            
+
             <!-- 1. Food -->
             <label class="resource-row-card" id="cardFood">
-              <input type="checkbox" name="resources" value="Food" id="chkFood" onchange="toggleRowCard('cardFood', this)">
+              <input type="checkbox" name="resources" value="Food" id="chkFood"
+                onchange="toggleRowCard('cardFood', this)">
               <span class="resource-label-text">Food</span>
             </label>
 
             <!-- 2. Water -->
             <label class="resource-row-card" id="cardWater">
-              <input type="checkbox" name="resources" value="Water" id="chkWater" onchange="toggleRowCard('cardWater', this)">
+              <input type="checkbox" name="resources" value="Water" id="chkWater"
+                onchange="toggleRowCard('cardWater', this)">
               <span class="resource-label-text">Water</span>
             </label>
 
             <!-- 3. Medicine -->
             <label class="resource-row-card" id="cardMedicine">
-              <input type="checkbox" name="resources" value="Medicine" id="chkMedicine" onchange="toggleRowCard('cardMedicine', this)">
+              <input type="checkbox" name="resources" value="Medicine" id="chkMedicine"
+                onchange="toggleRowCard('cardMedicine', this)">
               <span class="resource-label-text">Medicine</span>
             </label>
 
             <!-- 4. Transportation -->
             <label class="resource-row-card" id="cardTransport">
-              <input type="checkbox" name="resources" value="Transportation" id="chkTransport" onchange="toggleRowCard('cardTransport', this)">
+              <input type="checkbox" name="resources" value="Transportation" id="chkTransport"
+                onchange="toggleRowCard('cardTransport', this)">
               <span class="resource-label-text">Transportation</span>
             </label>
 
             <!-- 5. Others (specify): [ inline input on side ] -->
             <div class="resource-row-card others-row-card" id="cardOthers">
               <label class="others-check-label">
-                <input type="checkbox" name="resources" value="Others" id="chkOthers" onchange="toggleRowCard('cardOthers', this)">
+                <input type="checkbox" name="resources" value="Others" id="chkOthers"
+                  onchange="toggleRowCard('cardOthers', this)">
                 <span class="resource-label-text">Others (specify):</span>
               </label>
-              <input type="text" id="othersSpecifyText" class="others-inline-input" placeholder="Specify items (e.g. hygiene kit, blankets)">
+              <input type="text" id="othersSpecifyText" class="others-inline-input"
+                placeholder="Specify items (e.g. hygiene kit, blankets)">
             </div>
 
           </div>
@@ -100,7 +110,7 @@
           </label>
 
           <div class="google-map-widget-card">
-            
+
             <!-- Map Control Header -->
             <div class="google-map-control-bar">
               <div class="map-location-badge">
@@ -108,8 +118,10 @@
               </div>
               <button type="button" class="gps-locate-btn" onclick="useCurrentGoogleGPS()">
                 <!-- ICON PLACEHOLDER: Edit src="icons/crosshair.svg" below -->
-                <img src="icons/crosshair.svg" alt="" style="width:12px;height:12px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:none;width:12px;height:12px;">
+                <img src="icons/crosshair.svg" alt="" style="width:12px;height:12px;"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  style="display:none;width:12px;height:12px;">
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="22" y1="12" x2="18" y2="12"></line>
                   <line x1="6" y1="12" x2="2" y2="12"></line>
@@ -125,14 +137,18 @@
 
             <!-- Enlarged Landmark & Specific Address Input -->
             <div class="landmark-large-container">
-              <label for="locationLandmark" class="landmark-large-label">Specific Landmark / House Description / Street Address</label>
-              <input type="text" id="locationLandmark" class="landmark-large-input" placeholder="e.g. Yellow 2-Story House, Purok 3, Near CSU Carig Gate 2, Carig Sur" required>
+              <label for="locationLandmark" class="landmark-large-label">Specific Landmark / House Description / Street
+                Address</label>
+              <input type="text" id="locationLandmark" class="landmark-large-input"
+                placeholder="e.g. Yellow 2-Story House, Purok 3, Near CSU Carig Gate 2, Carig Sur" required>
             </div>
 
             <div class="map-pin-note">
               <!-- ICON PLACEHOLDER: Edit src="icons/info.svg" below -->
-              <img src="icons/info.svg" alt="" style="width:13px;height:13px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;width:13px;height:13px;">
+              <img src="icons/info.svg" alt="" style="width:13px;height:13px;"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                style="display:none;width:13px;height:13px;">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="16" x2="12" y2="12"></line>
                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -151,16 +167,21 @@
             <span>Emergency Message Explanation</span>
           </label>
 
-          <textarea id="emergencyMessage" class="emergency-textarea" placeholder="Explain your current emergency situation, immediate needs, or condition..." required></textarea>
+          <textarea id="emergencyMessage" class="emergency-textarea"
+            placeholder="Explain your current emergency situation, immediate needs, or condition..."
+            required></textarea>
         </div>
 
         <!-- Quick Fill Sample Request Button -->
         <div class="auth-extras-row">
-          <span style="font-size: var(--fs-2xs); color: var(--admin-muted);">All information is transmitted directly to COEA DRRM Council.</span>
+          <span style="font-size: var(--fs-2xs); color: var(--admin-muted);">All information is transmitted directly to
+            COEA DRRM Council.</span>
           <button type="button" class="quick-fill-btn" onclick="quickFillAssistanceRequest()">
             <!-- ICON PLACEHOLDER: Edit src="icons/bolt.svg" below -->
-            <img src="icons/bolt.svg" alt="" style="width:12px;height:12px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+            <img src="icons/bolt.svg" alt="" style="width:12px;height:12px;"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              style="display:none;">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
             </svg>
             <span>Fill Sample Request</span>
@@ -175,11 +196,14 @@
       </form>
 
       <!-- Security Protocol Footer -->
-      <div style="padding: 14px var(--space-8) var(--space-6); background: #ffffff; border-top: 1px solid rgba(112, 13, 35, 0.08); text-align: center;">
+      <div
+        style="padding: 14px var(--space-8) var(--space-6); background: #ffffff; border-top: 1px solid rgba(112, 13, 35, 0.08); text-align: center;">
         <div class="security-badge" style="justify-content: center;">
           <!-- ICON PLACEHOLDER: Edit src="icons/shield-check.svg" below -->
-          <img src="icons/shield-check.svg" alt="" style="width:14px;height:14px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+          <img src="icons/shield-check.svg" alt="" style="width:14px;height:14px;"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            style="display:none;">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
           </svg>
           <span>COEA-SC DRRM Operations Security Standard</span>
@@ -191,7 +215,8 @@
   </main>
 
   <!-- Interactive Map Library with Google Tiles -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <script>
     // Toggle Selected State on Card
@@ -241,13 +266,13 @@
       }).addTo(gMap);
 
       // Update coordinates on Pin Drag
-      gMarker.on('dragend', function(e) {
+      gMarker.on('dragend', function (e) {
         const pos = gMarker.getLatLng();
         updatePinnedLocation(pos.lat, pos.lng);
       });
 
       // Drop pin immediately wherever the student clicks on the map
-      gMap.on('click', function(e) {
+      gMap.on('click', function (e) {
         gMarker.setLatLng(e.latlng);
         updatePinnedLocation(e.latlng.lat, e.latlng.lng);
       });
@@ -267,7 +292,7 @@
           (position) => {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-            
+
             gMap.setView([lat, lng], 17);
             gMarker.setLatLng([lat, lng]);
             updatePinnedLocation(lat, lng);
@@ -288,7 +313,7 @@
     function quickFillAssistanceRequest() {
       document.getElementById('chkFood').checked = true;
       document.getElementById('cardFood').classList.add('selected');
-      
+
       document.getElementById('chkWater').checked = true;
       document.getElementById('cardWater').classList.add('selected');
 
@@ -321,4 +346,5 @@
     }
   </script>
 </body>
+
 </html>

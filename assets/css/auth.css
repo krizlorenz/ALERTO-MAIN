@@ -441,6 +441,50 @@
   text-decoration: underline;
 }
 
+/* Eye Icon Password Visibility Toggle */
+.password-eye-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--admin-muted);
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  z-index: 5;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  width: 32px;
+  height: 32px;
+}
+
+.password-eye-toggle-btn:hover {
+  color: #352264;
+  background: rgba(53, 34, 100, 0.08);
+}
+
+.student-theme .password-eye-toggle-btn:hover {
+  color: #700d23;
+  background: rgba(112, 13, 35, 0.08);
+}
+
+.password-eye-toggle-btn svg {
+  width: 18px !important;
+  height: 18px !important;
+  stroke: currentColor;
+}
+
+.portal-text-input.has-eye,
+.auth-input.has-eye {
+  padding-right: 44px !important;
+}
+
 .login-options-row {
   display: flex;
   align-items: center;
