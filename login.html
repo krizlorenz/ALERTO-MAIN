@@ -14,24 +14,35 @@
     rel="stylesheet">
 
   <!-- Core Stylesheets -->
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/auth.css">
+  <link rel="stylesheet" href="assets/css/main.css?v=2.2">
+  <link rel="stylesheet" href="assets/css/components.css?v=2.2">
+  <link rel="stylesheet" href="assets/css/auth.css?v=2.2">
 </head>
 
 <body>
 
   <div class="login-page-wrapper">
 
+    <!-- Top Navigation Header -->
+    <header class="login-top-bar">
+      <div class="login-top-bar-inner">
+        <a href="login.html" class="login-brand-lockup">
+          <img src="logo/admin-main-logo.png" alt="ALERTO Admin Logo" class="login-brand-logo">
+          <div class="login-brand-texts">
+            <span class="login-brand-title">ALERTO</span>
+            <span class="login-brand-sub">CSU-COEA</span>
+          </div>
+        </a>
+      </div>
+    </header>
+
     <!-- Main Center Split Container -->
     <div class="login-main-container">
       <div class="login-split-grid">
 
-        <!-- ===============================================================
-             LEFT SIDE: Welcome Hero Copy & 4 Action Features
-             =============================================================== -->
+        <!-- Left Hero Content -->
         <div class="login-hero-content">
-          <span class="login-eyebrow-tag">Official platform</span>
+          <span class="login-eyebrow-tag">Admin Portal</span>
 
           <h1 class="login-hero-heading">
             Welcome to
@@ -44,70 +55,29 @@
             and respond.
           </p>
 
-          <!-- 4 Feature Icons Row -->
+          <!-- Feature Icons -->
           <div class="login-features-row">
 
-            <!-- 1. Request Assistance -->
+            <!-- Request Assistance -->
             <div class="feature-item-col">
-              <!-- ICON PLACEHOLDER: Edit src="icons/assistance.svg" below -->
               <div class="feature-icon-circle" aria-hidden="true">
-                <img src="icons/assistance.svg" alt=""
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                  <path d="M9 12l2 2 4-4"></path>
-                </svg>
+                <img src="icons/admin-login-icons/admin-req-icon.png" alt="Request Assistance">
               </div>
               <span class="feature-item-label">Request<br>Assistance</span>
             </div>
 
-            <!-- 2. Official Advisories -->
+            <!-- Relief Resources -->
             <div class="feature-item-col">
-              <!-- ICON PLACEHOLDER: Edit src="icons/advisories.svg" below -->
               <div class="feature-icon-circle" aria-hidden="true">
-                <img src="icons/advisories.svg" alt=""
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
-                  <path d="M3 11l18-5v12L3 13v-2z"></path>
-                  <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path>
-                </svg>
-              </div>
-              <span class="feature-item-label">Official<br>Advisories</span>
-            </div>
-
-            <!-- 3. Relief Resources -->
-            <div class="feature-item-col">
-              <!-- ICON PLACEHOLDER: Edit src="icons/relief.svg" below -->
-              <div class="feature-icon-circle" aria-hidden="true">
-                <img src="icons/relief.svg" alt=""
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
-                  <path
-                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-                  </path>
-                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                </svg>
+                <img src="icons/admin-login-icons/admin-relief-icon.png" alt="Relief Resources">
               </div>
               <span class="feature-item-label">Relief<br>Resources</span>
             </div>
 
-            <!-- 4. Community Support -->
+            <!-- Community Support -->
             <div class="feature-item-col">
-              <!-- ICON PLACEHOLDER: Edit src="icons/support.svg" below -->
               <div class="feature-icon-circle" aria-hidden="true">
-                <img src="icons/support.svg" alt=""
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
+                <img src="icons/admin-login-icons/admin-community-icon.png" alt="Community Support">
               </div>
               <span class="feature-item-label">Community<br>Support</span>
             </div>
@@ -115,23 +85,14 @@
           </div>
         </div>
 
-        <!-- ===============================================================
-             RIGHT SIDE: Floating Admin Portal Login Card
-             =============================================================== -->
+        <!-- Right Login Card -->
         <div>
           <div class="login-portal-card">
 
             <!-- Card Header -->
             <div class="portal-card-header">
-              <!-- ICON PLACEHOLDER: Edit src="icons/admin-avatar.svg" below -->
               <div class="portal-avatar-circle" aria-hidden="true">
-                <img src="icons/admin-avatar.svg" alt=""
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+                <img src="icons/user_admin_login_icon/admin-login.png" alt="Admin Portal">
               </div>
               <div class="portal-title-block">
                 <h2>Admin Portal</h2>
@@ -146,7 +107,6 @@
               <div class="input-group">
                 <label for="adminUserEmail" class="input-label">Email or Username</label>
                 <div class="input-container">
-                  <!-- ICON PLACEHOLDER: Edit src="icons/email.svg" below -->
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/email.svg" alt=""
                       onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -165,7 +125,6 @@
               <div class="input-group">
                 <label for="adminUserPassword" class="input-label">Password</label>
                 <div class="input-container">
-                  <!-- ICON PLACEHOLDER: Edit src="icons/lock.svg" below -->
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/lock.svg" alt=""
                       onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -175,10 +134,14 @@
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                   </span>
-                  <input type="password" id="adminUserPassword" class="portal-text-input"
+                  <input type="password" id="adminUserPassword" class="portal-text-input has-eye"
                     placeholder="Enter your password" required autocomplete="current-password">
-                  <button type="button" class="show-password-btn" id="showPwdToggle"
-                    onclick="togglePasswordVisibility()">Show</button>
+                  <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'adminUserPassword')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
                 </div>
               </div>
 
@@ -200,7 +163,6 @@
 
               <!-- Security Notice Box -->
               <div class="portal-restricted-box">
-                <!-- ICON PLACEHOLDER: Edit src="icons/lock-small.svg" below -->
                 <img src="icons/lock-small.svg" alt="" class="restricted-lock-icon"
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <svg class="restricted-lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -213,9 +175,18 @@
                 </span>
               </div>
 
-              <!-- Switch to Registration Page -->
-              <div class="register-switch-link">
-                First time logging in? <a href="register.html">Sign in</a>
+              <!-- Centered Card Footer Options -->
+              <div class="login-card-footer-stack">
+                <div class="role-switch-centered">
+                  <a href="user-login.php" class="role-switch-pill student-pill">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                      stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>Login as Student &rarr;</span>
+                  </a>
+                </div>
               </div>
 
             </form>
@@ -236,31 +207,28 @@
   </div>
 
   <script>
-    // Toggle Password Visibility
-    function togglePasswordVisibility() {
-      const pwdInput = document.getElementById('adminUserPassword');
-      const toggleBtn = document.getElementById('showPwdToggle');
-      if (!pwdInput || !toggleBtn) return;
-
-      if (pwdInput.type === 'password') {
-        pwdInput.type = 'text';
-        toggleBtn.textContent = 'Hide';
-      } else {
-        pwdInput.type = 'password';
-        toggleBtn.textContent = 'Show';
-      }
+    // Toggle Password Visibility with Eye Icon
+    function togglePasswordEye(btn, inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const isPwd = input.type === 'password';
+      input.type = isPwd ? 'text' : 'password';
+      btn.setAttribute('aria-label', isPwd ? 'Hide password' : 'Show password');
+      btn.innerHTML = isPwd
+        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
+        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
     }
 
     // Handle Sign In Submit
     function handleAdminSignIn(event) {
       event.preventDefault();
       const submitBtn = document.getElementById('loginSubmitBtn');
-      submitBtn.textContent = 'Signing in...';
+      submitBtn.innerHTML = '<span>Signing in...</span>';
       submitBtn.style.opacity = '0.85';
       submitBtn.disabled = true;
 
       setTimeout(() => {
-        submitBtn.textContent = 'Success! Opening Portal...';
+        submitBtn.innerHTML = '<span>Success! Opening Portal...</span>';
         submitBtn.style.background = '#1e6b37';
         setTimeout(() => {
           window.location.href = 'index.html';

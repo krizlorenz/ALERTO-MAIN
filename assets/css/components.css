@@ -1,10 +1,6 @@
-/* ==========================================================================
-   ALERTO - Components (Royal Purple Navbar with Subtle Lines, Status Badges)
-   ========================================================================== */
+/* ALERTO - Shared Components */
 
-/* --------------------------------------------------------------------------
-   1. Navbar (Royal Purple #352264 with Subtle Hairline Grid Overlay)
-   -------------------------------------------------------------------------- */
+/* Navbar */
 .navbar {
   background-color: #352264;
   background-image:
@@ -21,7 +17,6 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Subtle Bottom Hairline Accent */
 .navbar::after {
   content: "";
   position: absolute;
@@ -74,23 +69,25 @@
 }
 
 .brand .logo-container {
-  width: 42px;
-  height: 42px;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
+  width: 52px;
+  height: 52px;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
 }
 
 .brand .logo-img {
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 52px;
+  max-height: 52px;
   object-fit: contain;
+  display: block;
 }
 
 .brand .logo-placeholder {
@@ -128,7 +125,6 @@
   margin-top: 2px;
 }
 
-/* Nav Menu Pushed to Far Right Edge */
 .main-nav {
   display: none;
   align-items: center;
@@ -170,7 +166,6 @@
   border: 1px solid rgba(255, 255, 255, 0.28);
 }
 
-/* Targets the logout link in the main navbar */
 .main-nav a.nav-logout-btn {
   color: #ff6b6b !important;
   font-weight: 600;
@@ -181,25 +176,25 @@
   background-color: rgba(255, 107, 107, 0.12) !important;
 }
 
-/* --------------------------------------------------------------------------
-   2. Modern Animated Hamburger Toggle
-   -------------------------------------------------------------------------- */
+/* Hamburger Toggle */
 .menu-toggle {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 5px;
-  width: 42px;
-  height: 42px;
-  padding: 8px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
   background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: var(--radius-sm);
   cursor: pointer;
   margin-left: auto;
   position: relative;
-  transition: all var(--transition-fast);
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 @media (min-width: 860px) {
@@ -210,11 +205,12 @@
 
 .menu-toggle:hover {
   background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.38);
 }
 
 .menu-toggle:active {
-  transform: scale(0.94);
+  transform: scale(0.92);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .menu-toggle span {
@@ -222,30 +218,34 @@
   height: 2.5px;
   background: #ffffff;
   border-radius: var(--radius-pill);
-  transition: transform var(--transition-spring), width var(--transition-spring), opacity var(--transition-fast), background-color var(--transition-fast);
+  transition: transform 0.26s cubic-bezier(0.34, 1.56, 0.64, 1),
+              width 0.22s ease,
+              opacity 0.2s ease,
+              background-color 0.2s ease;
+  transform-origin: center;
 }
 
 .menu-toggle span:nth-child(1) {
-  width: 20px;
+  width: 22px;
 }
 
 .menu-toggle span:nth-child(2) {
-  width: 14px;
+  width: 15px;
 }
 
 .menu-toggle span:nth-child(3) {
-  width: 20px;
+  width: 22px;
 }
 
-/* Modern Morphing Active State */
 .menu-toggle.active {
   background: #5e35d8;
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 14px rgba(94, 53, 216, 0.35);
 }
 
 .menu-toggle.active span {
   background: #ffffff;
-  width: 20px;
+  width: 22px;
 }
 
 .menu-toggle.active span:nth-child(1) {
@@ -261,26 +261,27 @@
   transform: translateY(-7.5px) rotate(-45deg);
 }
 
-/* Royal Purple Mobile Dropdown Nav */
+/* Mobile Nav Menu */
 .mobile-nav-menu {
   display: none;
-  background: #352264;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  padding: var(--space-4);
-  box-shadow: 0 16px 40px rgba(35, 20, 65, 0.3);
+  background: rgba(45, 28, 84, 0.98);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  box-shadow: 0 20px 40px rgba(15, 8, 30, 0.45);
 }
 
 .mobile-nav-menu.active {
   display: block;
-  animation: slideDown 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideDown 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -290,18 +291,48 @@
 .mobile-nav-menu ul {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .mobile-nav-menu a {
   display: flex;
   align-items: center;
-  padding: var(--space-3) var(--space-4);
+  gap: 12px;
+  padding: 11px 16px;
+  min-height: 48px;
   font-size: var(--fs-base);
   font-weight: 500;
   color: rgba(255, 255, 255, 0.88);
   border-radius: var(--radius-md);
+  text-decoration: none;
   transition: all var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-nav-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.mobile-nav-badge {
+  margin-left: auto;
+  font-size: var(--fs-2xs);
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+}
+
+.mobile-nav-menu a:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  transform: translateX(3px);
 }
 
 .mobile-nav-menu a:active,
@@ -309,12 +340,34 @@
   background: rgba(255, 255, 255, 0.18);
   color: #ffffff;
   font-weight: 700;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* --------------------------------------------------------------------------
-   3. Distinct Institutional Status Badges (Non-AI, Clear Distinction)
-   -------------------------------------------------------------------------- */
+.mobile-nav-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin: 4px 8px;
+  list-style: none;
+}
+
+.mobile-nav-logout-btn {
+  color: #ff7b7b !important;
+  font-weight: 600 !important;
+  background: rgba(255, 107, 107, 0.1) !important;
+  border: 1px solid rgba(255, 107, 107, 0.2) !important;
+}
+
+.mobile-nav-logout-btn:hover {
+  background: rgba(255, 107, 107, 0.2) !important;
+  color: #ff5252 !important;
+}
+
+.mobile-nav-logout-btn .mobile-nav-icon {
+  stroke: #ff7b7b;
+}
+
+/* Status Pills */
 .status-pill {
   display: inline-flex;
   align-items: center;
@@ -336,7 +389,6 @@
   flex-shrink: 0;
 }
 
-/* 1. Pending (Warm Ochre / Amber Muted) */
 .status-pill.warning,
 .status-pill.pending {
   background-color: var(--status-pending-bg);
@@ -349,7 +401,6 @@
   background-color: var(--status-pending-dot);
 }
 
-/* 2. Approved (Pine / Forest Sage) */
 .status-pill.success,
 .status-pill.approved {
   background-color: var(--status-approved-bg);
@@ -362,7 +413,6 @@
   background-color: var(--status-approved-dot);
 }
 
-/* 3. In Progress (Slate Indigo / Dusk Violet) */
 .status-pill.purple,
 .status-pill.in-progress {
   background-color: var(--status-progress-bg);
@@ -375,7 +425,6 @@
   background-color: var(--status-progress-dot);
 }
 
-/* 4. Completed (Emerald Teal) */
 .status-pill.info,
 .status-pill.completed {
   background-color: var(--status-completed-bg);
@@ -388,20 +437,20 @@
   background-color: var(--status-completed-dot);
 }
 
-/* 5. Rejected (Burgundy / Crimson Rose) */
 .status-pill.danger,
-.status-pill.rejected {
+.status-pill.rejected,
+.status-pill.cancelled {
   background-color: var(--status-rejected-bg);
   color: var(--status-rejected-text);
   border: 1px solid var(--status-rejected-border);
 }
 
 .status-pill.danger::before,
-.status-pill.rejected::before {
+.status-pill.rejected::before,
+.status-pill.cancelled::before {
   background-color: var(--status-rejected-dot);
 }
 
-/* 6. Banned (Muted Charcoal / Deep Slate) */
 .status-pill.dark,
 .status-pill.banned {
   background-color: var(--status-banned-bg);
@@ -414,70 +463,75 @@
   background-color: var(--status-banned-dot);
 }
 
-/* --------------------------------------------------------------------------
-   4. Stat Card Icon Slots
-   -------------------------------------------------------------------------- */
+/* Stat Icon Slots */
 .stat-icon-slot {
   width: 38px;
   height: 38px;
-  border-radius: var(--radius-xs);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  border: none;
 }
 
 .stat-icon-slot img {
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
   object-fit: contain;
+  display: block;
 }
 
 .stat-icon-slot svg {
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
 }
 
 .stat-icon-slot.icon-purple {
-  background: var(--status-progress-bg);
-  color: var(--status-progress-text);
-  border: 1px solid var(--status-progress-border);
+  background: #7c6bb0;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(124, 107, 176, 0.24);
 }
 
 .stat-icon-slot.icon-warning {
-  background: var(--status-pending-bg);
-  color: var(--status-pending-text);
-  border: 1px solid var(--status-pending-border);
+  background: #b3884f;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(179, 136, 79, 0.24);
 }
 
 .stat-icon-slot.icon-success {
-  background: var(--status-approved-bg);
-  color: var(--status-approved-text);
-  border: 1px solid var(--status-approved-border);
+  background: #5c9477;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(92, 148, 119, 0.24);
 }
 
 .stat-icon-slot.icon-danger {
-  background: var(--status-rejected-bg);
-  color: var(--status-rejected-text);
-  border: 1px solid var(--status-rejected-border);
+  background: #a86376;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(168, 99, 118, 0.24);
 }
 
 .stat-icon-slot.icon-info {
-  background: var(--status-completed-bg);
-  color: var(--status-completed-text);
-  border: 1px solid var(--status-completed-border);
+  background: #5b939f;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(91, 147, 159, 0.24);
+}
+
+.stat-icon-slot.icon-primary {
+  background: #687cb0;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(104, 124, 176, 0.24);
 }
 
 .stat-icon-slot.icon-dark {
-  background: var(--status-banned-bg);
-  color: var(--status-banned-text);
-  border: 1px solid var(--status-banned-border);
+  background: #615a6f;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(97, 90, 111, 0.24);
 }
 
-/* --------------------------------------------------------------------------
-   5. Wavy Violet Footer
-   -------------------------------------------------------------------------- */
+/* Footer */
 .site-footer-wrapper {
   margin-top: auto;
   position: relative;
@@ -495,7 +549,7 @@
   position: relative;
   display: block;
   width: calc(100% + 1.3px);
-  height: 50px;
+  height: 38px;
 }
 
 @media (min-width: 768px) {
@@ -507,52 +561,89 @@
 .site-footer {
   background: transparent;
   color: rgba(255, 255, 255, 0.88);
-  padding-bottom: var(--space-8);
+  padding: 16px 0 24px 0;
+}
+
+@media (min-width: 768px) {
+  .site-footer {
+    padding: 24px 0 var(--space-8) 0;
+  }
 }
 
 .footer-main-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-8);
-  padding: var(--space-4) 0 var(--space-8) 0;
+  gap: 20px;
+  padding: 4px 0 16px 0;
 }
 
 @media (min-width: 768px) {
   .footer-main-grid {
     grid-template-columns: 1.8fr 1fr;
     gap: var(--space-12);
+    padding: var(--space-4) 0 var(--space-8) 0;
   }
 }
 
 .footer-brand-col {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: 12px;
   max-width: 500px;
+}
+
+@media (min-width: 768px) {
+  .footer-brand-col {
+    gap: var(--space-4);
+  }
 }
 
 .footer-brand-row {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 10px;
+}
+
+@media (min-width: 768px) {
+  .footer-brand-row {
+    gap: var(--space-3);
+  }
 }
 
 .footer-logo-box {
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.14);
+  width: 42px;
+  height: 42px;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .footer-logo-box {
+    width: 50px;
+    height: 50px;
+  }
 }
 
 .footer-logo-img {
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 42px;
+  max-height: 42px;
   object-fit: contain;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .footer-logo-img {
+    max-width: 50px;
+    max-height: 50px;
+  }
 }
 
 .footer-logo-placeholder {
@@ -568,11 +659,17 @@
 }
 
 .footer-brand-text .footer-brand-title {
-  font-size: var(--fs-lg);
+  font-size: 1.2rem;
   font-weight: 800;
   color: #ffffff;
   line-height: 1.05;
   font-family: var(--heading-font);
+}
+
+@media (min-width: 768px) {
+  .footer-brand-text .footer-brand-title {
+    font-size: var(--fs-lg);
+  }
 }
 
 .footer-brand-text .footer-brand-subtitle {
@@ -582,33 +679,56 @@
 }
 
 .footer-description {
-  font-size: var(--fs-sm);
+  font-size: 0.82rem;
   color: rgba(255, 255, 255, 0.78);
-  line-height: 1.6;
+  line-height: 1.55;
+}
+
+@media (min-width: 768px) {
+  .footer-description {
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+  }
 }
 
 .footer-social-row {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  margin-top: var(--space-2);
+  gap: 10px;
+  margin-top: 2px;
+}
+
+@media (min-width: 768px) {
+  .footer-social-row {
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
 }
 
 .social-circle-btn {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
+  background: #4a2b8a;
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
   transition: all var(--transition-fast);
+  touch-action: manipulation;
 }
 
 .social-circle-btn:hover {
-  background: #5e35d8;
+  background: #6536e4;
+  border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(101, 54, 228, 0.4);
+}
+
+.social-circle-btn:active {
+  transform: scale(0.92);
 }
 
 .social-circle-btn svg {
@@ -617,27 +737,61 @@
   fill: currentColor;
 }
 
+.social-circle-btn img,
+.social-circle-btn .footer-social-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+
 .footer-links-col h4 {
-  font-size: var(--fs-base);
+  font-size: 0.95rem;
   font-weight: 700;
   color: #ffffff;
-  margin-bottom: var(--space-4);
+  margin-bottom: 10px;
   position: relative;
   letter-spacing: -0.01em;
+}
+
+@media (min-width: 768px) {
+  .footer-links-col h4 {
+    font-size: var(--fs-base);
+    margin-bottom: var(--space-4);
+  }
 }
 
 .footer-nav-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .footer-nav-list {
+    gap: var(--space-3);
+  }
 }
 
 .footer-nav-list a {
   color: rgba(255, 255, 255, 0.78);
-  font-size: var(--fs-sm);
+  font-size: 0.85rem;
   transition: color var(--transition-fast), transform var(--transition-fast);
-  display: inline-block;
-  padding: 2px 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 0;
+  min-height: 32px;
+  text-decoration: none;
+}
+
+@media (min-width: 768px) {
+  .footer-nav-list a {
+    font-size: var(--fs-sm);
+    padding: 2px 0;
+  }
 }
 
 .footer-nav-list a:hover {
@@ -645,9 +799,8 @@
   transform: translateX(4px);
 }
 
-/* Footer Quick Links Logout Button */
 .footer-nav-list a.footer-logout-btn {
-  color: #ff6b6b !important;
+  color: #ff7b7b !important;
   font-weight: 600;
 }
 
@@ -658,20 +811,23 @@
 
 .footer-bottom-bar {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: var(--space-6);
+  padding-top: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-2);
-  font-size: var(--fs-2xs);
+  gap: 6px;
+  font-size: 0.72rem;
   color: rgba(255, 255, 255, 0.6);
   text-align: center;
 }
 
 @media (min-width: 640px) {
   .footer-bottom-bar {
+    padding-top: var(--space-6);
     flex-direction: row;
     text-align: left;
+    gap: var(--space-2);
+    font-size: var(--fs-2xs);
   }
 }

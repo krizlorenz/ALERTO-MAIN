@@ -1,11 +1,6 @@
-/* ==========================================================================
-   ALERTO - Responsive Panoramic Hero & Clickable Operations Boards
-   Clean Pure White Hero Canvas Matching Institutional Reference
-   ========================================================================== */
+/* ALERTO - Landing & Dashboard Styles */
 
-/* --------------------------------------------------------------------------
-   1. Hero Section (Clean White Background with Big Focused COEA Building)
-   -------------------------------------------------------------------------- */
+/* Hero Section */
 .hero {
   position: relative;
   width: 100%;
@@ -30,18 +25,24 @@
   }
 }
 
-/* Background Media Container (Houses COEA Building) */
+/* Background Media */
 .hero-bg-media {
   position: relative;
   width: 100%;
-  height: 330px;
+  height: 220px;
   overflow: hidden;
   background-color: #f6f3fb;
 }
 
+@media (min-width: 480px) {
+  .hero-bg-media {
+    height: 260px;
+  }
+}
+
 @media (min-width: 640px) {
   .hero-bg-media {
-    height: 390px;
+    height: 340px;
   }
 }
 
@@ -56,13 +57,12 @@
   }
 }
 
-/* Focused Framing on Building Facade & Large Readable COEA Lettering */
 .hero-bg-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 8% 62%;
-  transform: scale(1.42);
+  transform: scale(1.35);
   transform-origin: 10% 58%;
   filter: brightness(1.02) contrast(1.02);
   display: block;
@@ -77,7 +77,6 @@
   }
 }
 
-/* Pure White Directional Gradient Overlay (Fades building cleanly into pure white) */
 .hero-gradient-overlay {
   position: absolute;
   top: 0;
@@ -88,7 +87,7 @@
   background: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.1) 45%,
+    rgba(255, 255, 255, 0.08) 40%,
     rgba(255, 255, 255, 0.85) 80%,
     #ffffff 100%
   );
@@ -107,7 +106,7 @@
   }
 }
 
-/* Hero Content Wrapper */
+/* Hero Content */
 .hero-container {
   position: relative;
   z-index: 3;
@@ -176,9 +175,7 @@
   line-height: 1.68;
 }
 
-/* --------------------------------------------------------------------------
-   2. Operations Overview Dashboard (Entire Board Clickable)
-   -------------------------------------------------------------------------- */
+/* Operations Dashboard */
 .dashboard-section {
   padding: var(--space-10) 0 var(--space-16) 0;
   background-color: var(--admin-bg);
@@ -223,7 +220,7 @@
   color: var(--admin-muted);
 }
 
-/* 2-Box Responsive Grid */
+/* Overview Boards Grid */
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -238,20 +235,20 @@
   }
 }
 
-/* Entire Board Clickable Component */
 .overview-board-link {
   display: flex;
   flex-direction: column;
   background-color: var(--admin-surface);
   border: 1.5px solid var(--admin-border);
   border-radius: var(--radius-lg);
-  padding: var(--space-6);
+  padding: 16px;
   box-shadow: var(--shadow-card);
   text-decoration: none;
   color: inherit;
   cursor: pointer;
   position: relative;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
 }
 
 @media (min-width: 768px) {
@@ -276,13 +273,20 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-3);
-  margin-bottom: var(--space-5);
-  padding-bottom: var(--space-4);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--admin-border);
 }
 
+@media (min-width: 768px) {
+  .board-header {
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-4);
+  }
+}
+
 .board-title-group h3 {
-  font-size: var(--fs-md);
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--admin-text);
   margin-bottom: 3px;
@@ -299,8 +303,14 @@
 }
 
 .board-title-group p {
-  font-size: var(--fs-xs);
+  font-size: 0.75rem;
   color: var(--admin-muted);
+}
+
+@media (min-width: 768px) {
+  .board-title-group p {
+    font-size: var(--fs-xs);
+  }
 }
 
 .board-arrow-indicator {
@@ -316,11 +326,10 @@
   transform: translate(2px, -2px);
 }
 
-/* Internal Card Stack inside the Clickable Board */
 .board-cards-stack {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 10px;
 }
 
 @media (min-width: 600px) {
@@ -329,11 +338,11 @@
   }
 }
 
-/* Top Row: Primary Featured Metric */
+/* Stat Cards */
 .top-featured-row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-3);
+  gap: 10px;
 }
 
 @media (min-width: 540px) {
@@ -345,17 +354,15 @@
   }
 }
 
-/* Bottom Breakdown Subgrid */
 .bottom-breakdown-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-3);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
 }
 
-@media (min-width: 480px) {
+@media (min-width: 500px) {
   .bottom-breakdown-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: var(--space-3);
+    gap: 8px;
   }
 }
 
@@ -365,19 +372,26 @@
   }
 }
 
-/* Internal Visual Stat Cards (Hover Animation Preserved) */
 .inner-stat-card {
   background-color: var(--admin-surface);
   border: 1px solid var(--admin-border);
-  border-radius: var(--radius-sm);
-  padding: var(--space-4);
+  border-radius: 10px;
+  padding: 10px 8px;
   box-shadow: var(--shadow-subtle);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 124px;
+  min-height: 98px;
   position: relative;
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+@media (min-width: 501px) {
+  .inner-stat-card {
+    padding: var(--space-4);
+    min-height: 124px;
+    border-radius: var(--radius-sm);
+  }
 }
 
 @media (min-width: 600px) {
@@ -393,11 +407,21 @@
   border-color: var(--admin-border-focus);
 }
 
-/* Top Featured Card Highlight */
+.inner-stat-card:active {
+  transform: scale(0.98);
+}
+
 .inner-stat-card.featured-stat {
   background-color: var(--admin-purple-tint);
   border: 1.5px solid rgba(92, 48, 212, 0.18);
   box-shadow: 0 2px 8px rgba(92, 48, 212, 0.04);
+  padding: 12px 14px;
+}
+
+@media (min-width: 600px) {
+  .inner-stat-card.featured-stat {
+    padding: var(--space-5);
+  }
 }
 
 .inner-stat-card.featured-stat:hover {
@@ -416,15 +440,28 @@
 .stat-card-label-group {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 6px;
+}
+
+@media (min-width: 501px) {
+  .stat-card-label-group {
+    gap: var(--space-3);
+  }
 }
 
 .stat-card-title {
   font-family: var(--body-font);
-  font-size: var(--fs-sm);
+  font-size: 0.68rem;
   font-weight: 600;
   color: var(--admin-text);
-  line-height: 1.2;
+  line-height: 1.15;
+}
+
+@media (min-width: 501px) {
+  .stat-card-title {
+    font-size: var(--fs-sm);
+    line-height: 1.2;
+  }
 }
 
 @media (min-width: 768px) {
@@ -435,12 +472,19 @@
 
 .stat-card-number {
   font-family: var(--heading-font);
-  font-size: 2.1rem;
+  font-size: 1.45rem;
   font-weight: 800;
   color: var(--admin-purple-dark);
   line-height: 1;
-  margin-bottom: var(--space-2);
+  margin-bottom: 2px;
   letter-spacing: -0.02em;
+}
+
+@media (min-width: 501px) {
+  .stat-card-number {
+    font-size: 2.1rem;
+    margin-bottom: var(--space-2);
+  }
 }
 
 @media (min-width: 768px) {
@@ -450,8 +494,14 @@
 }
 
 .inner-stat-card.featured-stat .stat-card-number {
-  font-size: 2.45rem;
+  font-size: 1.85rem;
   color: var(--admin-purple-mid);
+}
+
+@media (min-width: 501px) {
+  .inner-stat-card.featured-stat .stat-card-number {
+    font-size: 2.45rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -461,7 +511,29 @@
 }
 
 .stat-card-desc {
-  font-size: var(--fs-xs);
+  font-size: 0.62rem;
   color: var(--admin-muted);
-  line-height: 1.35;
+  line-height: 1.2;
+}
+
+@media (min-width: 501px) {
+  .stat-card-desc {
+    font-size: var(--fs-xs);
+    line-height: 1.35;
+  }
+}
+
+@media (max-width: 500px) {
+  .stat-icon-slot {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    border-radius: 6px !important;
+  }
+  .stat-icon-slot img,
+  .stat-icon-slot svg {
+    width: 17px !important;
+    height: 17px !important;
+  }
 }

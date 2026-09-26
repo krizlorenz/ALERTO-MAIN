@@ -11,58 +11,74 @@ $user_id = $_SESSION['user_id'];
 $error = '';
 $success = '';
 
-// Check for any existing active request for this user (ignoring completed, archived, or cancelled)
+// Check for any existing active request for this user (ignoring completed, archived, cancelled, or rejected)
 $stmtActive = $pdo->prepare("
     SELECT * FROM assistance_requests 
-    WHERE user_id = ? AND status NOT IN ('completed', 'archived', 'cancelled', 'Completed', 'Archived', 'Cancelled') 
+    WHERE user_id = ? AND LOWER(status) NOT IN ('completed', 'archived', 'cancelled', 'rejected') 
     ORDER BY id DESC LIMIT 1
 ");
 $stmtActive->execute([$user_id]);
 $activeRequest = $stmtActive->fetch(PDO::FETCH_ASSOC);
 
-// 3. Handle Form Submission (Insert or Update)
+// 3. Handle Form Submission (Insert, Update, or Cancel)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $assistance_type = trim($_POST['assistance_type'] ?? '');
-    $landmark        = trim($_POST['location'] ?? '');
-    $latitude        = trim($_POST['latitude'] ?? '');
-    $longitude       = trim($_POST['longitude'] ?? '');
-    $description     = trim($_POST['remarks'] ?? '');
-
-    if (empty($assistance_type) || empty($landmark)) {
-        $error = "Please fill in all required request details.";
-    } else {
+    if (isset($_POST['action']) && $_POST['action'] === 'cancel_request') {
         if ($activeRequest) {
             $currentStatus = strtolower(trim($activeRequest['status'] ?? 'pending'));
-            
-            // Allow modifications while pending or approved (case-insensitive)
             if ($currentStatus === 'pending' || $currentStatus === 'approved') {
-                $stmt = $pdo->prepare("
-                    UPDATE assistance_requests 
-                    SET resources = ?, landmark = ?, latitude = ?, longitude = ?, description = ? 
-                    WHERE id = ?
-                ");
-                if ($stmt->execute([$assistance_type, $landmark, $latitude, $longitude, $description, $activeRequest['id']])) {
-                    header("Location: user-homepage.php?updated=1");
-                    exit;
-                } else {
-                    $error = "Failed to update request. Please try again.";
-                }
-            } else {
-                $error = "Your request is currently " . ucfirst($activeRequest['status']) . ". Modifications are locked once dispatch operations are underway.";
-            }
-        } else {
-            // Insert brand new request, including the required request_code
-            $requestCode = 'REQ-' . rand(10000, 99999);
-            
-            $stmt = $pdo->prepare("
-                INSERT INTO assistance_requests (request_code, user_id, resources, landmark, latitude, longitude, description, status) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
-            ");
-            if ($stmt->execute([$requestCode, $_SESSION['user_id'], $assistance_type, $landmark, $latitude, $longitude, $description])) {
-                header("Location: user-homepage.php?requested=1");
+                $stmt = $pdo->prepare("UPDATE assistance_requests SET status = 'cancelled' WHERE id = ? AND user_id = ?");
+                $stmt->execute([$activeRequest['id'], $user_id]);
+                header("Location: user-homepage.php?cancelled=1");
                 exit;
             } else {
-                $error = "Failed to submit request. Please try again.";
+                $error = "Requests in progress or completed cannot be cancelled.";
+            }
+        } else {
+            $error = "No active request found to cancel.";
+        }
+    } else {
+        $assistance_type = trim($_POST['assistance_type'] ?? '');
+        $landmark        = trim($_POST['location'] ?? '');
+        $latitude        = trim($_POST['latitude'] ?? '');
+        $longitude       = trim($_POST['longitude'] ?? '');
+        $description     = trim($_POST['remarks'] ?? '');
+
+        if (empty($assistance_type) || empty($landmark)) {
+            $error = "Please fill in all required request details.";
+        } else {
+            if ($activeRequest) {
+                $currentStatus = strtolower(trim($activeRequest['status'] ?? 'pending'));
+                
+                // Allow modifications while pending or approved (case-insensitive)
+                if ($currentStatus === 'pending' || $currentStatus === 'approved') {
+                    $stmt = $pdo->prepare("
+                        UPDATE assistance_requests 
+                        SET resources = ?, landmark = ?, latitude = ?, longitude = ?, description = ? 
+                        WHERE id = ?
+                    ");
+                    if ($stmt->execute([$assistance_type, $landmark, $latitude, $longitude, $description, $activeRequest['id']])) {
+                        header("Location: user-homepage.php?updated=1");
+                        exit;
+                    } else {
+                        $error = "Failed to update request. Please try again.";
+                    }
+                } else {
+                    $error = "Your request is currently " . ucfirst($activeRequest['status']) . ". Modifications are locked once dispatch operations are underway.";
+                }
+            } else {
+                // Insert brand new request, including the required request_code
+                $requestCode = 'REQ-' . rand(10000, 99999);
+                
+                $stmt = $pdo->prepare("
+                    INSERT INTO assistance_requests (request_code, user_id, resources, landmark, latitude, longitude, description, status) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
+                ");
+                if ($stmt->execute([$requestCode, $_SESSION['user_id'], $assistance_type, $landmark, $latitude, $longitude, $description])) {
+                    header("Location: user-homepage.php?requested=1");
+                    exit;
+                } else {
+                    $error = "Failed to submit request. Please try again.";
+                }
             }
         }
     }
@@ -94,9 +110,9 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
   <!-- Core Stylesheets -->
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/student.css">
+  <link rel="stylesheet" href="assets/css/main.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/components.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/student.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -160,9 +176,7 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
           <input type="hidden" name="latitude" id="latitudeInput" value="<?= htmlspecialchars($currentLat) ?>">
           <input type="hidden" name="longitude" id="longitudeInput" value="<?= htmlspecialchars($currentLng) ?>">
 
-          <!-- =============================================================
-               A. RESOURCE REQUESTED (Single-Column List with Side Others Field)
-               ============================================================= -->
+          <!-- Resources Requested -->
           <div class="form-field-group">
             <label class="form-label">
               <span>Request Resources (Select all that apply).</span>
@@ -198,7 +212,7 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
                 <span class="resource-label-text">Transportation</span>
               </label>
 
-              <!-- 5. Others (specify): [ inline input on side ] -->
+              <!-- 5. Others -->
               <div class="resource-row-card others-row-card" id="cardOthers">
                 <label class="others-check-label">
                   <input type="checkbox" name="resources" value="Others" id="chkOthers"
@@ -212,9 +226,7 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
             </div>
           </div>
 
-          <!-- =============================================================
-               B. ONE-TIME MAP PIN LOCATION (Interactive Google Maps)
-               ============================================================= -->
+          <!-- Map Location -->
           <div class="form-field-group">
             <label class="form-label">
               <span>One-Time Map Pin Location</span>
@@ -269,9 +281,7 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
             </div>
           </div>
 
-          <!-- =============================================================
-               C. EMERGENCY MESSAGE EXPLANATION
-               ============================================================= -->
+          <!-- Emergency Message -->
           <div class="form-field-group">
             <label for="emergencyMessage" class="form-label">
               <span>Emergency Message Explanation</span>
@@ -296,10 +306,22 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
             </button>
           </div>
 
-          <!-- Submit Button -->
-          <button type="submit" class="request-submit-btn" id="assistanceSubmitBtn">
-            <span><?= $activeRequest ? 'Save Request Updates' : 'Submit Assistance Request' ?></span>
-          </button>
+          <!-- Submit & Cancel Buttons -->
+          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: var(--space-2);">
+            <button type="submit" class="request-submit-btn" id="assistanceSubmitBtn" style="flex: 1; min-width: 200px; margin-top: 0;">
+              <span><?= $activeRequest ? 'Save Request Updates' : 'Submit Assistance Request' ?></span>
+            </button>
+            <?php if ($activeRequest && in_array($activeStatusLower, ['pending', 'approved'])): ?>
+              <button type="button" class="request-cancel-btn" id="assistanceCancelBtn" onclick="handleUserCancelRequest()" style="flex: 0 1 auto; min-width: 160px; margin-top: 0;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                <span>Cancel Request</span>
+              </button>
+            <?php endif; ?>
+          </div>
 
         </form>
       <?php endif; ?>
@@ -447,6 +469,24 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
       document.getElementById('emergencyMessage').value = 'Floodwaters rising above knee level. 4 students stranded on upper floor with limited clean drinking water.';
 
       updateAssistanceType();
+    }
+
+    // Cancel Active Request confirmation and submission
+    function handleUserCancelRequest() {
+      if (confirm('Are you sure you want to cancel this assistance request? Once cancelled, emergency responders will not be dispatched.')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'user-request.php';
+
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'cancel_request';
+        form.appendChild(actionInput);
+
+        document.body.appendChild(form);
+        form.submit();
+      }
     }
 
     // Validate resource selection before native submit

@@ -72,9 +72,9 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
     rel="stylesheet">
 
   <!-- Core Stylesheets -->
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/admin.css">
+  <link rel="stylesheet" href="assets/css/main.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/components.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/admin.css?v=<?= time() ?>">
   <style>
     /* Ensure status pills never break text formatting across lines */
     .status-pill {
@@ -111,17 +111,13 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
     <!-- Mobile Sidebar Backdrop Overlay -->
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-    <!-- =================================================================
-         DARK VIOLET ADMIN SIDEBAR
-         ================================================================= -->
+    <!-- Admin Sidebar -->
     <aside class="admin-sidebar" id="adminSidebar" aria-label="Admin Sidebar Navigation">
 
       <!-- Sidebar Brand -->
       <a href="admin-homepage.php" class="sidebar-brand">
         <div class="sidebar-logo">
-          <img src="logo/csulogo.png" alt="CSU Logo"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div class="sidebar-logo-placeholder" style="display: none;" aria-hidden="true">A</div>
+          <img src="logo/admin-main-logo.png" alt="ALERTO Admin Logo">
         </div>
         <div>
           <div class="sidebar-brand-name">ALERTO</div>
@@ -200,15 +196,13 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
 
     </aside>
 
-    <!-- =================================================================
-         MAIN CONTENT AREA
-         ================================================================= -->
+    <!-- Main Content Area -->
     <div class="admin-main-content">
 
       <!-- Mobile Header Bar -->
       <header class="admin-mobile-header">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <button type="button" class="admin-mobile-toggle-btn" id="sidebarMobileToggle" aria-label="Open sidebar menu">
+          <button type="button" class="admin-mobile-toggle-btn" id="sidebarMobileToggle" aria-label="Open sidebar menu" aria-expanded="false" aria-controls="adminSidebar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round">
               <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -374,8 +368,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
   </div>
 
   <!-- Detail Verification Modal Dialog -->
-  <dialog id="verificationDetailModal"
-    style="border: none; border-radius: var(--radius-lg); padding: 0; max-width: 560px; width: 92vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3); background: #ffffff; margin: auto;">
+  <dialog id="verificationDetailModal">
     <div
       style="padding: var(--space-6); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between;">
       <div>

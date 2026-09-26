@@ -63,21 +63,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Core Stylesheets -->
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/auth.css">
+  <link rel="stylesheet" href="assets/css/main.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/components.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/auth.css?v=<?= time() ?>">
 </head>
 <body>
 
   <div class="login-page-wrapper student-theme">
     
+    <!-- Top Navigation Header -->
+    <header class="login-top-bar">
+      <div class="login-top-bar-inner">
+        <a href="user-login.php" class="login-brand-lockup">
+          <img src="logo/user-main-logo.png" alt="ALERTO Logo" class="login-brand-logo">
+          <div class="login-brand-texts">
+            <span class="login-brand-title">ALERTO</span>
+            <span class="login-brand-sub">CSU-COEA</span>
+          </div>
+        </a>
+      </div>
+    </header>
+
     <!-- Main Center Split Container -->
     <div class="login-main-container">
       <div class="login-split-grid">
         
-        <!-- ===============================================================
-             LEFT SIDE: Welcome Hero Copy & 4 Action Features
-             =============================================================== -->
+        <!-- Left Hero Content -->
         <div class="login-hero-content">
           <span class="login-eyebrow-tag">Student Portal</span>
           
@@ -90,60 +101,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ALERTO is a web-based platform that lets affected students request assistance, follow official advisories, and stay informed — while giving the COEA Student Council a clear, centralized way to review, prioritize, and respond.
           </p>
 
-          <!-- 4 Feature Icons Row -->
+          <!-- Feature Icons -->
           <div class="login-features-row">
             
-            <!-- 1. Request Assistance -->
+            <!-- Request Assistance -->
             <div class="feature-item-col">
-              <!-- ICON PLACEHOLDER: Edit src="icons/assistance.svg" below -->
               <div class="feature-icon-circle" aria-hidden="true">
-                <img src="icons/assistance.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                  <path d="M9 12l2 2 4-4"></path>
-                </svg>
+                <img src="icons/user-login-icons/request-assistance.png" alt="Request Assistance">
               </div>
               <span class="feature-item-label">Request<br>Assistance</span>
             </div>
 
-            <!-- 2. Official Advisories -->
+            <!-- Relief Resources -->
             <div class="feature-item-col">
-              <!-- ICON PLACEHOLDER: Edit src="icons/advisories.svg" below -->
               <div class="feature-icon-circle" aria-hidden="true">
-                <img src="icons/advisories.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                  <path d="M3 11l18-5v12L3 13v-2z"></path>
-                  <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path>
-                </svg>
-              </div>
-              <span class="feature-item-label">Official<br>Advisories</span>
-            </div>
-
-            <!-- 3. Relief Resources -->
-            <div class="feature-item-col">
-              <!-- ICON PLACEHOLDER: Edit src="icons/relief.svg" below -->
-              <div class="feature-icon-circle" aria-hidden="true">
-                <img src="icons/relief.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                </svg>
+                <img src="icons/user-login-icons/relief-resources.png" alt="Relief Resources">
               </div>
               <span class="feature-item-label">Relief<br>Resources</span>
             </div>
 
-            <!-- 4. Community Support -->
+            <!-- Community Support -->
             <div class="feature-item-col">
-              <!-- ICON PLACEHOLDER: Edit src="icons/support.svg" below -->
               <div class="feature-icon-circle" aria-hidden="true">
-                <img src="icons/support.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
+                <img src="icons/user-login-icons/community-support.png" alt="Community Support">
               </div>
               <span class="feature-item-label">Community<br>Support</span>
             </div>
@@ -151,21 +131,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
         </div>
 
-        <!-- ===============================================================
-             RIGHT SIDE: Floating Student Portal Login Card
-             =============================================================== -->
+        <!-- Right Login Card -->
         <div>
           <div class="login-portal-card">
             
             <!-- Card Header -->
             <div class="portal-card-header">
-              <!-- ICON PLACEHOLDER: Edit src="icons/student-avatar.svg" below -->
               <div class="portal-avatar-circle" aria-hidden="true">
-                <img src="icons/student-avatar.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+                <img src="icons/user_admin_login_icon/user-login.png" alt="Student Portal">
               </div>
               <div class="portal-title-block">
                 <h2>Student Portal</h2>
@@ -202,7 +175,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <div class="input-group">
                 <label for="studentUserEmail" class="input-label">Student ID or Email Address</label>
                 <div class="input-container">
-                  <!-- ICON PLACEHOLDER: Edit src="icons/id-badge.svg" below -->
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/id-badge.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
@@ -221,7 +193,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <div class="input-group">
                 <label for="studentUserPassword" class="input-label">Password</label>
                 <div class="input-container">
-                  <!-- ICON PLACEHOLDER: Edit src="icons/lock.svg" below -->
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/lock.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
@@ -260,7 +231,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="role-switch-centered">
                   <a href="admin-login.php" class="role-switch-pill admin-pill">
-                    <!-- ICON PLACEHOLDER: Edit src="icons/shield-lock.svg" below -->
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                     </svg>

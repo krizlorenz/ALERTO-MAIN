@@ -60,9 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     rel="stylesheet">
 
   <!-- Core Stylesheets -->
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/auth.css">
+  <link rel="stylesheet" href="assets/css/main.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/components.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/auth.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -84,10 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="auth-title-lockup">
           <div class="auth-logo-box">
-            <!-- LOGO PLACEHOLDER: Edit src="logo/csulogo.png" with custom logo -->
-            <img src="logo/csulogo.png" alt="CSU Logo"
-              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-            <span class="auth-logo-fallback" style="display: none;">A</span>
+            <img src="logo/admin-main-logo.png" alt="ALERTO Admin Logo">
           </div>
           <div class="auth-text-meta">
             <h1>Create New Admin Profile</h1>
@@ -154,7 +151,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <span class="form-label-tag">Officer in Charge</span>
             </label>
             <div class="input-with-icon">
-              <!-- ICON PLACEHOLDER: Edit src="icons/user.svg" below -->
               <span class="input-icon-slot" aria-hidden="true">
                 <img src="icons/user.svg" alt=""
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -177,7 +173,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <span class="form-label-tag">Institutional ID</span>
             </label>
             <div class="input-with-icon">
-              <!-- ICON PLACEHOLDER: Edit src="icons/id-badge.svg" below -->
               <span class="input-icon-slot" aria-hidden="true">
                 <img src="icons/id-badge.svg" alt=""
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -197,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
           </div>
 
-          <!-- 3. Separated Program & Year Level (2-Column Grid) -->
+          <!-- 3. Program & Year Level -->
           <div class="form-dual-grid">
 
             <!-- Program -->
@@ -206,7 +201,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span>Academic Program</span>
               </label>
               <div class="input-with-icon">
-                <!-- ICON PLACEHOLDER: Edit src="icons/cap.svg" below -->
                 <span class="input-icon-slot" aria-hidden="true">
                   <img src="icons/cap.svg" alt=""
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -230,13 +224,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               </div>
             </div>
 
-            <!-- Year Level (1 to 5) -->
+            <!-- Year Level -->
             <div class="form-field-group">
               <label for="regYearLevel" class="form-label">
                 <span>Year Level</span>
               </label>
               <div class="input-with-icon">
-                <!-- ICON PLACEHOLDER: Edit src="icons/star.svg" below -->
                 <span class="input-icon-slot" aria-hidden="true">
                   <img src="icons/star.svg" alt=""
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -284,7 +277,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <span class="form-label-tag">CSU Domain</span>
             </label>
             <div class="input-with-icon">
-              <!-- ICON PLACEHOLDER: Edit src="icons/mail.svg" below -->
               <span class="input-icon-slot" aria-hidden="true">
                 <img src="icons/mail.svg" alt=""
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -300,7 +292,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
           </div>
 
-          <!-- 5. Create Password & Repeat Password (2-Column Grid) -->
+          <!-- 5. Password Fields -->
           <div class="form-dual-grid">
 
             <!-- Create Password -->
@@ -309,7 +301,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span>Create Password</span>
               </label>
               <div class="input-with-icon">
-                <!-- ICON PLACEHOLDER: Edit src="icons/lock.svg" below -->
                 <span class="input-icon-slot" aria-hidden="true">
                   <img src="icons/lock.svg" alt=""
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -336,7 +327,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span>Repeat Password</span>
               </label>
               <div class="input-with-icon">
-                <!-- ICON PLACEHOLDER: Edit src="icons/shield-lock.svg" below -->
                 <span class="input-icon-slot" aria-hidden="true">
                   <img src="icons/shield-lock.svg" alt=""
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -361,7 +351,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <!-- Quick Fill Option -->
           <div class="auth-extras-row" style="justify-content: flex-end;">
             <button type="button" class="quick-fill-btn" onclick="quickFillRegisterProfile()">
-              <!-- ICON PLACEHOLDER: Edit src="icons/bolt.svg" below -->
               <img src="icons/bolt.svg" alt="" style="width:12px;height:12px;"
                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -375,7 +364,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <!-- Submit Button -->
           <button type="submit" class="auth-submit-btn" id="regSubmitBtn">
             <span>Create Admin Account</span>
-            <!-- ICON PLACEHOLDER: Edit src="icons/arrow-right.svg" below -->
             <img src="icons/arrow-right.svg" alt="" style="width:16px;height:16px;"
               onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -390,7 +378,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Footer link back to Sign In -->
         <div class="auth-footer-block">
           <div class="security-badge">
-            <!-- ICON PLACEHOLDER: Edit src="icons/shield-check.svg" below -->
             <img src="icons/shield-check.svg" alt="" style="width:14px;height:14px;"
               onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

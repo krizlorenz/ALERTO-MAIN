@@ -1,11 +1,6 @@
-/* ==========================================================================
-   ALERTO - Authentication Stylesheet (Admin Violet & Student Crimson)
-   Complete UI with Split Login, Student & Admin Registration Flows
-   ========================================================================== */
+/* ALERTO - Authentication Styles */
 
-/* --------------------------------------------------------------------------
-   1. Universal Icon Constraints & Input Icon Slots
-   -------------------------------------------------------------------------- */
+/* Form Controls & Inputs */
 .input-with-icon,
 .input-container {
   position: relative;
@@ -57,9 +52,7 @@
   display: block;
 }
 
-/* --------------------------------------------------------------------------
-   2. Split Login Page Layout
-   -------------------------------------------------------------------------- */
+/* Split Login Page Layout */
 .login-page-wrapper {
   min-height: 100vh;
   display: flex;
@@ -67,24 +60,140 @@
   justify-content: space-between;
   position: relative;
   background-color: #fbf9fe;
-  background-image: 
+  background-image:
     radial-gradient(at 10% 20%, rgba(142, 98, 255, 0.12) 0px, transparent 50%),
     radial-gradient(at 90% 10%, rgba(94, 53, 216, 0.14) 0px, transparent 55%),
     radial-gradient(at 80% 80%, rgba(180, 140, 255, 0.15) 0px, transparent 60%),
-    radial-gradient(rgba(53, 34, 100, 0.06) 1.2px, transparent 1.2px);
+    radial-gradient(rgba(53, 34, 100, 0.05) 1.2px, transparent 1.2px);
   background-size: 100% 100%, 100% 100%, 100% 100%, 24px 24px;
   background-attachment: fixed;
   overflow-x: hidden;
 }
 
-/* Student Theme Canvas (CSU Crimson Red Aura) */
 .login-page-wrapper.student-theme {
   background-color: #fdfbfb;
-  background-image: 
+  background-image:
     radial-gradient(at 10% 20%, rgba(214, 34, 76, 0.11) 0px, transparent 50%),
     radial-gradient(at 90% 10%, rgba(139, 18, 47, 0.13) 0px, transparent 55%),
     radial-gradient(at 80% 80%, rgba(254, 180, 195, 0.14) 0px, transparent 60%),
-    radial-gradient(rgba(112, 13, 35, 0.06) 1.2px, transparent 1.2px);
+    radial-gradient(rgba(112, 13, 35, 0.05) 1.2px, transparent 1.2px);
+}
+
+/* Top Bar */
+.login-top-bar {
+  width: 100%;
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 20px var(--container-pad) 0;
+  position: relative;
+  z-index: 20;
+}
+
+@media (max-width: 959px) {
+  .login-top-bar {
+    padding: 14px 16px 0;
+  }
+}
+
+.login-top-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.login-brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.login-brand-logo {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 480px) {
+  .login-brand-logo {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+.login-brand-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-brand-title {
+  font-family: var(--heading-font);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #352264;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.student-theme .login-brand-title {
+  color: #700d23;
+}
+
+.login-brand-sub {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--admin-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.login-top-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #352264;
+  background: #f4effa;
+  border: 1px solid rgba(53, 34, 100, 0.16);
+  box-shadow: 0 2px 8px rgba(53, 34, 100, 0.04);
+  position: relative;
+}
+
+.student-theme .login-top-pill {
+  color: #700d23;
+  background: #fdebed;
+  border-color: rgba(112, 13, 35, 0.16);
+  box-shadow: 0 2px 8px rgba(112, 13, 35, 0.04);
+}
+
+.login-top-pill::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 22%;
+  right: 22%;
+  height: 2.5px;
+  background: #352264;
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+.student-theme .login-top-pill::after {
+  background: #700d23;
+}
+
+@media (max-width: 480px) {
+  .login-top-pill {
+    padding: 5px 12px;
+    font-size: 0.72rem;
+  }
 }
 
 .login-main-container {
@@ -92,33 +201,58 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-8) var(--container-pad) var(--space-12);
+  padding: 24px var(--container-pad) 28px;
   width: 100%;
-  max-width: 1240px;
+  max-width: 1380px;
   margin: 0 auto;
   position: relative;
   z-index: 5;
 }
 
+@media (max-width: 959px) {
+  .login-main-container {
+    padding: 16px 16px 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-main-container {
+    padding: 12px 12px 24px;
+  }
+}
+
 .login-split-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-10);
+  gap: var(--space-8);
   align-items: center;
   width: 100%;
+}
+
+@media (max-width: 959px) {
+  .login-split-grid {
+    gap: 24px;
+  }
 }
 
 @media (min-width: 960px) {
   .login-split-grid {
     grid-template-columns: 1.15fr 0.85fr;
-    gap: var(--space-12);
+    gap: 48px;
   }
 }
 
-@media (min-width: 1140px) {
+@media (min-width: 1200px) {
   .login-split-grid {
-    grid-template-columns: 1.2fr 0.8fr;
+    grid-template-columns: 1.16fr 0.84fr;
     gap: 72px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .login-split-grid {
+    grid-template-columns: 1.18fr 0.82fr;
+    gap: 88px;
   }
 }
 
@@ -127,55 +261,54 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  max-width: 580px;
+  max-width: 660px;
 }
 
 @media (max-width: 959px) {
   .login-hero-content {
     align-items: center;
     text-align: center;
-    margin: 0 auto;
-    max-width: 620px;
+    margin: 0 auto var(--space-4);
   }
 }
 
 .login-eyebrow-tag {
   display: inline-block;
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  color: var(--admin-muted);
-  background: rgba(255, 255, 255, 0.75);
-  padding: 4px 14px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #5e35d8;
+  background: #ede6fd;
+  padding: 5px 14px;
   border-radius: var(--radius-pill);
-  border: 1px solid rgba(53, 34, 100, 0.1);
-  margin-bottom: var(--space-4);
+  margin-bottom: 14px;
 }
 
 .student-theme .login-eyebrow-tag {
-  color: #700d23;
-  border-color: rgba(112, 13, 35, 0.12);
+  color: #8b122f;
+  background: #fdebed;
 }
 
 .login-hero-heading {
   font-family: var(--heading-font);
-  font-size: clamp(2.2rem, 3.5vw + 1rem, 3.8rem);
+  font-size: clamp(2.35rem, 3.4vw + 0.6rem, 3.85rem);
   font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.035em;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
   color: #171221;
-  margin-bottom: var(--space-5);
+  margin-bottom: 16px;
 }
 
 @media (max-width: 959px) {
   .login-hero-heading {
-    text-align: center;
+    font-size: 2rem;
   }
 }
 
 .login-hero-heading .brand-highlight {
   display: block;
   color: #352264;
-  letter-spacing: -0.025em;
 }
 
 .student-theme .login-hero-heading .brand-highlight {
@@ -183,41 +316,39 @@
 }
 
 .login-hero-paragraph {
-  font-size: var(--fs-base);
+  font-size: clamp(0.95rem, 0.35vw + 0.85rem, 1.1rem);
   color: var(--admin-text-secondary);
-  line-height: 1.68;
-  margin-bottom: var(--space-8);
-  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 32px;
+  max-width: 580px;
 }
 
 @media (max-width: 959px) {
   .login-hero-paragraph {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+    font-size: var(--fs-sm);
+    margin-bottom: var(--space-5);
   }
 }
 
-/* 4 Feature Action Icons */
+/* Feature Icons Row */
 .login-features-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-3);
-  width: 100%;
-  max-width: 520px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 28px;
+  flex-wrap: wrap;
 }
 
 @media (max-width: 959px) {
   .login-features-row {
-    margin: 0 auto;
-    max-width: 500px;
+    justify-content: center;
+    gap: var(--space-4);
   }
 }
 
 @media (max-width: 480px) {
   .login-features-row {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
+    gap: 12px;
   }
 }
 
@@ -226,68 +357,53 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 8px;
+  gap: 9px;
 }
 
 .feature-icon-circle {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  background: #ffffff;
-  border: 1.5px solid rgba(53, 34, 100, 0.12);
-  box-shadow: 0 4px 14px rgba(53, 34, 100, 0.06);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: #ede6fd;
+  color: #352264;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #352264;
-  transition: all var(--transition-fast);
+  box-shadow: 0 4px 14px rgba(53, 34, 100, 0.05);
+  transition: transform var(--transition-fast);
+}
+
+.student-theme .feature-icon-circle {
+  background: #fdebed;
+  color: #700d23;
+  box-shadow: 0 4px 14px rgba(112, 13, 35, 0.05);
+}
+
+.feature-icon-circle img,
+.feature-icon-circle svg {
+  width: 26px !important;
+  height: 26px !important;
+  object-fit: contain;
+  display: block;
 }
 
 @media (max-width: 480px) {
   .feature-icon-circle {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
   }
-}
-
-.student-theme .feature-icon-circle {
-  border-color: rgba(112, 13, 35, 0.12);
-  color: #700d23;
-}
-
-.feature-icon-circle svg,
-.feature-icon-circle img {
-  width: 22px !important;
-  height: 22px !important;
-}
-
-@media (max-width: 480px) {
-  .feature-icon-circle svg,
-  .feature-icon-circle img {
-    width: 18px !important;
-    height: 18px !important;
+  .feature-icon-circle img,
+  .feature-icon-circle svg {
+    width: 20px !important;
+    height: 20px !important;
   }
-}
-
-.feature-item-col:hover .feature-icon-circle {
-  transform: translateY(-3px);
-  background: var(--admin-purple-soft);
-  border-color: var(--admin-purple);
-  box-shadow: 0 8px 20px rgba(94, 53, 216, 0.15);
-}
-
-.student-theme .feature-item-col:hover .feature-icon-circle {
-  background: #fdebed;
-  border-color: #8b122f;
-  box-shadow: 0 8px 20px rgba(139, 18, 47, 0.15);
 }
 
 .feature-item-label {
-  font-size: var(--fs-2xs);
-  font-weight: 700;
-  color: var(--admin-text);
-  line-height: 1.25;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--admin-text-secondary);
+  line-height: 1.3;
 }
 
 @media (max-width: 480px) {
@@ -296,48 +412,88 @@
   }
 }
 
-/* Right Side: Floating Card */
+/* Floating Login Card */
 .login-portal-card {
   background: #ffffff;
   border-radius: 28px;
-  padding: var(--space-8) var(--space-8);
-  box-shadow: 
+  padding: 36px 36px;
+  box-shadow:
     0 24px 64px rgba(35, 20, 65, 0.12),
     0 4px 16px rgba(35, 20, 65, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
   width: 100%;
-  max-width: 450px;
+  max-width: 470px;
   margin: 0 auto;
   position: relative;
   z-index: 10;
 }
 
 .student-theme .login-portal-card {
-  box-shadow: 
+  box-shadow:
     0 24px 64px rgba(70, 10, 25, 0.12),
     0 4px 16px rgba(70, 10, 25, 0.04);
 }
 
+@media (min-width: 1200px) {
+  .login-portal-card {
+    padding: 40px 38px;
+    max-width: 490px;
+  }
+}
+
+@media (max-width: 959px) {
+  .login-portal-card {
+    padding: 22px 20px;
+    border-radius: 24px;
+    box-shadow:
+      0 16px 40px rgba(35, 20, 65, 0.08),
+      0 2px 10px rgba(35, 20, 65, 0.03);
+  }
+
+  .student-theme .login-portal-card {
+    box-shadow:
+      0 16px 40px rgba(70, 10, 25, 0.08),
+      0 2px 10px rgba(70, 10, 25, 0.03);
+  }
+}
+
 @media (max-width: 480px) {
   .login-portal-card {
-    padding: var(--space-6) var(--space-5);
-    border-radius: 22px;
+    padding: 20px 16px;
+    border-radius: 20px;
+    box-shadow:
+      0 12px 32px rgba(35, 20, 65, 0.07),
+      0 2px 8px rgba(35, 20, 65, 0.03);
+  }
+
+  .student-theme .login-portal-card {
+    box-shadow:
+      0 12px 32px rgba(70, 10, 25, 0.07),
+      0 2px 8px rgba(70, 10, 25, 0.03);
   }
 }
 
 .portal-card-header {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 959px) {
+  .portal-card-header {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
 }
 
 .portal-avatar-circle {
-  width: 48px;
-  height: 48px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
-  background: #ede6fd;
-  color: #352264;
+  background: #f4effa;
+  border: 1.5px solid rgba(53, 34, 100, 0.12);
+  box-shadow: 0 4px 12px rgba(53, 34, 100, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -346,26 +502,57 @@
 
 .student-theme .portal-avatar-circle {
   background: #fdebed;
-  color: #700d23;
+  border-color: rgba(112, 13, 35, 0.12);
+  box-shadow: 0 4px 12px rgba(112, 13, 35, 0.06);
 }
 
 .portal-avatar-circle svg,
 .portal-avatar-circle img {
-  width: 22px !important;
-  height: 22px !important;
+  width: 30px !important;
+  height: 30px !important;
+  max-width: 30px !important;
+  max-height: 30px !important;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 480px) {
+  .portal-avatar-circle {
+    width: 44px;
+    height: 44px;
+  }
+  .portal-avatar-circle svg,
+  .portal-avatar-circle img {
+    width: 24px !important;
+    height: 24px !important;
+    max-width: 24px !important;
+    max-height: 24px !important;
+  }
 }
 
 .portal-title-block h2 {
   font-family: var(--heading-font);
-  font-size: var(--fs-xl);
+  font-size: 1.35rem;
   font-weight: 800;
   color: #352264;
-  line-height: 1.1;
+  line-height: 1.15;
   letter-spacing: -0.02em;
 }
 
 .student-theme .portal-title-block h2 {
   color: #700d23;
+}
+
+@media (max-width: 959px) {
+  .portal-title-block h2 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .portal-title-block h2 {
+    font-size: 1.15rem;
+  }
 }
 
 .portal-title-block p {
@@ -375,10 +562,22 @@
   line-height: 1.35;
 }
 
+@media (max-width: 959px) {
+  .portal-title-block p {
+    font-size: 0.72rem;
+  }
+}
+
 .login-form-body {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+}
+
+@media (max-width: 480px) {
+  .login-form-body {
+    gap: 12px;
+  }
 }
 
 .input-group {
@@ -441,7 +640,7 @@
   text-decoration: underline;
 }
 
-/* Eye Icon Password Visibility Toggle */
+/* Password Eye Toggle */
 .password-eye-toggle-btn {
   position: absolute;
   right: 10px;
@@ -458,10 +657,10 @@
   border-radius: var(--radius-sm);
   transition: all var(--transition-fast);
   z-index: 5;
-  min-height: 32px !important;
-  max-height: 32px !important;
-  width: 32px;
-  height: 32px;
+  min-height: 36px !important;
+  max-height: 36px !important;
+  width: 36px;
+  height: 36px;
 }
 
 .password-eye-toggle-btn:hover {
@@ -505,8 +704,9 @@
 
 .remember-label input[type="checkbox"] {
   accent-color: #352264;
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 }
 
 .student-theme .remember-label input[type="checkbox"] {
@@ -540,6 +740,7 @@
   box-shadow: 0 8px 24px rgba(53, 34, 100, 0.28);
   cursor: pointer;
   margin-top: var(--space-2);
+  min-height: 46px;
   transition: all var(--transition-fast);
 }
 
@@ -557,6 +758,11 @@
 .student-theme .portal-submit-btn:hover {
   background: #8b122f;
   box-shadow: 0 12px 32px rgba(112, 13, 35, 0.36);
+}
+
+.portal-submit-btn:active,
+.student-theme .portal-submit-btn:active {
+  transform: scale(0.98);
 }
 
 .portal-restricted-box {
@@ -618,7 +824,7 @@
   text-decoration: underline;
 }
 
-/* Centered Card Footer Stack */
+/* Card Footer & Role Switch */
 .login-card-footer-stack {
   display: flex;
   flex-direction: column;
@@ -682,6 +888,7 @@
   box-shadow: 0 4px 12px rgba(112, 13, 35, 0.12);
 }
 
+/* Wave Footer */
 .login-wave-footer {
   width: 100%;
   line-height: 0;
@@ -697,7 +904,15 @@
   fill: #352264;
 }
 
+.login-wave-footer svg path {
+  fill: #352264;
+}
+
 .student-theme .login-wave-footer svg {
+  fill: #700d23;
+}
+
+.student-theme .login-wave-footer svg path {
   fill: #700d23;
 }
 
@@ -707,9 +922,7 @@
   }
 }
 
-/* --------------------------------------------------------------------------
-   3. Registration Page Containers (Admin Purple & Student Red)
-   -------------------------------------------------------------------------- */
+/* Registration Pages */
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -736,7 +949,7 @@
   background: #ffffff;
   border: 1.5px solid rgba(94, 53, 216, 0.16);
   border-radius: var(--radius-xl);
-  box-shadow: 
+  box-shadow:
     0 24px 60px rgba(35, 20, 65, 0.14),
     0 4px 16px rgba(35, 20, 65, 0.04);
   overflow: hidden;
@@ -747,14 +960,14 @@
 
 .student-theme .register-card-container {
   border-color: rgba(112, 13, 35, 0.18);
-  box-shadow: 
+  box-shadow:
     0 24px 60px rgba(70, 10, 25, 0.14),
     0 4px 16px rgba(70, 10, 25, 0.04);
 }
 
 .register-card-header {
   background-color: #352264;
-  background-image: 
+  background-image:
     linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
     linear-gradient(135deg, #2a164e 0%, #352264 55%, #462c82 100%);
@@ -765,10 +978,9 @@
   color: #ffffff;
 }
 
-/* Student Theme Crimson Header */
 .student-theme .register-card-header {
   background-color: #5c091d;
-  background-image: 
+  background-image:
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(135deg, #3a0410 0%, #5c091d 55%, #7a0f28 100%);
@@ -779,20 +991,25 @@
     padding: var(--space-4) 14px;
     justify-content: flex-start;
   }
+
   .register-card-container {
     border-radius: 18px;
     margin: 10px 0;
   }
+
   .register-card-header {
     padding: var(--space-5) 18px;
   }
+
   .register-card-body {
     padding: var(--space-5) 16px;
     gap: var(--space-3);
   }
+
   .auth-title-lockup {
     gap: 12px;
   }
+
   .auth-text-meta h1 {
     font-size: 1.35rem;
   }
@@ -805,25 +1022,21 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(
-    90deg,
-    rgba(142, 98, 255, 0) 0%,
-    rgba(142, 98, 255, 0.6) 30%,
-    rgba(215, 185, 255, 0.95) 50%,
-    rgba(142, 98, 255, 0.6) 70%,
-    rgba(142, 98, 255, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(142, 98, 255, 0) 0%,
+      rgba(142, 98, 255, 0.6) 30%,
+      rgba(215, 185, 255, 0.95) 50%,
+      rgba(142, 98, 255, 0.6) 70%,
+      rgba(142, 98, 255, 0) 100%);
 }
 
 .student-theme .register-card-header::after {
-  background: linear-gradient(
-    90deg,
-    rgba(214, 34, 76, 0) 0%,
-    rgba(214, 34, 76, 0.6) 30%,
-    rgba(255, 195, 208, 0.95) 50%,
-    rgba(214, 34, 76, 0.6) 70%,
-    rgba(214, 34, 76, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(214, 34, 76, 0) 0%,
+      rgba(214, 34, 76, 0.6) 30%,
+      rgba(255, 195, 208, 0.95) 50%,
+      rgba(214, 34, 76, 0.6) 70%,
+      rgba(214, 34, 76, 0) 100%);
 }
 
 .auth-header-top-row {
@@ -870,22 +1083,25 @@
 }
 
 .auth-logo-box {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.14);
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  width: 68px;
+  height: 68px;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   flex-shrink: 0;
 }
 
 .auth-logo-box img {
-  width: 32px !important;
-  height: 32px !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 68px;
+  max-height: 68px;
   object-fit: contain;
+  display: block;
 }
 
 .auth-logo-fallback {
@@ -1034,9 +1250,7 @@
   }
 }
 
-/* --------------------------------------------------------------------------
-   4. Student Verification File Upload Dropzones
-   -------------------------------------------------------------------------- */
+/* Document Upload */
 .upload-card-box {
   border: 1.5px dashed rgba(112, 13, 35, 0.28);
   background: #fdfafb;

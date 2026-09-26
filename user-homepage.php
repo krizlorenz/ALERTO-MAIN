@@ -25,11 +25,20 @@ if (!$user) {
     exit;
 }
 
+// Handle request cancellation from user dashboard
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'cancel_request' && isset($_POST['request_id'])) {
+    $req_id = intval($_POST['request_id']);
+    $stmtCancel = $pdo->prepare("UPDATE assistance_requests SET status = 'cancelled' WHERE id = ? AND user_id = ? AND LOWER(status) IN ('pending', 'approved')");
+    $stmtCancel->execute([$req_id, $user['id']]);
+    header("Location: user-homepage.php?cancelled=1");
+    exit;
+}
+
 // Fetch active or archived/completed assistance request from database matching correct columns (resources, landmark)
-// Fixed query logic to also check status so that 'archived' is treated like 'completed' / fully finished
+// Exclude cancelled and rejected so the student is free to file a new request or view current state
 $stmtReq = $pdo->prepare("
     SELECT * FROM assistance_requests 
-    WHERE user_id = ? AND status NOT IN ('cancelled') 
+    WHERE user_id = ? AND LOWER(status) NOT IN ('cancelled', 'rejected') 
     ORDER BY id DESC LIMIT 1
 ");
 $stmtReq->execute([$user['id']]);
@@ -53,9 +62,9 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
     rel="stylesheet">
 
   <!-- Core Stylesheets -->
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/student.css">
+  <link rel="stylesheet" href="assets/css/main.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/components.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/student.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -65,17 +74,13 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
     <!-- Mobile Sidebar Backdrop Overlay -->
     <div class="sidebar-backdrop" id="studentSidebarBackdrop"></div>
 
-    <!-- =================================================================
-        CSU CRIMSON RED STUDENT SIDEBAR
-        ================================================================= -->
+    <!-- Student Sidebar -->
     <aside class="student-sidebar" id="studentSidebar" aria-label="Student Navigation">
 
       <!-- Brand Header -->
       <a href="user-homepage.php" class="student-sidebar-brand">
         <div class="student-logo-box">
-          <img src="logo/csulogo.png" alt="CSU Logo"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-          <span style="display: none; font-weight: 800; color: #ffffff;">A</span>
+          <img src="logo/user-main-logo.png" alt="ALERTO User Logo">
         </div>
         <div>
           <div class="student-brand-name">ALERTO</div>
@@ -83,7 +88,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
         </div>
       </a>
 
-      <!-- Student Navigation Menu (Dashboard Only) -->
+      <!-- Student Navigation Menu -->
       <nav class="student-nav-menu">
 
         <!-- Dashboard -->
@@ -118,9 +123,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
 
     </aside>
 
-    <!-- =================================================================
-        MAIN CONTENT AREA
-        ================================================================= -->
+    <!-- Main Content Area -->
     <div class="student-main-content">
 
       <!-- Mobile Floating Menu Toggle -->
@@ -142,9 +145,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
 
       <div class="student-content-body">
 
-        <!-- =============================================================
-             1. GCASH-STYLE TOP IDENTITY VERIFICATION CARD
-             ============================================================= -->
+        <!-- Identity Verification Card -->
         <section class="gcash-profile-card" aria-label="Student Identity Verification Details">
           <div class="gcash-card-inner">
 
@@ -216,9 +217,41 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
           <a href="user-sign-in.php" class="unlock-action-btn">Re-upload Documents &rarr;</a>
         </div>
 
-        <!-- =============================================================
-             2. REQUEST STATUS UPDATE (DYNAMIC TRACKER OR EMPTY STATE)
-             ============================================================= -->
+        <!-- Request Status Tracker -->
+        <?php if (isset($_GET['cancelled'])): ?>
+          <div class="alert-banner alert-warning" role="alert" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: var(--space-4); padding: 12px 16px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: #fff8f0; color: #9a4800; border: 1.5px solid #fed7aa;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; flex-shrink: 0; color: #ea580c;">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span>Your assistance request has been successfully cancelled.</span>
+            </div>
+            <button type="button" onclick="this.parentElement.style.display='none'" style="background: none; border: none; font-size: 1.1rem; color: #9a4800; cursor: pointer; padding: 0 4px;">&times;</button>
+          </div>
+        <?php elseif (isset($_GET['requested'])): ?>
+          <div class="alert-banner alert-success" role="alert" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: var(--space-4); padding: 12px 16px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: #f0fdf4; color: #166534; border: 1.5px solid #bbf7d0;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; flex-shrink: 0; color: #16a34a;">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>Your assistance request has been submitted to the DRRM Council.</span>
+            </div>
+            <button type="button" onclick="this.parentElement.style.display='none'" style="background: none; border: none; font-size: 1.1rem; color: #166534; cursor: pointer; padding: 0 4px;">&times;</button>
+          </div>
+        <?php elseif (isset($_GET['updated'])): ?>
+          <div class="alert-banner alert-success" role="alert" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: var(--space-4); padding: 12px 16px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: #f0fdf4; color: #166534; border: 1.5px solid #bbf7d0;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px; flex-shrink: 0; color: #16a34a;">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span>Your assistance request details have been updated.</span>
+            </div>
+            <button type="button" onclick="this.parentElement.style.display='none'" style="background: none; border: none; font-size: 1.1rem; color: #166534; cursor: pointer; padding: 0 4px;">&times;</button>
+          </div>
+        <?php endif; ?>
+
         <section class="tracker-section-card" id="requestsTrackSection"
           aria-label="Assistance Request Progress Tracker">
 
@@ -227,7 +260,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
               <h3>Request Status Update</h3>
               <p>Live progress breakdown for your active disaster relief request.</p>
             </div>
-            <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
               <?php 
                 $isArchivedOrCompleted = $activeRequest && in_array(strtolower(trim($activeRequest['status'] ?? '')), ['completed', 'archived']);
               ?>
@@ -236,11 +269,23 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                   style="background: #700d23; box-shadow: 0 4px 12px rgba(112, 13, 35, 0.2); border: none; cursor: pointer;">
                   <span>+ Request Assistance</span>
                 </button>
-              <?php else: ?>
+              <?php else: 
+                $reqStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
+              ?>
                 <a href="user-request.php" class="unlock-action-btn"
                   style="background: #700d23; box-shadow: 0 4px 12px rgba(112, 13, 35, 0.2);">
                   <span>Update Request</span>
                 </a>
+                <?php if (in_array($reqStatusLower, ['pending', 'approved'])): ?>
+                  <button type="button" class="cancel-action-btn" onclick="handleDashboardCancelRequest(<?= $activeRequest['id'] ?>)">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="15" y1="9" x2="9" y2="15"></line>
+                      <line x1="9" y1="9" x2="15" y2="15"></line>
+                    </svg>
+                    <span>Cancel Request</span>
+                  </button>
+                <?php endif; ?>
                 <span class="request-id-tag" id="activeRequestIdTag"><?= htmlspecialchars($activeRequest['request_code'] ?? 'REQ-' . str_pad($activeRequest['id'], 5, '0', STR_PAD_LEFT)) ?></span>
               <?php endif; ?>
             </div>
@@ -278,13 +323,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                 <!-- Step 1: Pending Request -->
                 <div class="stepper-step <?= $s1 ?>" id="step1">
                   <div class="step-node-circle">
-                    <img src="icons/doc-check.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                      <line x1="16" y1="13" x2="8" y2="13"></line>
-                      <line x1="16" y1="17" x2="8" y2="17"></line>
-                    </svg>
+                    <img src="icons/user_dashboard_logos/pending-request.png" alt="Pending Request">
                   </div>
                   <div class="step-text-title">Pending Request</div>
                   <div class="step-text-time"><?= $formattedDate ?></div>
@@ -293,11 +332,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                 <!-- Step 2: Approved -->
                 <div class="stepper-step <?= $s2 ?>" id="step2">
                   <div class="step-node-circle">
-                    <img src="icons/approved-check.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <polyline points="12 6 12 12 14 14"></polyline>
-                    </svg>
+                    <img src="icons/user_dashboard_logos/approved.png" alt="Approved">
                   </div>
                   <div class="step-text-title">Approved</div>
                   <div class="step-text-time"><?= in_array($status, ['approved', 'in_progress', 'completed']) ? 'Verified' : 'Pending Review' ?></div>
@@ -306,13 +341,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                 <!-- Step 3: In Progress -->
                 <div class="stepper-step <?= $s3 ?>" id="step3">
                   <div class="step-node-circle">
-                    <img src="icons/truck.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                      <rect x="1" y="3" width="15" height="13"></rect>
-                      <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                      <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                      <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                    </svg>
+                    <img src="icons/user_dashboard_logos/in-progress.png" alt="In Progress">
                   </div>
                   <div class="step-text-title">In Progress</div>
                   <div class="step-text-time"><?= $status == 'in_progress' || $status == 'completed' ? 'Dispatched' : 'Awaiting Dispatch' ?></div>
@@ -321,10 +350,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                 <!-- Step 4: Completed -->
                 <div class="stepper-step <?= $s4 ?>" id="step4">
                   <div class="step-node-circle">
-                    <img src="icons/handshake.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
+                    <img src="icons/user_dashboard_logos/completed.png" alt="Completed">
                   </div>
                   <div class="step-text-title">Completed</div>
                   <div class="step-text-time"><?= $status == 'completed' ? 'Delivered' : 'Pending Delivery' ?></div>
@@ -450,6 +476,30 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
         alert('Action Locked: You must have an Approved student profile to file an assistance request.');
       } else {
         window.location.href = 'user-request.php';
+      }
+    }
+
+    // Cancel Active Request confirmation and submission from Dashboard
+    function handleDashboardCancelRequest(reqId) {
+      if (confirm('Are you sure you want to cancel your assistance request? Emergency responders will stand down.')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'user-homepage.php';
+
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'cancel_request';
+        form.appendChild(actionInput);
+
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'request_id';
+        idInput.value = reqId;
+        form.appendChild(idInput);
+
+        document.body.appendChild(form);
+        form.submit();
       }
     }
   </script>

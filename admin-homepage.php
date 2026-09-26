@@ -61,9 +61,9 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
     rel="stylesheet">
 
   <!-- Core Stylesheets -->
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/landing.css">
+  <link rel="stylesheet" href="assets/css/main.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/components.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/landing.css?v=<?= time() ?>">
   <style>
     /* Fix In Progress label breaking into two lines */
     .dashboard-grid .stat-card-title {
@@ -74,15 +74,12 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
 
 <body>
 
-  <!-- Navbar (Brand on Far Left Edge, Nav Links on Far Right Edge) -->
+  <!-- Navbar -->
   <header class="navbar">
     <div class="navbar-inner">
       <a href="admin-homepage.php" class="brand" aria-label="ALERTO Home">
-        <!-- Logo Placeholder Container -->
         <div class="logo-container">
-          <img src="logo/csulogo.png" alt="CSU Logo" class="logo-img"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div class="logo-placeholder" style="display: none;" aria-hidden="true">A</div>
+          <img src="logo/admin-main-logo.png" alt="ALERTO Admin Logo" class="logo-img">
         </div>
         <div class="brand-text">
           <span class="brand-name">ALERTO</span>
@@ -90,7 +87,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
         </div>
       </a>
 
-      <!-- Right-Aligned Navigation Links -->
+      <!-- Navigation Links -->
       <nav class="main-nav" id="mainNav" aria-label="Main Navigation">
         <a href="admin-homepage.php" class="active">Home</a>
         <a href="admin-verify.php">Verify</a>
@@ -101,8 +98,8 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
         <a href="?action=logout" class="nav-logout-btn">Logout</a>
       </nav>
 
-      <!-- Modern Animated Mobile Hamburger Toggle -->
-      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+      <!-- Mobile Menu Toggle -->
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileNavMenu">
         <span></span>
         <span></span>
         <span></span>
@@ -110,29 +107,82 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
     </div>
   </header>
 
-  <!-- Frosted Glass Mobile Dropdown Navigation -->
-  <div class="mobile-nav-menu" id="mobileNavMenu">
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav-menu" id="mobileNavMenu" aria-label="Mobile Navigation Menu">
     <ul>
-      <li><a href="admin-homepage.php" class="active">Home</a></li>
-      <li><a href="admin-verify.php">Verify</a></li>
-      <li><a href="admin-request.php">Requests</a></li>
+      <li>
+        <a href="admin-homepage.php" class="active">
+          <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Home</span>
+        </a>
+      </li>
+      <li>
+        <a href="admin-verify.php">
+          <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Verify</span>
+          <?php if ($pendingVerifyCount > 0): ?>
+          <span class="mobile-nav-badge"><?= $pendingVerifyCount ?></span>
+          <?php endif; ?>
+        </a>
+      </li>
+      <li>
+        <a href="admin-request.php">
+          <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>Requests</span>
+          <?php if ($activeRequestsCount > 0): ?>
+          <span class="mobile-nav-badge"><?= $activeRequestsCount ?></span>
+          <?php endif; ?>
+        </a>
+      </li>
       <?php if ($_SESSION['role'] === 'superadmin'): ?>
-      <li><a href="admin-add-sign-in.php">Add New Admin</a></li>
+      <li>
+        <a href="admin-add-sign-in.php">
+          <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <line x1="20" y1="8" x2="20" y2="14"></line>
+            <line x1="23" y1="11" x2="17" y2="11"></line>
+          </svg>
+          <span>Add New Admin</span>
+        </a>
+      </li>
       <?php endif; ?>
+      <li class="mobile-nav-divider" role="separator"></li>
+      <li>
+        <a href="?action=logout" class="mobile-nav-logout-btn">
+          <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Logout</span>
+        </a>
+      </li>
     </ul>
   </div>
 
   <main>
-    <!-- Full-Bleed Atmospheric Gradient Hero Slide -->
+    <!-- Hero Section -->
     <section class="hero" aria-labelledby="hero-title">
 
-      <!-- Background Media: Preserves Natural Aspect Ratio & Sunlight Highlight -->
+      <!-- Hero Media -->
       <div class="hero-bg-media">
         <img src="images/coea.png" alt="CSU COEA Building" class="hero-bg-img" onerror="this.style.display='none';">
         <div class="hero-gradient-overlay" aria-hidden="true"></div>
       </div>
 
-      <!-- Hero Content (Positioned in Right Half over Clean White Canvas) -->
+      <!-- Hero Content -->
       <div class="hero-container">
         <div class="hero-content">
           <span class="hero-pill">ALERTO: Always Ready. Always Here.</span>
@@ -150,7 +200,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
 
     </section>
 
-    <!-- 2-Box Admin Operations Dashboard Section -->
+    <!-- Operations Dashboard Section -->
     <section class="dashboard-section" aria-labelledby="dashboardOverviewHeading">
       <div class="container">
 
@@ -164,9 +214,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
         <!-- 2-Box Grid -->
         <div class="dashboard-grid">
 
-          <!-- =================================================================
-                BOX 1 (LEFT): Student Profile Verification (Entire Board Clickable)
-                ================================================================= -->
+          <!-- Verification Card -->
           <a href="admin-verify.php" class="overview-board-link"
             aria-label="Open Student Profile Verification Management">
             <div class="board-header">
@@ -181,21 +229,13 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
             </div>
 
             <div class="board-cards-stack">
-
-              <!-- TOP: Primary Featured Stat (Pending Review) -->
+              <!-- Top Stat (Pending Review) -->
               <div class="top-featured-row">
                 <div class="inner-stat-card featured-stat">
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
-                      <!-- Icon Slot Placeholder -->
                       <div class="stat-icon-slot icon-purple">
-                        <img src="icons/pending.png" alt=""
-                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
+                        <img src="icons/admin_dashboard_icons/pending.png" alt="Pending Review">
                       </div>
                       <span class="stat-card-title">Pending Review</span>
                     </div>
@@ -205,22 +245,15 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                 </div>
               </div>
 
-              <!-- BELOW: Secondary Status Breakdown (3 Columns) -->
+              <!-- Secondary Breakdown Grid -->
               <div class="bottom-breakdown-grid">
 
                 <!-- Approved -->
                 <div class="inner-stat-card">
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
-                      <!-- Icon Slot Placeholder -->
                       <div class="stat-icon-slot icon-success">
-                        <img src="icons/approved.png" alt=""
-                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                          <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
+                        <img src="icons/admin_dashboard_icons/approved.png" alt="Approved">
                       </div>
                       <span class="stat-card-title">Approved</span>
                     </div>
@@ -233,16 +266,8 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                 <div class="inner-stat-card">
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
-                      <!-- Icon Slot Placeholder -->
                       <div class="stat-icon-slot icon-danger">
-                        <img src="icons/rejected.png" alt=""
-                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <line x1="15" y1="9" x2="9" y2="15"></line>
-                          <line x1="9" y1="9" x2="15" y2="15"></line>
-                        </svg>
+                        <img src="icons/admin_dashboard_icons/rejected.png" alt="Rejected">
                       </div>
                       <span class="stat-card-title">Rejected</span>
                     </div>
@@ -255,15 +280,8 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                 <div class="inner-stat-card">
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
-                      <!-- Icon Slot Placeholder -->
                       <div class="stat-icon-slot icon-dark">
-                        <img src="icons/banned.png" alt=""
-                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-                        </svg>
+                        <img src="icons/admin_dashboard_icons/banned.png" alt="Banned">
                       </div>
                       <span class="stat-card-title">Banned</span>
                     </div>
@@ -276,9 +294,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
             </div>
           </a>
 
-          <!-- =================================================================
-                BOX 2 (RIGHT): Assistance Requests (Entire Board Clickable)
-                ================================================================= -->
+          <!-- Requests Card -->
           <a href="admin-request.php" class="overview-board-link" aria-label="Open Assistance Requests Management">
             <div class="board-header">
               <div class="board-title-group">
@@ -293,23 +309,15 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
 
             <div class="board-cards-stack">
 
-              <!-- TOP: Primary Featured Stats (Active Requests & Pending Action) -->
+              <!-- Top Featured Stats -->
               <div class="top-featured-row dual-featured">
 
                 <!-- Active Requests -->
                 <div class="inner-stat-card featured-stat">
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
-                      <!-- Icon Slot Placeholder -->
                       <div class="stat-icon-slot icon-purple">
-                        <img src="icons/total-requests.png" alt=""
-                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                          <line x1="8" y1="21" x2="16" y2="21"></line>
-                          <line x1="12" y1="17" x2="12" y2="21"></line>
-                        </svg>
+                        <img src="icons/admin_dashboard_icons/active_request.png" alt="Active Requests">
                       </div>
                       <span class="stat-card-title">Active Requests</span>
                     </div>
@@ -318,19 +326,12 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                   <div class="stat-card-desc">Currently active relief submissions</div>
                 </div>
 
-                <!-- Pending Requests / Action -->
+                <!-- Pending Action -->
                 <div class="inner-stat-card featured-stat pending-highlight">
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
-                      <!-- Icon Slot Placeholder -->
                       <div class="stat-icon-slot icon-warning">
-                        <img src="icons/pending.png" alt=""
-                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
+                        <img src="icons/admin_dashboard_icons/pending.png" alt="Pending Action">
                       </div>
                       <span class="stat-card-title">Pending Action</span>
                     </div>
@@ -341,22 +342,15 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
 
               </div>
 
-              <!-- BELOW: Secondary Status Breakdown (3 Columns) -->
+              <!-- Secondary Breakdown Grid -->
               <div class="bottom-breakdown-grid">
 
                 <!-- Approved -->
                 <div class="inner-stat-card">
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
-                      <!-- Icon Slot Placeholder -->
                       <div class="stat-icon-slot icon-success">
-                        <img src="icons/approved.png" alt=""
-                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                          <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
+                        <img src="icons/admin_dashboard_icons/approved.png" alt="Approved">
                       </div>
                       <span class="stat-card-title">Approved</span>
                     </div>
@@ -369,15 +363,8 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                 <div class="inner-stat-card">
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
-                      <!-- Explicitly styled background/border to guarantee visible highlight -->
-                      <div class="stat-icon-slot icon-primary" style="background: rgba(13, 110, 253, 0.1); border: 1px solid rgba(13, 110, 253, 0.2); color: #0d6efd; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px;">
-                        <img src="icons/in-progress.png" alt=""
-                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="width: 20px; height: 20px;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round" style="display: none; width: 20px; height: 20px;">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <polygon points="10 8 16 12 10 16 10 8"></polygon>
-                        </svg>
+                      <div class="stat-icon-slot icon-primary">
+                        <img src="icons/admin_dashboard_icons/in-progress.png" alt="In Progress">
                       </div>
                       <span class="stat-card-title">In Progress</span>
                     </div>
@@ -390,15 +377,8 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                 <div class="inner-stat-card">
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
-                      <!-- Icon Slot Placeholder -->
-                      <div class="stat-icon-slot icon-success">
-                        <img src="icons/completed.png" alt=""
-                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <polyline points="9 12 11 14 15 10"></polyline>
-                        </svg>
+                      <div class="stat-icon-slot icon-info">
+                        <img src="icons/admin_dashboard_icons/completed.png" alt="Completed">
                       </div>
                       <span class="stat-card-title">Completed</span>
                     </div>
@@ -416,18 +396,8 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
     </section>
   </main>
 
-  <!-- Wavy Violet Footer -->
+  <!-- Footer -->
   <div class="site-footer-wrapper">
-    <!-- SVG Wavy Layered Divider -->
-    <div class="footer-wave-divider" aria-hidden="true">
-      <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-        <path d="M0,0 C150,55 350,-25 500,30 C650,85 900,10 1200,45 L1200,120 L0,120 Z"
-          fill="rgba(98, 54, 212, 0.35)">
-        </path>
-        <path d="M0,20 C180,75 320,5 520,50 C720,95 920,25 1200,60 L1200,120 L0,120 Z" fill="#1e1136"></path>
-      </svg>
-    </div>
-
     <!-- Footer Content -->
     <footer class="site-footer">
       <div class="container">
@@ -438,9 +408,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
           <div class="footer-brand-col">
             <div class="footer-brand-row">
               <div class="footer-logo-box">
-                <img src="logo/csulogo.png" alt="CSU Logo" class="footer-logo-img"
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="footer-logo-placeholder" style="display: none;" aria-hidden="true">A</div>
+                <img src="logo/admin-main-logo.png" alt="ALERTO Admin Logo" class="footer-logo-img">
               </div>
               <div class="footer-brand-text">
                 <div class="footer-brand-title">ALERTO</div>
@@ -452,30 +420,21 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
               A school-based disaster assistance and relief coordination platform developed for the CSU-COEA community.
             </p>
 
-            <!-- Social Circle Links -->
+            <!-- Social Links -->
             <div class="footer-social-row" aria-label="Social links">
               <!-- Email -->
               <a href="mailto:alerto@csu.edu.ph" class="social-circle-btn" aria-label="Email CSU Student Council">
-                <svg viewBox="0 0 24 24">
-                  <path
-                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-                </svg>
+                <img src="icons/admin_footer/mail.png" alt="Email" class="footer-social-img">
               </a>
               <!-- Facebook -->
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-circle-btn"
                 aria-label="Facebook Page">
-                <svg viewBox="0 0 24 24">
-                  <path
-                    d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z" />
-                </svg>
+                <img src="icons/admin_footer/epbi.png" alt="Facebook" class="footer-social-img">
               </a>
               <!-- Messenger -->
               <a href="https://m.me" target="_blank" rel="noopener noreferrer" class="social-circle-btn"
                 aria-label="Messenger Support">
-                <svg viewBox="0 0 24 24">
-                  <path
-                    d="M12 2C6.48 2 2 6.03 2 11c0 2.87 1.48 5.43 3.8 7.04V22l3.75-2.06c.79.22 1.62.34 2.45.34 5.52 0 10-4.03 10-9s-4.48-9-10-9zm1.06 12.15l-2.67-2.85-5.21 2.85 5.73-6.08 2.74 2.85 5.14-2.85-5.73 6.08z" />
-                </svg>
+                <img src="icons/admin_footer/mess.png" alt="Messenger" class="footer-social-img">
               </a>
             </div>
           </div>
@@ -504,6 +463,16 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
 
       </div>
     </footer>
+
+    <!-- Footer Wave Divider -->
+    <div class="footer-wave-divider" aria-hidden="true">
+      <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M0,0 C150,55 350,-25 500,30 C650,85 900,10 1200,45 L1200,120 L0,120 Z"
+          fill="rgba(98, 54, 212, 0.35)">
+        </path>
+        <path d="M0,20 C180,75 320,5 520,50 C720,95 920,25 1200,60 L1200,120 L0,120 Z" fill="#2b1a4e"></path>
+      </svg>
+    </div>
   </div>
 
   <!-- Client Script -->

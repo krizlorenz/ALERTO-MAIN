@@ -1,11 +1,6 @@
-/* ==========================================================================
-   ALERTO - Student Portal Dashboard Stylesheet
-   CSU Crimson Red Theme with GCash-style Verification Banner & Stepped Tracker
-   ========================================================================== */
+/* ALERTO - Student Portal Styles */
 
-/* --------------------------------------------------------------------------
-   1. Student Layout Structure
-   -------------------------------------------------------------------------- */
+/* Student Layout */
 .student-layout {
   display: flex;
   min-height: 100vh;
@@ -14,9 +9,7 @@
   background-size: 24px 24px;
 }
 
-/* --------------------------------------------------------------------------
-   2. Crimson Student Sidebar
-   -------------------------------------------------------------------------- */
+/* Sidebar */
 .student-sidebar {
   width: 270px;
   background: linear-gradient(180deg, #5c091d 0%, #4a0616 100%);
@@ -46,8 +39,11 @@
 
   .student-mobile-bar {
     display: flex !important;
-    background: #ffffff;
-    border-bottom: 1px solid rgba(112, 13, 35, 0.1);
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(112, 13, 35, 0.12);
+    box-shadow: 0 4px 20px rgba(112, 13, 35, 0.05);
     position: sticky;
     top: 0;
     z-index: 800;
@@ -56,20 +52,27 @@
 
 .admin-mobile-toggle-btn,
 .student-mobile-toggle-btn {
-  width: 38px !important;
-  height: 38px !important;
-  min-height: 38px !important;
-  max-height: 38px !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
   padding: 0 !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  border-radius: var(--radius-sm);
+  border-radius: 12px;
   background: #5c091d !important;
   color: #ffffff !important;
   border: none !important;
   flex-shrink: 0;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(92, 9, 29, 0.25);
+  transition: all var(--transition-fast);
+}
+
+.student-mobile-toggle-btn:active,
+.admin-mobile-toggle-btn:active {
+  transform: scale(0.93);
 }
 
 .admin-mobile-toggle-btn svg,
@@ -97,6 +100,7 @@
   visibility: visible;
 }
 
+/* Sidebar Brand */
 .student-sidebar-brand {
   padding: var(--space-6) var(--space-5);
   display: flex;
@@ -107,22 +111,25 @@
 }
 
 .student-logo-box {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.14);
-  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  width: 54px;
+  height: 54px;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   flex-shrink: 0;
 }
 
 .student-logo-box img {
-  width: 30px !important;
-  height: 30px !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 54px;
+  max-height: 54px;
   object-fit: contain;
+  display: block;
 }
 
 .student-brand-name {
@@ -140,6 +147,7 @@
   margin-top: 2px;
 }
 
+/* Sidebar Navigation */
 .student-nav-menu {
   display: flex;
   flex-direction: column;
@@ -210,7 +218,6 @@
   text-decoration: underline;
 }
 
-/* Sidebar Logout Link Styling */
 .sidebar-logout-link {
   color: #ff6b6b !important;
   display: inline-flex;
@@ -235,9 +242,7 @@
   stroke: currentColor;
 }
 
-/* --------------------------------------------------------------------------
-   3. Main Content Container
-   -------------------------------------------------------------------------- */
+/* Main Content Area */
 .student-main-content {
   flex: 1;
   display: flex;
@@ -261,9 +266,7 @@
   }
 }
 
-/* --------------------------------------------------------------------------
-   4. GCash-Style Horizontal Top Verification Card
-   -------------------------------------------------------------------------- */
+/* Verification Profile Card */
 .gcash-profile-card {
   width: 100%;
   background: linear-gradient(135deg, #5c091d 0%, #700d23 50%, #8b122f 100%);
@@ -278,12 +281,12 @@
 
 @media (max-width: 640px) {
   .gcash-profile-card {
-    padding: var(--space-5) var(--space-5);
-    border-radius: 18px;
+    padding: 20px 16px;
+    border-radius: 20px;
+    box-shadow: 0 10px 28px rgba(92, 9, 29, 0.2);
   }
 }
 
-/* Background Subtle Gradient Orbs */
 .gcash-profile-card::before {
   content: "";
   position: absolute;
@@ -292,6 +295,17 @@
   width: 280px;
   height: 280px;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.gcash-profile-card::after {
+  content: "";
+  position: absolute;
+  bottom: -30%;
+  left: -5%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(214, 34, 76, 0.35) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -316,7 +330,7 @@
   height: 58px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -326,6 +340,14 @@
   color: #ffffff;
   flex-shrink: 0;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 640px) {
+  .gcash-avatar-box {
+    width: 52px;
+    height: 52px;
+    font-size: 1.3rem;
+  }
 }
 
 .gcash-text-meta h2 {
@@ -341,14 +363,27 @@
   flex-wrap: wrap;
 }
 
+@media (max-width: 640px) {
+  .gcash-text-meta h2 {
+    font-size: 1.2rem;
+  }
+}
+
 .gcash-sub-meta {
   font-size: var(--fs-xs);
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.88);
   margin-top: 4px;
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .gcash-sub-meta {
+    font-size: 0.75rem;
+    gap: 6px;
+  }
 }
 
 .gcash-status-badge-container {
@@ -359,23 +394,18 @@
 }
 
 @media (max-width: 640px) {
-  .gcash-profile-card {
-    padding: var(--space-5) 18px;
-    border-radius: 18px;
-  }
-
   .gcash-card-inner {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 14px;
+    gap: 12px;
   }
 
   .gcash-student-info-col {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 12px;
+    gap: 10px;
   }
 
   .gcash-text-meta h2 {
@@ -391,7 +421,7 @@
     justify-content: center;
     width: 100%;
     border-top: 1px solid rgba(255, 255, 255, 0.15);
-    padding-top: var(--space-3);
+    padding-top: 10px;
   }
 }
 
@@ -406,6 +436,13 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 640px) {
+  .verification-badge {
+    padding: 5px 14px;
+    font-size: 0.72rem;
+  }
 }
 
 .verification-badge svg,
@@ -497,9 +534,7 @@
   filter: brightness(0.95);
 }
 
-/* --------------------------------------------------------------------------
-   5. Stepped Progress Tracker (Matches User Reference Image)
-   -------------------------------------------------------------------------- */
+/* Progress Tracker */
 .tracker-section-card {
   background: #ffffff;
   border-radius: 22px;
@@ -551,7 +586,6 @@
   border: 1px solid rgba(112, 13, 35, 0.15);
 }
 
-/* Horizontal Stepped Progress Bar */
 .stepper-track-container {
   width: 100%;
   padding: var(--space-4) 0;
@@ -566,7 +600,6 @@
   position: relative;
 }
 
-/* Stepper Connecting Bar */
 .stepper-steps-wrapper::before {
   content: "";
   position: absolute;
@@ -592,7 +625,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #ffffff;
+  background: #ede6ea;
   border: 3px solid #ede6ea;
   display: flex;
   align-items: center;
@@ -605,8 +638,11 @@
 
 .step-node-circle svg,
 .step-node-circle img {
-  width: 20px !important;
-  height: 20px !important;
+  width: 22px !important;
+  height: 22px !important;
+  object-fit: contain;
+  filter: brightness(0) opacity(0.35);
+  transition: filter var(--transition-fast);
 }
 
 .step-text-title {
@@ -621,7 +657,6 @@
   color: var(--admin-muted);
 }
 
-/* Active Completed Steps */
 .stepper-step.completed .step-node-circle {
   background: #1e6b37;
   border-color: #1e6b37;
@@ -629,15 +664,41 @@
   box-shadow: 0 4px 14px rgba(30, 107, 55, 0.3);
 }
 
-.stepper-step.active .step-node-circle {
-  background: #ffffff;
-  border-color: #1e6b37;
-  color: #1e6b37;
-  box-shadow: 0 0 0 4px rgba(30, 107, 55, 0.2);
+.stepper-step.completed .step-node-circle img {
+  filter: none;
 }
 
-/* Responsive Auto-Fit for Mobile Screens (No scroll, perfectly fitted) */
+.stepper-step.active .step-node-circle {
+  background: #1e6b37;
+  border-color: #1e6b37;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(30, 107, 55, 0.25), 0 4px 14px rgba(30, 107, 55, 0.3);
+  animation: emeraldPulse 2.5s infinite;
+}
+
+@keyframes emeraldPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(30, 107, 55, 0.4), 0 4px 14px rgba(30, 107, 55, 0.3);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(30, 107, 55, 0), 0 4px 14px rgba(30, 107, 55, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(30, 107, 55, 0), 0 4px 14px rgba(30, 107, 55, 0.3);
+  }
+}
+
+.stepper-step.active .step-node-circle img {
+  filter: none;
+}
+
 @media (max-width: 768px) {
+  .tracker-section-card {
+    padding: 20px 16px;
+    border-radius: 20px;
+    box-shadow: 0 6px 24px rgba(112, 13, 35, 0.05);
+  }
+
   .stepper-track-container {
     padding: var(--space-2) 0;
   }
@@ -654,11 +715,51 @@
     height: 3px;
   }
 
+  .stepper-step {
+    padding: 0 2px;
+  }
+
   .step-node-circle {
     width: 38px;
     height: 38px;
-    margin-bottom: var(--space-2);
+    margin-bottom: 6px;
     border-width: 2.5px;
+  }
+
+  .step-node-circle svg,
+  .step-node-circle img {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .step-text-title {
+    font-size: 0.7rem;
+    line-height: 1.15;
+  }
+
+  .step-text-time {
+    font-size: 0.62rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tracker-section-card {
+    padding: 16px 12px;
+    border-radius: 18px;
+  }
+
+  .stepper-steps-wrapper::before {
+    top: 17px;
+    left: 14px;
+    right: 14px;
+    height: 2.5px;
+  }
+
+  .step-node-circle {
+    width: 34px;
+    height: 34px;
+    border-width: 2px;
+    margin-bottom: 4px;
   }
 
   .step-node-circle svg,
@@ -668,54 +769,17 @@
   }
 
   .step-text-title {
-    font-size: 0.72rem;
-    line-height: 1.2;
-  }
-
-  .step-text-time {
-    font-size: 0.65rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .tracker-section-card {
-    padding: var(--space-4) 14px;
-    border-radius: 16px;
-  }
-
-  .stepper-steps-wrapper::before {
-    top: 16px;
-    left: 14px;
-    right: 14px;
-    height: 2.5px;
-  }
-
-  .step-node-circle {
-    width: 32px;
-    height: 32px;
-    border-width: 2px;
-    margin-bottom: 5px;
-  }
-
-  .step-node-circle svg,
-  .step-node-circle img {
-    width: 13px !important;
-    height: 13px !important;
-  }
-
-  .step-text-title {
-    font-size: 0.64rem;
+    font-size: 0.62rem;
     letter-spacing: -0.01em;
+    line-height: 1.1;
   }
 
   .step-text-time {
-    font-size: 0.58rem;
+    font-size: 0.55rem;
   }
 }
 
-/* --------------------------------------------------------------------------
-   6. Gated / Disabled Locked State
-   -------------------------------------------------------------------------- */
+/* Locked State */
 .tracker-section-card.locked {
   background: #fbf9fa;
   border-color: #ede6ea;
@@ -786,9 +850,30 @@
   transform: translateY(-1px);
 }
 
-/* --------------------------------------------------------------------------
-   7. Assistance Request Form Styles (Single Column & Google Maps)
-   -------------------------------------------------------------------------- */
+.cancel-action-btn {
+  padding: 8px 18px;
+  background: #ffffff;
+  color: var(--status-rejected-text, #9c2438);
+  border: 1.5px solid var(--status-rejected-border, #f8c9d1);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.cancel-action-btn:hover {
+  background: var(--status-rejected-bg, #fdf0f2);
+  border-color: #f29dae;
+  color: #7d1527;
+  transform: translateY(-1px);
+}
+
+/* Assistance Request Page */
 .request-page-wrapper {
   min-height: 100vh;
   display: flex;
@@ -905,7 +990,7 @@
   }
 }
 
-/* 1. Resources Requested Single Column List */
+/* Resources List */
 .resource-cards-list {
   display: flex;
   flex-direction: column;
@@ -949,7 +1034,6 @@
   color: var(--admin-text);
 }
 
-/* Others (specify) Row with inline input */
 .resource-row-card.others-row-card {
   display: flex;
   align-items: center;
@@ -985,7 +1069,7 @@
   box-shadow: 0 0 0 3px rgba(139, 18, 47, 0.1);
 }
 
-/* 2. Google Map Widget Card with Interactive Pinning */
+/* Map Widget */
 .google-map-widget-card {
   border: 1.5px solid rgba(112, 13, 35, 0.18);
   border-radius: var(--radius-md);
@@ -1045,7 +1129,6 @@
   z-index: 1;
 }
 
-/* Enlarge Landmark Option */
 .landmark-large-container {
   padding: var(--space-4);
   background: #ffffff;
@@ -1093,7 +1176,6 @@
   gap: 6px;
 }
 
-/* 3. Emergency Message Explanation */
 .emergency-textarea {
   width: 100%;
   min-height: 120px;
@@ -1141,4 +1223,33 @@
   background: linear-gradient(135deg, #4d0718 0%, #680b22 50%, #7d1029 100%);
   transform: translateY(-2px);
   box-shadow: 0 14px 36px rgba(112, 13, 35, 0.38);
+}
+
+.request-cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px var(--space-6);
+  background: #ffffff;
+  color: var(--status-rejected-text, #9c2438);
+  font-size: var(--fs-sm);
+  font-family: var(--heading-font);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--status-rejected-border, #f8c9d1);
+  box-shadow: 0 2px 8px rgba(156, 36, 56, 0.08);
+  cursor: pointer;
+  margin-top: var(--space-2);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.request-cancel-btn:hover {
+  background: var(--status-rejected-bg, #fdf0f2);
+  border-color: #f29dae;
+  color: #7d1527;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(156, 36, 56, 0.16);
 }

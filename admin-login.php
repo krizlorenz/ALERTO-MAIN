@@ -47,22 +47,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     rel="stylesheet">
 
   <!-- Core Stylesheets -->
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/auth.css">
+  <link rel="stylesheet" href="assets/css/main.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/components.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/auth.css?v=<?= time() ?>">
 </head>
 
 <body>
 
   <div class="login-page-wrapper">
 
+    <!-- Top Navigation Header -->
+    <header class="login-top-bar">
+      <div class="login-top-bar-inner">
+        <a href="admin-login.php" class="login-brand-lockup">
+          <img src="logo/admin-main-logo.png" alt="ALERTO Admin Logo" class="login-brand-logo">
+          <div class="login-brand-texts">
+            <span class="login-brand-title">ALERTO</span>
+            <span class="login-brand-sub">CSU-COEA</span>
+          </div>
+        </a>
+      </div>
+    </header>
+
     <!-- Main Center Split Container -->
     <div class="login-main-container">
       <div class="login-split-grid">
 
-        <!-- ===============================================================
-             LEFT SIDE: Welcome Hero Copy & 4 Action Features
-             =============================================================== -->
+        <!-- Left Hero Content -->
         <div class="login-hero-content">
           <span class="login-eyebrow-tag">Admin Portal</span>
 
@@ -77,70 +88,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             and respond.
           </p>
 
-          <!-- 4 Feature Icons Row -->
+          <!-- Feature Icons -->
           <div class="login-features-row">
 
-            <!-- 1. Request Assistance -->
+            <!-- Request Assistance -->
             <div class="feature-item-col">
-              <!-- ICON PLACEHOLDER: Edit src="icons/assistance.svg" below -->
               <div class="feature-icon-circle" aria-hidden="true">
-                <img src="icons/assistance.svg" alt=""
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                  <path d="M9 12l2 2 4-4"></path>
-                </svg>
+                <img src="icons/admin-login-icons/admin-req-icon.png" alt="Request Assistance">
               </div>
               <span class="feature-item-label">Request<br>Assistance</span>
             </div>
 
-            <!-- 2. Official Advisories -->
+            <!-- Relief Resources -->
             <div class="feature-item-col">
-              <!-- ICON PLACEHOLDER: Edit src="icons/advisories.svg" below -->
               <div class="feature-icon-circle" aria-hidden="true">
-                <img src="icons/advisories.svg" alt=""
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
-                  <path d="M3 11l18-5v12L3 13v-2z"></path>
-                  <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path>
-                </svg>
-              </div>
-              <span class="feature-item-label">Official<br>Advisories</span>
-            </div>
-
-            <!-- 3. Relief Resources -->
-            <div class="feature-item-col">
-              <!-- ICON PLACEHOLDER: Edit src="icons/relief.svg" below -->
-              <div class="feature-icon-circle" aria-hidden="true">
-                <img src="icons/relief.svg" alt=""
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
-                  <path
-                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-                  </path>
-                  <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                  <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                </svg>
+                <img src="icons/admin-login-icons/admin-relief-icon.png" alt="Relief Resources">
               </div>
               <span class="feature-item-label">Relief<br>Resources</span>
             </div>
 
-            <!-- 4. Community Support -->
+            <!-- Community Support -->
             <div class="feature-item-col">
-              <!-- ICON PLACEHOLDER: Edit src="icons/support.svg" below -->
               <div class="feature-icon-circle" aria-hidden="true">
-                <img src="icons/support.svg" alt=""
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
+                <img src="icons/admin-login-icons/admin-community-icon.png" alt="Community Support">
               </div>
               <span class="feature-item-label">Community<br>Support</span>
             </div>
@@ -148,23 +118,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
         </div>
 
-        <!-- ===============================================================
-             RIGHT SIDE: Floating Admin Portal Login Card
-             =============================================================== -->
+        <!-- Right Login Card -->
         <div>
           <div class="login-portal-card">
 
             <!-- Card Header -->
             <div class="portal-card-header">
-              <!-- ICON PLACEHOLDER: Edit src="icons/admin-avatar.svg" below -->
               <div class="portal-avatar-circle" aria-hidden="true">
-                <img src="icons/admin-avatar.svg" alt=""
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+                <img src="icons/user_admin_login_icon/admin-login.png" alt="Admin Portal">
               </div>
               <div class="portal-title-block">
                 <h2>Admin Portal</h2>
@@ -203,7 +164,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <div class="input-group">
                 <label for="adminUserEmail" class="input-label">Email or Username</label>
                 <div class="input-container">
-                  <!-- ICON PLACEHOLDER: Edit src="icons/email.svg" below -->
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/email.svg" alt=""
                       onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -223,7 +183,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <div class="input-group">
                 <label for="adminUserPassword" class="input-label">Password</label>
                 <div class="input-container">
-                  <!-- ICON PLACEHOLDER: Edit src="icons/lock.svg" below -->
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/lock.svg" alt=""
                       onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -258,7 +217,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
               <!-- Security Notice Box -->
               <div class="portal-restricted-box">
-                <!-- ICON PLACEHOLDER: Edit src="icons/lock-small.svg" below -->
                 <img src="icons/lock-small.svg" alt="" class="restricted-lock-icon"
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                 <svg class="restricted-lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -275,7 +233,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <div class="login-card-footer-stack">
                 <div class="role-switch-centered">
                   <a href="user-login.php" class="role-switch-pill student-pill">
-                    <!-- ICON PLACEHOLDER: Edit src="icons/user.svg" below -->
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                       stroke-linecap="round" stroke-linejoin="round">
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>

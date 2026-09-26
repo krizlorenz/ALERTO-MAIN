@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_id'], $_POST[
     $req_id = intval($_POST['request_id']);
     $req_status = trim($_POST['status']);
     
-    if (in_array($req_status, ['pending', 'approved', 'in_progress', 'completed', 'archived', 'cancelled'])) {
+    if (in_array($req_status, ['pending', 'approved', 'in_progress', 'completed', 'archived', 'cancelled', 'rejected'])) {
         $stmt = $pdo->prepare("UPDATE assistance_requests SET status = ? WHERE id = ?");
         $stmt->execute([$req_status, $req_id]);
         
@@ -65,9 +65,9 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <!-- Core Stylesheets -->
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-  <link rel="stylesheet" href="assets/css/admin.css">
+  <link rel="stylesheet" href="assets/css/main.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/components.css?v=<?= time() ?>">
+  <link rel="stylesheet" href="assets/css/admin.css?v=<?= time() ?>">
   <style>
     /* Ensure status pills never break text formatting across lines */
     .status-pill {
@@ -83,16 +83,13 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
     <!-- Mobile Sidebar Backdrop Overlay -->
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-    <!-- =================================================================
-         DARK VIOLET ADMIN SIDEBAR
-         ================================================================= -->
+    <!-- Admin Sidebar -->
     <aside class="admin-sidebar" id="adminSidebar" aria-label="Admin Sidebar Navigation">
       
       <!-- Sidebar Brand -->
       <a href="admin-homepage.php" class="sidebar-brand">
         <div class="sidebar-logo">
-          <img src="logo/csulogo.png" alt="CSU Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-          <div class="sidebar-logo-placeholder" style="display: none;" aria-hidden="true">A</div>
+          <img src="logo/admin-main-logo.png" alt="ALERTO Admin Logo">
         </div>
         <div>
           <div class="sidebar-brand-name">ALERTO</div>
@@ -167,15 +164,13 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
 
     </aside>
 
-    <!-- =================================================================
-         MAIN CONTENT AREA
-         ================================================================= -->
+    <!-- Main Content Area -->
     <div class="admin-main-content">
       
       <!-- Mobile Header Bar -->
       <header class="admin-mobile-header">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <button type="button" class="admin-mobile-toggle-btn" id="sidebarMobileToggle" aria-label="Open sidebar menu">
+          <button type="button" class="admin-mobile-toggle-btn" id="sidebarMobileToggle" aria-label="Open sidebar menu" aria-expanded="false" aria-controls="adminSidebar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="3" y1="12" x2="21" y2="12"></line>
               <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -219,6 +214,8 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
               <option value="approved">Approved</option>
               <option value="in_progress">In Progress</option>
               <option value="completed">Completed</option>
+              <option value="rejected">Rejected</option>
+              <option value="cancelled">Cancelled</option>
               <option value="archived">Archived</option>
             </select>
           </div>
@@ -263,6 +260,12 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
                       } elseif ($statusLower === 'completed') {
                           $pillClass = 'completed';
                           $statusLabel = 'Completed';
+                      } elseif ($statusLower === 'rejected') {
+                          $pillClass = 'rejected';
+                          $statusLabel = 'Rejected';
+                      } elseif ($statusLower === 'cancelled') {
+                          $pillClass = 'cancelled';
+                          $statusLabel = 'Cancelled';
                       } elseif ($statusLower === 'archived') {
                           $pillClass = 'archived';
                           $statusLabel = 'Archived';
@@ -339,7 +342,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
   </div>
 
   <!-- Detail Review Modal Dialog -->
-  <dialog id="requestDetailModal" style="border: none; border-radius: var(--radius-lg); padding: 0; max-width: 580px; width: 92vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3); background: #ffffff; margin: auto;">
+  <dialog id="requestDetailModal">
     <div style="padding: var(--space-6); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between;">
       <div>
         <span class="admin-page-eyebrow" id="modalRequestEyebrow">Request Details</span>
@@ -431,7 +434,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
       if (btnText) btnText.textContent = 'View Minimap';
     }
 
-    // Dynamic Action Buttons Generator with archive & restore support
+    // Dynamic Action Buttons Generator with reject, archive & restore support
     function renderModalActions(status) {
       const footerEl = document.getElementById('requestModalFooterActions');
       if (!footerEl) return;
@@ -439,23 +442,34 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
 
       if (statusLower === 'pending') {
         footerEl.innerHTML = `
-          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Cancel</button>
+          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
+          <button type="button" class="table-action-btn" style="border-color: var(--status-rejected-border, #f8c9d1); color: var(--status-rejected-text, #9c2438); background: #ffffff;" onmouseenter="this.style.background='#fdf0f2'" onmouseleave="this.style.background='#ffffff'" onclick="handleModalRejectRequest()">Reject Request</button>
           <button type="button" class="table-action-btn btn-filled" style="background: #4f46e5; color: #ffffff;" onclick="sendStatusUpdateToServer('approved', 'Request approved successfully.')">Approve</button>
         `;
       } else if (statusLower === 'approved') {
         footerEl.innerHTML = `
-          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Cancel</button>
+          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
+          <button type="button" class="table-action-btn" style="border-color: var(--status-rejected-border, #f8c9d1); color: var(--status-rejected-text, #9c2438); background: #ffffff;" onmouseenter="this.style.background='#fdf0f2'" onmouseleave="this.style.background='#ffffff'" onclick="handleModalRejectRequest()">Reject Request</button>
           <button type="button" class="table-action-btn btn-filled" style="background: #4f46e5; color: #ffffff;" onclick="sendStatusUpdateToServer('in_progress', 'Relief aid assigned and marked In Progress.')">Assign Relief Aid</button>
         `;
       } else if (statusLower === 'in progress' || statusLower === 'in_progress') {
         footerEl.innerHTML = `
-          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Cancel</button>
+          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
           <button type="button" class="table-action-btn btn-filled" style="background: #4f46e5; color: #ffffff;" onclick="sendStatusUpdateToServer('completed', 'Request marked as completed and delivered.')">Complete</button>
         `;
       } else if (statusLower === 'completed') {
         footerEl.innerHTML = `
           <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
           <button type="button" class="table-action-btn btn-filled" style="background: #4f46e5; color: #ffffff;" onclick="sendStatusUpdateToServer('archived', 'Request archived successfully.')">Archive</button>
+        `;
+      } else if (statusLower === 'rejected') {
+        footerEl.innerHTML = `
+          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
+          <button type="button" class="table-action-btn btn-filled" style="background: #4f46e5; color: #ffffff;" onclick="sendStatusUpdateToServer('pending', 'Request restored to Pending.')">Restore to Pending</button>
+        `;
+      } else if (statusLower === 'cancelled') {
+        footerEl.innerHTML = `
+          <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
         `;
       } else if (statusLower === 'archived') {
         footerEl.innerHTML = `
@@ -494,6 +508,8 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
       if (statusLower === 'completed') pillClass = 'completed';
       else if (statusLower === 'approved') pillClass = 'approved';
       else if (statusLower === 'in progress' || statusLower === 'in_progress') pillClass = 'in-progress';
+      else if (statusLower === 'rejected') pillClass = 'rejected';
+      else if (statusLower === 'cancelled') pillClass = 'cancelled';
       else if (statusLower === 'archived') pillClass = 'archived';
       
       badgeEl.innerHTML = `<span class="status-pill ${pillClass}">${status}</span>`;
@@ -508,6 +524,13 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
 
       const modal = document.getElementById('requestDetailModal');
       if (modal) modal.showModal();
+    }
+
+    // Reject Request confirmation & server dispatch
+    function handleModalRejectRequest() {
+      if (confirm('Are you sure you want to reject this assistance request?')) {
+        sendStatusUpdateToServer('rejected', 'Assistance request has been rejected.');
+      }
     }
 
     // Reliable Direct Form Submission Handler for Status Updates

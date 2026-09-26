@@ -1,12 +1,9 @@
-/* ==========================================================================
-   ALERTO - Design System & Dot Grid Canvas
-   CSU-CARIG Student Council - College of Engineering and Architecture (COEA)
-   ========================================================================== */
+/* ALERTO - Global Design System */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap');
 
 :root {
-  /* Institutional Royal Violet Palette (Matched to Reference Swatch #352264) */
+  /* Violet Palette */
   --admin-purple-dark: #2b1a4e;
   --admin-purple-deep: #352264;
   --admin-purple-mid: #412a7a;
@@ -16,7 +13,7 @@
   --admin-purple-soft: #efe9fc;
   --admin-purple-tint: #f8f5fe;
 
-  /* Student / User Crimson Palette (Matched to CSU Red Reference #5c091d / #700d23) */
+  /* Crimson Palette */
   --user-red-dark: #3a0410;
   --user-red-deep: #5c091d;
   --user-red-mid: #700d23;
@@ -26,13 +23,13 @@
   --user-red-soft: #fdebed;
   --user-red-tint: #fef5f7;
 
-  /* Surfaces & Canvas */
+  /* Surface Colors */
   --admin-bg: #f8f7fc;
   --admin-surface: #ffffff;
   --admin-surface-glass: rgba(255, 255, 255, 0.94);
   --admin-surface-subtle: #faf9fd;
 
-  /* Text & Typography */
+  /* Typography Colors */
   --admin-text: #171221;
   --admin-text-secondary: #4a4257;
   --admin-muted: #726b80;
@@ -44,7 +41,7 @@
   --admin-border-subtle: #f4effa;
   --admin-border-focus: #c2aff5;
 
-  /* Refined, Human-Crafted Editorial Status Palette (Non-AI, Distinct & Legible) */
+  /* Status Colors */
   --status-pending-bg: #fdf5ea;
   --status-pending-text: #9c6008;
   --status-pending-border: #f7ddb2;
@@ -75,13 +72,13 @@
   --status-banned-border: #d2cdd9;
   --status-banned-dot: #443c52;
 
-  /* Natural Tailored Shadows */
+  /* Shadows */
   --shadow-subtle: 0 1px 3px rgba(35, 20, 65, 0.03), 0 4px 12px rgba(35, 20, 65, 0.03);
   --shadow-card: 0 4px 20px rgba(35, 20, 65, 0.05), 0 1px 3px rgba(35, 20, 65, 0.02);
   --shadow-card-hover: 0 12px 36px rgba(92, 48, 212, 0.12), 0 2px 8px rgba(35, 20, 65, 0.04);
   --shadow-header: 0 4px 20px rgba(35, 20, 65, 0.12);
 
-  /* Radii */
+  /* Border Radius */
   --radius-xs: 6px;
   --radius-sm: 10px;
   --radius-md: 14px;
@@ -89,11 +86,10 @@
   --radius-xl: 26px;
   --radius-pill: 9999px;
 
-  /* Fonts */
+  /* Typography */
   --heading-font: "Poppins", system-ui, -apple-system, sans-serif;
   --body-font: "Inter", system-ui, -apple-system, sans-serif;
 
-  /* Fluid Font Sizes */
   --fs-2xs: 0.7rem;
   --fs-xs: 0.775rem;
   --fs-sm: 0.875rem;
@@ -105,7 +101,7 @@
   --fs-3xl: 2.35rem;
   --fs-4xl: 2.95rem;
 
-  /* Spacing Scale */
+  /* Spacing */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -129,7 +125,7 @@
   --transition-spring: 320ms cubic-bezier(0.68, -0.6, 0.32, 1.6);
 }
 
-/* Reset & Box Sizing */
+/* Reset */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -144,7 +140,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Body with Modern Geometric Dot Grid Pattern */
 body {
   font-family: var(--body-font);
   font-size: var(--fs-base);
@@ -213,10 +208,7 @@ button {
   }
 }
 
-/* ==========================================================================
-   Mobile & Tablet Cross-Device Adaptations (Android, iPhone, iPad, Tablets)
-   ========================================================================== */
-/* Touch targets & Tap handling */
+/* Mobile & Touch Controls */
 button,
 a,
 input[type="checkbox"],
@@ -232,7 +224,6 @@ select,
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Minimum 44px touch target for primary CTA buttons */
 .auth-submit-btn,
 .portal-submit-btn,
 .request-submit-btn,
@@ -241,7 +232,6 @@ select,
   min-height: 44px;
 }
 
-/* Prevent iOS Safari automatic zooming on input focus */
 @media screen and (max-width: 768px) {
   input[type="text"],
   input[type="email"],
@@ -260,7 +250,44 @@ select,
   }
 }
 
-/* iOS Safe Area Insets for Notch / Dynamic Island / Home Bar */
+button:active:not(:disabled),
+a.role-switch-pill:active,
+a.table-action-btn:active,
+.unlock-action-btn:active,
+.cancel-action-btn:active,
+.gps-locate-btn:active,
+.quick-fill-btn:active {
+  transform: scale(0.96) !important;
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+body,
+.table-responsive-wrapper,
+.stepper-track-container,
+.admin-sidebar,
+.student-sidebar {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
 @supports (padding: max(0px)) {
   body {
     padding-left: max(0px, env(safe-area-inset-left));
