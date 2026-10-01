@@ -387,8 +387,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <span>COEA-SC DRRM Operations Security Standard</span>
           </div>
 
-          <a href="admin-login.php" class="auth-back-link">
-            <span>Back to Admin Portal &rarr;</span>
+          <a href="admin-homepage.php" class="auth-back-link">
+            <span>Back to Dashboard &rarr;</span>
           </a>
         </div>
 

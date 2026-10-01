@@ -11,6 +11,10 @@ $user_id = $_SESSION['user_id'];
 $error = '';
 $success = '';
 
+// Retrieve dynamic system settings
+$sysSettings = get_system_settings($pdo);
+$isAssistanceEnabled = ($sysSettings['request_assistance_enabled'] ?? '1') === '1';
+
 // Check for any existing active request for this user (ignoring completed, archived, cancelled, or rejected)
 $stmtActive = $pdo->prepare("
     SELECT * FROM assistance_requests 
@@ -43,7 +47,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $longitude       = trim($_POST['longitude'] ?? '');
         $description     = trim($_POST['remarks'] ?? '');
 
-        if (empty($assistance_type) || empty($landmark)) {
+        if (!$activeRequest && !$isAssistanceEnabled) {
+            $error = "Assistance request intake is currently closed by the COEASC DRRM Department.";
+        } elseif (empty($assistance_type) || empty($landmark)) {
             $error = "Please fill in all required request details.";
         } else {
             if ($activeRequest) {
@@ -159,6 +165,23 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
       <?php if ($activeRequest && in_array($activeStatusLower, ['in_progress', 'completed', 'cancelled'])): ?>
         <div class="alert-banner alert-info" role="alert" style="display: flex; align-items: flex-start; gap: 10px; margin: 20px 28px 0; padding: 12px 14px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: #f0f4ff; color: #1e40af; border: 1.5px solid #bfdbfe; line-height: 1.45;">
           <div>Your request status is currently <strong><?= ucfirst($activeRequest['status']) ?></strong>. Online modifications are locked once dispatch operations are underway.</div>
+        </div>
+      <?php elseif (!$activeRequest && !$isAssistanceEnabled): ?>
+        <div class="alert-banner alert-warning" role="alert" style="display: flex; align-items: flex-start; gap: 12px; margin: 20px 28px; padding: 20px 22px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: #fff8f0; color: #9a4800; border: 1.5px solid #fed7aa; line-height: 1.55;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 22px; height: 22px; flex-shrink: 0; color: #ea580c; margin-top: 2px;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <div>
+            <strong style="display: block; font-size: var(--fs-sm); margin-bottom: 4px; color: #700d23;">Assistance Request Intake Currently Closed</strong>
+            The COEASC DRRM Department enables assistance request submissions during or immediately after a disaster event in the campus area to coordinate relief and prevent spam submissions.
+            <div style="margin-top: 14px;">
+              <a href="user-homepage.php" class="unlock-action-btn" style="background: #700d23; color: #ffffff; padding: 9px 18px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; border-radius: var(--radius-sm); font-weight: 700;">
+                &larr; Return to Dashboard
+              </a>
+            </div>
+          </div>
         </div>
       <?php else: ?>
         <?php if ($activeRequest): ?>

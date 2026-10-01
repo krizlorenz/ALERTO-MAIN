@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Portal Sign In | ALERTO - CSU-Carig Student Council</title>
+  <title>Sign In | ALERTO - CSU-Carig Student Council</title>
 
   <!-- Google Fonts: Poppins & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,13 +21,13 @@
 
 <body>
 
-  <div class="login-page-wrapper">
+  <div class="login-page-wrapper student-theme">
 
     <!-- Top Navigation Header -->
     <header class="login-top-bar">
       <div class="login-top-bar-inner">
         <a href="login.html" class="login-brand-lockup">
-          <img src="logo/user-main-logo.png" alt="ALERTO Admin Logo" class="login-brand-logo">
+          <img src="logo/user-main-logo.png" alt="ALERTO Logo" class="login-brand-logo">
           <div class="login-brand-texts">
             <span class="login-brand-title">ALERTO</span>
             <span class="login-brand-sub">CSU-COEA</span>
@@ -42,7 +42,7 @@
 
         <!-- Left Hero Content -->
         <div class="login-hero-content">
-          <span class="login-eyebrow-tag">Admin Portal</span>
+          <span class="login-eyebrow-tag">Account Sign In</span>
 
           <h1 class="login-hero-heading">
             Welcome to
@@ -92,38 +92,41 @@
             <!-- Card Header -->
             <div class="portal-card-header">
               <div class="portal-avatar-circle" aria-hidden="true">
-                <img src="icons/user_admin_login_icon/user-login.png" alt="Admin Portal">
+                <img src="icons/user_admin_login_icon/user-login.png" alt="Sign In">
               </div>
               <div class="portal-title-block">
-                <h2>Admin Portal</h2>
-                <p>For administrators and authorized personnel only.</p>
+                <h2>Account Sign In</h2>
+                <p>Enter your student ID or institutional credentials to access your account.</p>
               </div>
             </div>
 
             <!-- Sign In Form -->
-            <form class="login-form-body" id="adminLoginForm" onsubmit="handleAdminSignIn(event)">
+            <form class="login-form-body" id="unifiedLoginForm" action="user-login.php" method="POST">
 
-              <!-- Field 1: Email or Username -->
+              <!-- Field 1: Email or Student ID -->
               <div class="input-group">
-                <label for="adminUserEmail" class="input-label">Email or Username</label>
+                <label for="userIdentifier" class="input-label">Student ID or Email Address</label>
                 <div class="input-container">
                   <span class="input-icon-slot" aria-hidden="true">
-                    <img src="icons/email.svg" alt=""
+                    <img src="icons/id-badge.svg" alt=""
                       onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                       stroke-linejoin="round" style="display:none;">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                      <polyline points="22,6 12,13 2,6"></polyline>
+                      <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                      <line x1="7" y1="8" x2="17" y2="8"></line>
+                      <line x1="7" y1="12" x2="13" y2="12"></line>
+                      <line x1="7" y1="16" x2="10" y2="16"></line>
                     </svg>
                   </span>
-                  <input type="text" id="adminUserEmail" class="portal-text-input"
-                    placeholder="Enter your email or username" required autocomplete="username">
+                  <input type="text" id="userIdentifier" class="portal-text-input"
+                    placeholder="e.g. 24-00909 or email@domain.com" required autocomplete="username" name="identifier">
                 </div>
+                <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 4px;">Enter your Student ID (XX-XXXXX) or registered Email</small>
               </div>
 
               <!-- Field 2: Password -->
               <div class="input-group">
-                <label for="adminUserPassword" class="input-label">Password</label>
+                <label for="userPassword" class="input-label">Password</label>
                 <div class="input-container">
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/lock.svg" alt=""
@@ -134,9 +137,9 @@
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                   </span>
-                  <input type="password" id="adminUserPassword" class="portal-text-input has-eye"
-                    placeholder="Enter your password" required autocomplete="current-password">
-                  <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'adminUserPassword')">
+                  <input type="password" id="userPassword" class="portal-text-input has-eye"
+                    placeholder="Enter your password" required autocomplete="current-password" name="password">
+                  <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'userPassword')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                       <circle cx="12" cy="12" r="3"></circle>
@@ -152,7 +155,7 @@
                   <span>Remember me</span>
                 </label>
                 <a href="javascript:void(0)"
-                  onclick="alert('Password reset instructions will be sent to your institutional email.')"
+                  onclick="alert('Password reset instructions will be sent to your registered email.')"
                   class="forgot-link">Forgot password?</a>
               </div>
 
@@ -161,31 +164,10 @@
                 Log in
               </button>
 
-              <!-- Security Notice Box -->
-              <div class="portal-restricted-box">
-                <img src="icons/lock-small.svg" alt="" class="restricted-lock-icon"
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg class="restricted-lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-                  <rect x="3" y="11" width="18" height="11" rx="2"></rect>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-                <span class="restricted-text">
-                  This portal is restricted to authorized CSU-COEA Student Council personnel.
-                </span>
-              </div>
-
               <!-- Centered Card Footer Options -->
               <div class="login-card-footer-stack">
-                <div class="role-switch-centered">
-                  <a href="user-login.php" class="role-switch-pill student-pill">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                      stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                    <span>Login as Student &rarr;</span>
-                  </a>
+                <div class="register-switch-link">
+                  First time logging in? <a href="user-sign-in.php">Sign in</a>
                 </div>
               </div>
 
@@ -197,7 +179,7 @@
       </div>
     </div>
 
-    <!-- Bottom Wavy Purple Curve -->
+    <!-- Bottom Wavy Crimson Red Curve -->
     <div class="login-wave-footer" aria-hidden="true">
       <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
         <path d="M0,45 C320,120 440,15 720,70 C960,115 1200,30 1440,85 L1440,120 L0,120 Z"></path>
@@ -220,7 +202,7 @@
     }
 
     // Handle Sign In Submit
-    function handleAdminSignIn(event) {
+    function handleUnifiedSignIn(event) {
       event.preventDefault();
       const submitBtn = document.getElementById('loginSubmitBtn');
       submitBtn.innerHTML = '<span>Signing in...</span>';
@@ -228,10 +210,10 @@
       submitBtn.disabled = true;
 
       setTimeout(() => {
-        submitBtn.innerHTML = '<span>Success! Opening Portal...</span>';
+        submitBtn.innerHTML = '<span>Success! Redirecting...</span>';
         submitBtn.style.background = '#1e6b37';
         setTimeout(() => {
-          window.location.href = 'index.html';
+          window.location.href = 'user-homepage.php';
         }, 500);
       }, 700);
     }

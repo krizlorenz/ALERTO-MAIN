@@ -168,54 +168,182 @@
   font-weight: 600;
 }
 
-/* Hotline Box */
-.sidebar-hotline-card {
-  margin: var(--space-4) var(--space-3);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.nav-item-badge.badge-online {
+  background: rgba(34, 197, 94, 0.25);
+  color: #86efac;
+  border: 1px solid rgba(74, 222, 128, 0.4);
+}
+
+.nav-item-badge.badge-offline {
+  background: rgba(248, 113, 113, 0.22);
+  color: #fca5a5;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+}
+
+/* Sidebar Incident & DRRM Portal Controls Card */
+.sidebar-control-card {
+  margin: var(--space-3) var(--space-3) var(--space-4);
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-md);
-  padding: var(--space-4);
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 10px;
 }
 
-.sidebar-hotline-header {
+.sidebar-control-header {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  font-size: var(--fs-xs);
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sidebar-control-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sidebar-control-title svg {
+  color: #ffc107;
+  flex-shrink: 0;
+}
+
+.sidebar-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 50px;
+  line-height: 1.2;
+}
+
+.sidebar-status-pill.online {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.35);
+}
+
+.sidebar-status-pill.offline {
+  background: rgba(248, 113, 113, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(248, 113, 113, 0.35);
+}
+
+.sidebar-status-pill .pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  display: inline-block;
+}
+
+.sidebar-control-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-xs);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.72rem;
+}
+
+.sidebar-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+
+.sidebar-info-row .info-label {
+  color: rgba(255, 255, 255, 0.55);
+  font-weight: 500;
+  font-size: 0.68rem;
+}
+
+.sidebar-info-row .info-val {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-align: right;
+}
+
+.sidebar-info-row .info-val.truncate {
+  max-width: 135px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-control-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.sidebar-toggle-form {
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  min-height: 32px;
+  padding: 6px 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.sidebar-action-btn.pause-btn {
+  background: rgba(239, 68, 68, 0.22);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.45);
+}
+
+.sidebar-action-btn.pause-btn:hover {
+  background: rgba(239, 68, 68, 0.38);
   color: #ffffff;
 }
 
-.sidebar-hotline-header svg {
-  width: 16px;
-  height: 16px;
-  color: var(--status-warning);
+.sidebar-action-btn.open-btn {
+  background: rgba(34, 197, 94, 0.25);
+  color: #86efac;
+  border-color: rgba(34, 197, 94, 0.5);
 }
 
-.sidebar-hotline-desc {
-  font-size: var(--fs-2xs);
-  color: rgba(255, 255, 255, 0.6);
-  line-height: 1.4;
-}
-
-.sidebar-hotline-btn {
-  display: block;
-  text-align: center;
-  background: var(--admin-purple);
+.sidebar-action-btn.open-btn:hover {
+  background: rgba(34, 197, 94, 0.4);
   color: #ffffff;
-  padding: 6px var(--space-3);
-  border-radius: var(--radius-sm);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  transition: background-color var(--transition-fast);
 }
 
-.sidebar-hotline-btn:hover {
-  background: var(--admin-purple-bright);
+.sidebar-action-btn.settings-btn {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.sidebar-action-btn.settings-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
 }
 
 /* Sidebar Footer */

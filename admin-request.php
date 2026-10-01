@@ -16,7 +16,34 @@ if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'supe
     exit;
 }
 
-// 3. Handle request status updates via standard POST submission
+// 3. Handle Admin Controls: Toggle Assistance or Update Contacts
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    if ($_POST['action'] === 'toggle_assistance' && isset($_POST['new_state'])) {
+        $newState = intval($_POST['new_state']) ? '1' : '0';
+        update_system_setting($pdo, 'request_assistance_enabled', $newState);
+        header("Location: admin-request.php?toggled=1");
+        exit;
+    }
+
+    if ($_POST['action'] === 'update_contacts') {
+        $phone = trim($_POST['contact_phone'] ?? '');
+        $email = trim($_POST['contact_email'] ?? '');
+        if (!empty($phone)) {
+            update_system_setting($pdo, 'contact_phone', $phone);
+        }
+        if (!empty($email)) {
+            update_system_setting($pdo, 'contact_email', $email);
+        }
+        if (isset($_POST['request_assistance_enabled'])) {
+            $reqEnabled = intval($_POST['request_assistance_enabled']) ? '1' : '0';
+            update_system_setting($pdo, 'request_assistance_enabled', $reqEnabled);
+        }
+        header("Location: admin-request.php?saved_settings=1");
+        exit;
+    }
+}
+
+// 4. Handle request status updates via standard POST submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_id'], $_POST['status'])) {
     $req_id = intval($_POST['request_id']);
     $req_status = trim($_POST['status']);
@@ -30,7 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_id'], $_POST[
     }
 }
 
-// 4. Fetch all student assistance requests from database (including archived so they can be filtered)
+// Retrieve dynamic system settings
+$sysSettings = get_system_settings($pdo);
+$contactPhone = $sysSettings['contact_phone'] ?? '09556678451';
+$contactEmail = $sysSettings['contact_email'] ?? 'alertoCOEA@gmail.com';
+$isAssistanceEnabled = ($sysSettings['request_assistance_enabled'] ?? '1') === '1';
+
+// 5. Fetch all student assistance requests from database (including archived so they can be filtered)
 $stmt = $pdo->prepare("
     SELECT r.*, u.full_name, u.student_id, u.email, u.contact_number, u.program, u.year_level 
     FROM assistance_requests r
@@ -41,7 +74,7 @@ $stmt->execute();
 $requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Count pending verifications dynamically for sidebar badge
-$stmtPending = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'student' AND status = 'unverified'");
+$stmtPending = $pdo->query("SELECT COUNT(*) FROM users WHERE role = 'student' AND (status = 'unverified' OR status = 'pending')");
 $pendingVerificationCount = $stmtPending->fetchColumn();
 
 // Active Requests count for sidebar & top right (Pending, Approved, In Progress)
@@ -131,6 +164,28 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
           </span>
           <span>Requests</span>
           <span class="nav-item-badge"><?= $activeRequestsCount ?></span>
+        </a>
+
+        <a href="admin-homepage.php#systemControls" onclick="openControlsModal(); return false;" class="nav-item-link" title="Disaster Response Intake &amp; Incident Controls">
+          <span class="nav-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </span>
+          <span>Controls</span>
+          <span class="nav-item-badge <?= $isAssistanceEnabled ? 'badge-online' : 'badge-offline' ?>">
+            <?= $isAssistanceEnabled ? 'Active' : 'Paused' ?>
+          </span>
+        </a>
+
+        <a href="admin-homepage.php#contactControls" onclick="openContactsModal(); return false;" class="nav-item-link" title="COEASC DRRM Contact Information">
+          <span class="nav-item-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+          </span>
+          <span>Contacts</span>
         </a>
 
         <?php if ($_SESSION['role'] === 'superadmin'): ?>
@@ -415,9 +470,171 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
     </div>
   </dialog>
 
+  <!-- 1. Disaster Response & Incident Controls Modal Dialog -->
+  <dialog id="controlsModal" aria-labelledby="controlsModalTitle">
+    <div style="padding: var(--space-5) var(--space-6); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between; background: #ffffff;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 38px; height: 38px; border-radius: 10px; background: #fdebed; color: #700d23; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(112, 13, 35, 0.15);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </div>
+        <div>
+          <span class="admin-page-eyebrow" style="color: #700d23; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; display: block;">System &amp; Incident Controls</span>
+          <h3 id="controlsModalTitle" style="font-family: var(--heading-font); font-size: 1.15rem; color: var(--admin-text); font-weight: 700; margin: 0; line-height: 1.2;">Student Request Intake</h3>
+        </div>
+      </div>
+      <button type="button" onclick="closeControlsModal()"
+        style="font-size: 1.5rem; color: var(--admin-muted); cursor: pointer; padding: 4px 8px; border: none; background: transparent; line-height: 1;" aria-label="Close modal">&times;</button>
+    </div>
+
+    <div style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5); font-size: var(--fs-sm); max-height: 70vh; overflow-y: auto; background: #ffffff;">
+      
+      <!-- Live Status Banner -->
+      <?php if ($isAssistanceEnabled): ?>
+        <div style="padding: 14px 16px; background: #edf7f0; border-radius: var(--radius-md); border: 1.5px solid #c2e7cd; display: flex; align-items: flex-start; gap: 12px;">
+          <div style="width: 10px; height: 10px; border-radius: 50%; background: #22c55e; margin-top: 5px; flex-shrink: 0; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);"></div>
+          <div>
+            <div style="font-weight: 700; font-size: 0.85rem; color: #1e6b37; margin-bottom: 2px;">INTAKE STATUS: ACTIVE (OPEN)</div>
+            <p style="font-size: 0.75rem; color: #2d5a3b; line-height: 1.45; margin: 0;">
+              Student request submissions are currently <strong>OPEN</strong>. Students can access the request form and submit emergency disaster relief requests.
+            </p>
+          </div>
+        </div>
+      <?php else: ?>
+        <div style="padding: 14px 16px; background: #fef2f2; border-radius: var(--radius-md); border: 1.5px solid #fecaca; display: flex; align-items: flex-start; gap: 12px;">
+          <div style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444; margin-top: 5px; flex-shrink: 0; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);"></div>
+          <div>
+            <div style="font-weight: 700; font-size: 0.85rem; color: #991b1b; margin-bottom: 2px;">INTAKE STATUS: PAUSED (STAND DOWN)</div>
+            <p style="font-size: 0.75rem; color: #7f1d1d; line-height: 1.45; margin: 0;">
+              Student request intake is currently <strong>PAUSED</strong>. The "Request Assistance" button is grayed out and disabled on all student screens to avoid spamming.
+            </p>
+          </div>
+        </div>
+      <?php endif; ?>
+
+      <!-- Switch Action Box -->
+      <div style="padding: 16px; background: #faf7f8; border-radius: var(--radius-md); border: 1.5px solid rgba(112, 13, 35, 0.12); display: flex; flex-direction: column; gap: 12px;">
+        <div>
+          <strong style="font-size: 0.85rem; color: var(--admin-text); display: block; margin-bottom: 4px;">Toggle Request Submission State</strong>
+          <p style="font-size: 0.75rem; color: var(--admin-muted); line-height: 1.45; margin: 0;">
+            Turn this <strong>ON</strong> immediately when a natural disaster or emergency affects students to start collecting requests. In non-disaster periods, keep it <strong>OFF</strong>.
+          </p>
+        </div>
+
+        <form method="POST" action="admin-request.php" onsubmit="return confirm('<?= $isAssistanceEnabled ? 'Are you sure you want to CLOSE student request submissions? The request button will be grayed out for students.' : 'Are you sure you want to ACTIVATE student request submissions? The request button will become functional again for students.' ?>')" style="margin: 0;">
+          <input type="hidden" name="action" value="toggle_assistance">
+          <input type="hidden" name="new_state" value="<?= $isAssistanceEnabled ? '0' : '1' ?>">
+
+          <?php if ($isAssistanceEnabled): ?>
+            <button type="submit" style="width: 100%; min-height: 44px; padding: 10px 16px; border-radius: var(--radius-sm); font-family: var(--heading-font); font-weight: 700; font-size: 0.82rem; cursor: pointer; border: 1.5px solid #fecaca; background: #fef2f2; color: #991b1b; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition-fast);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+              <span>Turn OFF Request Intake (Stand Down)</span>
+            </button>
+          <?php else: ?>
+            <button type="submit" style="width: 100%; min-height: 44px; padding: 10px 16px; border-radius: var(--radius-sm); font-family: var(--heading-font); font-weight: 700; font-size: 0.82rem; cursor: pointer; border: 1.5px solid #bbf7d0; background: #f0fdf4; color: #166534; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition-fast);">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span>Turn ON Request Intake (Activate Disaster Mode)</span>
+            </button>
+          <?php endif; ?>
+        </form>
+      </div>
+
+    </div>
+
+    <div style="padding: var(--space-4) var(--space-6); background: var(--admin-bg); border-top: 1px solid var(--admin-border); display: flex; justify-content: flex-end; align-items: center; gap: var(--space-3);">
+      <button type="button" class="table-action-btn" onclick="closeControlsModal()">Close</button>
+    </div>
+  </dialog>
+
+  <!-- 2. DRRM Emergency Contacts Modal Dialog -->
+  <dialog id="contactsModal" aria-labelledby="contactsModalTitle">
+    <div style="padding: var(--space-5) var(--space-6); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between; background: #ffffff;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 38px; height: 38px; border-radius: 10px; background: #fdebed; color: #700d23; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(112, 13, 35, 0.15);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        </div>
+        <div>
+          <span class="admin-page-eyebrow" style="color: #700d23; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; display: block;">COEASC DRRM Department</span>
+          <h3 id="contactsModalTitle" style="font-family: var(--heading-font); font-size: 1.15rem; color: var(--admin-text); font-weight: 700; margin: 0; line-height: 1.2;">Emergency Contact Details</h3>
+        </div>
+      </div>
+      <button type="button" onclick="closeContactsModal()"
+        style="font-size: 1.5rem; color: var(--admin-muted); cursor: pointer; padding: 4px 8px; border: none; background: transparent; line-height: 1;" aria-label="Close modal">&times;</button>
+    </div>
+
+    <form method="POST" action="admin-request.php" style="margin: 0;">
+      <input type="hidden" name="action" value="update_contacts">
+
+      <div style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); font-size: var(--fs-sm); max-height: 70vh; overflow-y: auto; background: #ffffff;">
+        
+        <p style="font-size: 0.75rem; color: var(--admin-muted); line-height: 1.45; margin: 0;">
+          Update the council contact numbers and email address displayed in student banners, emergency contact sections, and footers across devices.
+        </p>
+
+        <!-- Contact Phone Number -->
+        <div>
+          <label for="portalModalPhoneReq" style="display: block; font-weight: 700; font-size: 0.8rem; color: var(--admin-text); margin-bottom: 6px;">DRRM Contact Hotline Number</label>
+          <div style="position: relative;">
+            <input type="text" id="portalModalPhoneReq" name="contact_phone" value="<?= htmlspecialchars($contactPhone) ?>" required class="filter-input" style="width: 100%; height: 42px; padding-left: 36px;" placeholder="e.g. 09556678451">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 12px; top: 13px; color: var(--admin-muted); pointer-events: none;">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+          </div>
+          <span style="font-size: 0.7rem; color: var(--admin-muted); display: block; margin-top: 4px;">Primary phone line for student disaster calls and SMS.</span>
+        </div>
+
+        <!-- Contact Email Address -->
+        <div>
+          <label for="portalModalEmailReq" style="display: block; font-weight: 700; font-size: 0.8rem; color: var(--admin-text); margin-bottom: 6px;">DRRM Contact Email Address</label>
+          <div style="position: relative;">
+            <input type="email" id="portalModalEmailReq" name="contact_email" value="<?= htmlspecialchars($contactEmail) ?>" required class="filter-input" style="width: 100%; height: 42px; padding-left: 36px;" placeholder="e.g. alertoCOEA@gmail.com">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 12px; top: 13px; color: var(--admin-muted); pointer-events: none;">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+          </div>
+          <span style="font-size: 0.7rem; color: var(--admin-muted); display: block; margin-top: 4px;">Official council email for inquiries and assistance logs.</span>
+        </div>
+
+      </div>
+
+      <div style="padding: var(--space-4) var(--space-6); background: var(--admin-bg); border-top: 1px solid var(--admin-border); display: flex; justify-content: flex-end; align-items: center; gap: var(--space-3);">
+        <button type="button" class="table-action-btn" onclick="closeContactsModal()">Cancel</button>
+        <button type="submit" class="table-action-btn btn-filled" style="background: #700d23; border-color: #700d23; color: #ffffff;">Save Contacts</button>
+      </div>
+    </form>
+  </dialog>
+
   <!-- Client Script for Search, Sidebar & Request Minimap -->
   <script src="assets/js/main.js"></script>
   <script>
+    function openControlsModal() {
+      const modal = document.getElementById('controlsModal');
+      if (modal && typeof modal.showModal === 'function') {
+        modal.showModal();
+      }
+    }
+
+    function closeControlsModal() {
+      const modal = document.getElementById('controlsModal');
+      if (modal && typeof modal.close === 'function') {
+        modal.close();
+      }
+    }
+
+    function openContactsModal() {
+      const modal = document.getElementById('contactsModal');
+      if (modal && typeof modal.showModal === 'function') {
+        modal.showModal();
+      }
+    }
+
+    function closeContactsModal() {
+      const modal = document.getElementById('contactsModal');
+      if (modal && typeof modal.close === 'function') {
+        modal.close();
+      }
+    }
+
     let reqMinimap = null;
     let reqMarker = null;
     let reqLat = 17.6534;

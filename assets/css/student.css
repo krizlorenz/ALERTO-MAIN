@@ -1253,3 +1253,394 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(156, 36, 56, 0.16);
 }
+
+/* ==========================================================================
+   Refined Request Status Stepper States (Green on Admin Approval)
+   ========================================================================== */
+.stepper-step.step-pending .step-node-circle {
+  background: #f59e0b;
+  border-color: #d97706;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.22), 0 4px 14px rgba(245, 158, 11, 0.35);
+}
+
+.stepper-step.step-pending .step-node-circle img {
+  filter: brightness(0) invert(1);
+}
+
+.stepper-step.step-approved .step-node-circle {
+  background: #1e6b37 !important;
+  border-color: #166534 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 4px rgba(30, 107, 55, 0.25), 0 4px 14px rgba(30, 107, 55, 0.35) !important;
+}
+
+.stepper-step.step-approved .step-node-circle img {
+  filter: brightness(0) invert(1) !important;
+}
+
+.stepper-step.step-progress .step-node-circle {
+  background: #0284c7;
+  border-color: #0369a1;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.22), 0 4px 14px rgba(2, 132, 199, 0.35);
+}
+
+.stepper-step.step-progress .step-node-circle img {
+  filter: brightness(0) invert(1);
+}
+
+.stepper-step.step-completed .step-node-circle {
+  background: #1e6b37;
+  border-color: #166534;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(30, 107, 55, 0.3);
+}
+
+.stepper-step.step-completed .step-node-circle img {
+  filter: brightness(0) invert(1);
+}
+
+.stepper-step.step-idle .step-node-circle {
+  background: #ede6ea;
+  border-color: #ede6ea;
+  color: var(--admin-muted);
+}
+
+.stepper-step.step-idle .step-node-circle img {
+  filter: brightness(0) opacity(0.35);
+}
+
+/* Category Approval Badges & Breakdown */
+.category-breakdown-box {
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  padding: var(--space-5) var(--space-6);
+  border: 1.5px solid rgba(112, 13, 35, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  box-shadow: 0 4px 16px rgba(70, 10, 25, 0.03);
+}
+
+.category-pill-list {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.category-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  line-height: 1;
+  transition: all var(--transition-fast);
+}
+
+.category-status-pill.approved {
+  background: #edf7f0;
+  color: #1e6b37;
+  border: 1.5px solid #c2e7cd;
+  box-shadow: 0 2px 8px rgba(30, 107, 55, 0.1);
+}
+
+.category-status-pill.pending {
+  background: #fdf5ea;
+  color: #9c6008;
+  border: 1.5px solid #f7ddb2;
+  box-shadow: 0 2px 8px rgba(156, 96, 8, 0.08);
+}
+
+.category-status-pill.in_progress {
+  background: #f0f9ff;
+  color: #0369a1;
+  border: 1.5px solid #bae6fd;
+}
+
+.category-status-pill.completed {
+  background: #edf7f0;
+  color: #1e6b37;
+  border: 1.5px solid #c2e7cd;
+}
+
+/* ==========================================================================
+   Emergency Contact Section & Quick Access Hotline
+   ========================================================================== */
+.quick-hotline-strip {
+  background: linear-gradient(135deg, #5c091d 0%, #700d23 50%, #8b122f 100%);
+  color: #ffffff;
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  box-shadow: 0 8px 24px rgba(92, 9, 29, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.quick-hotline-strip .hotline-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.quick-hotline-strip .hotline-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.quick-hotline-strip .hotline-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hotline-btn-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  min-height: 40px;
+}
+
+.hotline-btn-pill.phone-btn {
+  background: #ffffff;
+  color: #700d23;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.hotline-btn-pill.phone-btn:hover {
+  background: #fdebed;
+  transform: translateY(-1px);
+}
+
+.hotline-btn-pill.email-btn {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hotline-btn-pill.email-btn:hover {
+  background: rgba(255, 255, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+/* Dedicated Emergency Contact Section */
+.emergency-contact-section {
+  width: 100%;
+  padding: var(--space-8) 0 var(--space-12);
+}
+
+.emergency-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-5);
+  margin-top: var(--space-6);
+}
+
+.emergency-contact-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: var(--space-6);
+  border: 1.5px solid rgba(112, 13, 35, 0.12);
+  box-shadow: 0 6px 24px rgba(70, 10, 25, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all var(--transition-smooth);
+}
+
+.emergency-contact-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(112, 13, 35, 0.12);
+  border-color: #8b122f;
+}
+
+.emergency-contact-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: var(--space-3);
+}
+
+.emergency-contact-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #fdebed;
+  color: #700d23;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(112, 13, 35, 0.15);
+}
+
+.emergency-contact-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.emergency-contact-title {
+  font-family: var(--heading-font);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--admin-text);
+  line-height: 1.2;
+}
+
+.emergency-contact-desc {
+  font-size: var(--fs-xs);
+  color: var(--admin-muted);
+  line-height: 1.5;
+  margin-bottom: var(--space-5);
+}
+
+.emergency-contact-action {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px var(--space-4);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: var(--fs-xs);
+  text-decoration: none;
+  min-height: 44px;
+  transition: all var(--transition-fast);
+}
+
+.emergency-contact-action.primary-action {
+  background: #700d23;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(112, 13, 35, 0.25);
+}
+
+.emergency-contact-action.primary-action:hover {
+  background: #5c091d;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(112, 13, 35, 0.35);
+}
+
+.emergency-contact-action.outline-action {
+  background: #fdebed;
+  color: #700d23;
+  border: 1px solid rgba(112, 13, 35, 0.2);
+}
+
+.emergency-contact-action.outline-action:hover {
+  background: #fbd6dc;
+  color: #520818;
+  transform: translateY(-1px);
+}
+
+/* Hero CTA Group */
+.hero-cta-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.hero-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-decoration: none;
+  min-height: 46px;
+  transition: all var(--transition-fast);
+}
+
+.hero-cta-btn.request-btn {
+  background: #700d23;
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(112, 13, 35, 0.3);
+}
+
+.hero-cta-btn.request-btn:hover {
+  background: #520818;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(112, 13, 35, 0.4);
+}
+
+.hero-cta-btn.hotline-btn {
+  background: #ffffff;
+  color: #700d23;
+  border: 1.5px solid rgba(112, 13, 35, 0.2);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.hero-cta-btn.hotline-btn:hover {
+  background: #fdebed;
+  border-color: #700d23;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 640px) {
+  .hero-cta-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-cta-btn {
+    width: 100%;
+  }
+
+  .quick-hotline-strip {
+    padding: 16px;
+    border-radius: 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .quick-hotline-strip .hotline-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .hotline-btn-pill {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .emergency-contact-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .emergency-contact-card {
+    padding: 20px 16px;
+    border-radius: 18px;
+  }
+}
+

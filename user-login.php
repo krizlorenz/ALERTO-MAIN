@@ -6,56 +6,85 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $identifier = trim($_POST['student_id'] ?? $_POST['email'] ?? $_POST['identifier'] ?? '');
+    $identifier = trim($_POST['identifier'] ?? $_POST['student_id'] ?? $_POST['email'] ?? '');
     $password   = $_POST['password'] ?? '';
 
     if (empty($identifier) || empty($password)) {
         $error = "Please enter your Student ID or Email and password.";
-    } elseif (strpos($identifier, '@') === false) {
-        if (!preg_match('/^\d{2}-\d{5}$/', $identifier)) {
-            $error = "Student ID must be in the exact format XX-XXXXX (e.g., 24-00909).";
-        }
     }
 
     if (empty($error)) {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE (student_id = ? OR email = ?) LIMIT 1");
-        $stmt->execute([$identifier, $identifier]);
-        $user = $stmt->fetch();
+        $isEmail = (strpos($identifier, '@') !== false);
 
-        if ($user && password_verify($password, $user['password'])) {
-            if ($user['status'] === 'unverified') {
-                $error = "Your account registration is still pending admin approval.";
-            } elseif ($user['status'] === 'rejected') {
-                $error = "Your registration application was rejected. Please contact support.";
-            } elseif ($user['status'] === 'banned') {
-                $error = "Your account has been deactivated. Please contact an administrator.";
+        if ($isEmail) {
+            // ADMIN LOGIN (Email format)
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
+            $stmt->execute([$identifier]);
+            $user = $stmt->fetch();
+
+            if ($user && password_verify($password, $user['password'])) {
+                $userRole = strtolower(trim($user['role'] ?? ''));
+
+                if (in_array($userRole, ['admin', 'superadmin'])) {
+                    $_SESSION['user_id']        = $user['id'];
+                    $_SESSION['role']           = $user['role'];
+                    $_SESSION['full_name']      = $user['full_name'];
+                    $_SESSION['email']          = $user['email'];
+                    $_SESSION['student_id']     = $user['student_id'] ?? '';
+                    $_SESSION['program']        = $user['program'] ?? '';
+                    $_SESSION['year_level']     = $user['year_level'] ?? '';
+                    $_SESSION['contact_number'] = $user['contact_number'] ?? '';
+                    $_SESSION['status']         = $user['status'] ?? 'approved';
+
+                    header("Location: admin-homepage.php");
+                    exit;
+                } else {
+                    $error = "This email is not registered as an administrative account. For student access, please enter your Student ID.";
+                }
             } else {
-                $_SESSION['user_id']        = $user['id'];
-                $_SESSION['role']           = $user['role'];
-                $_SESSION['full_name']      = $user['full_name'];
-                $_SESSION['student_id']     = $user['student_id'];
-                $_SESSION['email']          = $user['email'];
-                $_SESSION['program']        = $user['program'];
-                $_SESSION['year_level']     = $user['year_level'];
-                $_SESSION['contact_number'] = $user['contact_number'];
-                $_SESSION['status']         = $user['status'];
-
-                header("Location: user-homepage.php");
-                exit;
+                $error = "Invalid admin credentials. Please verify your email and password.";
             }
         } else {
-            $error = "Invalid credentials. Please verify your Student ID/Email and password.";
+            // STUDENT / USER LOGIN (Student ID format XX-XXXXX)
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE student_id = ? LIMIT 1");
+            $stmt->execute([$identifier]);
+            $user = $stmt->fetch();
+
+            if ($user && password_verify($password, $user['password'])) {
+                // Student account status check
+                if ($user['status'] === 'unverified' || $user['status'] === 'pending') {
+                    $error = "Your student registration is still pending admin approval.";
+                } elseif ($user['status'] === 'rejected') {
+                    $error = "Your registration application was rejected. Please contact support.";
+                } elseif ($user['status'] === 'banned') {
+                    $error = "Your account has been deactivated. Please contact an administrator.";
+                } else {
+                    $_SESSION['user_id']        = $user['id'];
+                    $_SESSION['role']           = 'student';
+                    $_SESSION['full_name']      = $user['full_name'];
+                    $_SESSION['student_id']     = $user['student_id'];
+                    $_SESSION['email']          = $user['email'];
+                    $_SESSION['program']        = $user['program'];
+                    $_SESSION['year_level']     = $user['year_level'];
+                    $_SESSION['contact_number'] = $user['contact_number'];
+                    $_SESSION['status']         = $user['status'];
+
+                    header("Location: user-homepage.php");
+                    exit;
+                }
+            } else {
+                $error = "Invalid student credentials. Please verify your Student ID and password.";
+            }
         }
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Portal Sign In | ALERTO - CSU-Carig Student Council</title>
+  <title>Sign In | ALERTO - CSU-Carig Student Council</title>
 
   <!-- Google Fonts: Poppins & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -90,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         <!-- Left Hero Content -->
         <div class="login-hero-content">
-          <span class="login-eyebrow-tag">Student Portal</span>
+          <span class="login-eyebrow-tag">Account Sign In</span>
           
           <h1 class="login-hero-heading">
             Welcome to
@@ -138,11 +167,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Card Header -->
             <div class="portal-card-header">
               <div class="portal-avatar-circle" aria-hidden="true">
-                <img src="icons/user_admin_login_icon/user-login.png" alt="Student Portal">
+                <img src="icons/user_admin_login_icon/user-login.png" alt="Sign In">
               </div>
               <div class="portal-title-block">
-                <h2>Student Portal</h2>
-                <p>For enrolled CSU-COEA students requiring assistance.</p>
+                <h2>Account Sign In</h2>
+                <p>Enter your student ID or institutional credentials to access your account.</p>
               </div>
             </div>
 
@@ -169,11 +198,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <!-- Sign In Form -->
-            <form class="login-form-body" id="studentLoginForm" action="user-login.php" method="POST">
+            <form class="login-form-body" id="unifiedLoginForm" action="user-login.php" method="POST">
               
-              <!-- Field 1: Email or Student ID -->
+              <!-- Field 1: Identifier (Student ID or Email) -->
               <div class="input-group">
-                <label for="studentUserEmail" class="input-label">Student ID or Email Address</label>
+                <label for="userIdentifier" class="input-label">Student ID or Email Address</label>
                 <div class="input-container">
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/id-badge.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -184,14 +213,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       <line x1="7" y1="16" x2="10" y2="16"></line>
                     </svg>
                   </span>
-                  <input type="text" id="studentUserEmail" name="student_id" class="portal-text-input" placeholder="e.g. 24-00909" pattern="\d{2}-\d{5}" maxlength="8" title="Format must be XX-XXXXX (e.g., 24-00909)" required autocomplete="username" value="<?= htmlspecialchars($_POST['student_id'] ?? '') ?>">
+                  <input type="text" id="userIdentifier" name="identifier" class="portal-text-input" placeholder="e.g. 24-00909 or email@domain.com" required autocomplete="username" value="<?= htmlspecialchars($_POST['identifier'] ?? $_POST['student_id'] ?? $_POST['email'] ?? '') ?>">
                 </div>
-                <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 4px;">Format must be XX-XXXXX (e.g., 24-00909)</small>
+                <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 4px;">Students: Enter Student ID (e.g. 24-00909) &bull; Admins: Enter registered Email</small>
               </div>
 
               <!-- Field 2: Password -->
               <div class="input-group">
-                <label for="studentUserPassword" class="input-label">Password</label>
+                <label for="userPassword" class="input-label">Password</label>
                 <div class="input-container">
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/lock.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -200,8 +229,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
                   </span>
-                  <input type="password" id="studentUserPassword" name="password" class="portal-text-input has-eye" placeholder="Enter your password" required autocomplete="current-password">
-                  <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'studentUserPassword')">
+                  <input type="password" id="userPassword" name="password" class="portal-text-input has-eye" placeholder="Enter your password" required autocomplete="current-password">
+                  <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'userPassword')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                       <circle cx="12" cy="12" r="3"></circle>
@@ -213,14 +242,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <!-- Options Row: Remember Me & Forgot Password -->
               <div class="login-options-row">
                 <label class="remember-label">
-                  <input type="checkbox" id="studentRememberMe" name="rememberMe">
+                  <input type="checkbox" id="userRememberMe" name="rememberMe">
                   <span>Remember me</span>
                 </label>
-                <a href="javascript:void(0)" onclick="alert('Password reset instructions will be sent to your email address.')" class="forgot-link">Forgot password?</a>
+                <a href="javascript:void(0)" onclick="alert('Password reset instructions will be sent to your registered email address.')" class="forgot-link">Forgot password?</a>
               </div>
 
               <!-- Submit Button -->
-              <button type="submit" class="portal-submit-btn" id="studentLoginSubmitBtn">
+              <button type="submit" class="portal-submit-btn" id="loginSubmitBtn">
                 Log in
               </button>
 
@@ -228,14 +257,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <div class="login-card-footer-stack">
                 <div class="register-switch-link">
                   First time logging in? <a href="user-sign-in.php">Sign in</a>
-                </div>
-                <div class="role-switch-centered">
-                  <a href="admin-login.php" class="role-switch-pill admin-pill">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                    </svg>
-                    <span>Login as Admin &rarr;</span>
-                  </a>
                 </div>
               </div>
 
@@ -267,22 +288,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       btn.innerHTML = isPwd
         ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
         : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
-    }
-
-    // Relax pattern and maxlength if user enters an email containing '@'
-    const loginInput = document.getElementById('studentUserEmail');
-    if (loginInput) {
-      loginInput.addEventListener('input', function() {
-        if (this.value.includes('@')) {
-          this.removeAttribute('maxlength');
-          this.removeAttribute('pattern');
-          this.removeAttribute('title');
-        } else {
-          this.setAttribute('maxlength', '8');
-          this.setAttribute('pattern', '\\d{2}-\\d{5}');
-          this.setAttribute('title', 'Format must be XX-XXXXX (e.g., 24-00909)');
-        }
-      });
     }
   </script>
 </body>

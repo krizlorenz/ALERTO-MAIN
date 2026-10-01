@@ -480,7 +480,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
 
           <a href="user-login.php" class="auth-back-link">
-            <span>Already registered? <strong>Sign In to Student Portal &rarr;</strong></span>
+            <span>Already registered? <strong>Sign In to your account &rarr;</strong></span>
           </a>
         </div>
 

@@ -576,17 +576,18 @@
 .footer-main-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 24px;
   padding: 4px 0 16px 0;
 }
 
 @media (min-width: 768px) {
   .footer-main-grid {
-    grid-template-columns: 1.8fr 1fr;
-    gap: var(--space-12);
+    grid-template-columns: 1.3fr 1.1fr 0.8fr;
+    gap: var(--space-8);
     padding: var(--space-4) 0 var(--space-8) 0;
   }
 }
+
 
 .footer-brand-col {
   display: flex;
