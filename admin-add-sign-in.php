@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <!-- Centered Registration Card Container -->
     <div class="register-card-container">
 
-      <!-- Card Top Royal Purple Header -->
+      <!-- Card Top Crimson Red Header -->
       <div class="register-card-header">
         <div class="auth-header-top-row">
           <div class="auth-live-status">
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="auth-title-lockup">
           <div class="auth-logo-box">
-            <img src="logo/admin-main-logo.png" alt="ALERTO Admin Logo">
+            <img src="logo/user-main-logo.png" alt="ALERTO Admin Logo">
           </div>
           <div class="auth-text-meta">
             <h1>Create New Admin Profile</h1>

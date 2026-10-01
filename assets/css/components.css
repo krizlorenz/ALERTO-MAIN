@@ -2,19 +2,19 @@
 
 /* Navbar */
 .navbar {
-  background-color: #352264;
+  background-color: #5c091d;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.016) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.016) 1px, transparent 1px),
-    linear-gradient(135deg, #2d1c54 0%, #352264 55%, #422a7a 100%);
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(135deg, #4a0616 0%, #5c091d 55%, #700d23 100%);
   background-size: 28px 28px, 28px 28px, 100% 100%;
-  box-shadow: 0 4px 20px rgba(45, 28, 84, 0.15);
+  box-shadow: 0 4px 20px rgba(74, 6, 22, 0.18);
   position: sticky;
   top: 0;
   z-index: 1000;
   padding: 10px 0;
   width: 100%;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .navbar::after {
@@ -93,7 +93,7 @@
 .brand .logo-placeholder {
   width: 100%;
   height: 100%;
-  background: #5e35d8;
+  background: #8b122f;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -238,9 +238,9 @@
 }
 
 .menu-toggle.active {
-  background: #5e35d8;
+  background: #8b122f;
   border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 4px 14px rgba(94, 53, 216, 0.35);
+  box-shadow: 0 4px 14px rgba(139, 18, 47, 0.35);
 }
 
 .menu-toggle.active span {
@@ -264,12 +264,12 @@
 /* Mobile Nav Menu */
 .mobile-nav-menu {
   display: none;
-  background: rgba(45, 28, 84, 0.98);
+  background: rgba(92, 9, 29, 0.98);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.14);
   padding: var(--space-3) var(--space-4) var(--space-4);
-  box-shadow: 0 20px 40px rgba(15, 8, 30, 0.45);
+  box-shadow: 0 20px 40px rgba(40, 4, 12, 0.45);
 }
 
 .mobile-nav-menu.active {
@@ -413,6 +413,7 @@
   background-color: var(--status-approved-dot);
 }
 
+.status-pill.red,
 .status-pill.purple,
 .status-pill.in-progress {
   background-color: var(--status-progress-bg);
@@ -420,6 +421,7 @@
   border: 1px solid var(--status-progress-border);
 }
 
+.status-pill.red::before,
 .status-pill.purple::before,
 .status-pill.in-progress::before {
   background-color: var(--status-progress-dot);
@@ -489,10 +491,11 @@
   height: 19px;
 }
 
-.stat-icon-slot.icon-purple {
-  background: #7c6bb0;
+.stat-icon-slot.icon-purple,
+.stat-icon-slot.icon-red {
+  background: #8b122f;
   color: #ffffff;
-  box-shadow: 0 2px 6px rgba(124, 107, 176, 0.24);
+  box-shadow: 0 2px 6px rgba(139, 18, 47, 0.24);
 }
 
 .stat-icon-slot.icon-warning {
@@ -535,7 +538,7 @@
 .site-footer-wrapper {
   margin-top: auto;
   position: relative;
-  background: #352264;
+  background: #5c091d;
 }
 
 .footer-wave-divider {
@@ -649,7 +652,7 @@
 .footer-logo-placeholder {
   width: 100%;
   height: 100%;
-  background: #5e35d8;
+  background: #8b122f;
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -709,7 +712,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #4a2b8a;
+  background: #700d23;
   border: 1.5px solid rgba(255, 255, 255, 0.28);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
   display: flex;
@@ -721,10 +724,10 @@
 }
 
 .social-circle-btn:hover {
-  background: #6536e4;
+  background: #8b122f;
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(101, 54, 228, 0.4);
+  box-shadow: 0 6px 16px rgba(139, 18, 47, 0.4);
 }
 
 .social-circle-btn:active {

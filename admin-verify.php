@@ -117,7 +117,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
       <!-- Sidebar Brand -->
       <a href="admin-homepage.php" class="sidebar-brand">
         <div class="sidebar-logo">
-          <img src="logo/admin-main-logo.png" alt="ALERTO Admin Logo">
+          <img src="logo/user-main-logo.png" alt="ALERTO Admin Logo">
         </div>
         <div>
           <div class="sidebar-brand-name">ALERTO</div>
@@ -421,10 +421,10 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
 
           <!-- Document 1: Selfie with Govt ID / Student ID -->
           <div
-            style="background: #faf8fc; border: 1px solid rgba(53, 34, 100, 0.15); border-radius: var(--radius-sm); padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; overflow: hidden;">
+            style="background: #fdfafb; border: 1px solid rgba(112, 13, 35, 0.15); border-radius: var(--radius-sm); padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; overflow: hidden;">
             <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
               <div
-                style="width: 32px; height: 32px; border-radius: 6px; background: #ede6f7; color: #352264; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                style="width: 32px; height: 32px; border-radius: 6px; background: #fdebed; color: #700d23; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round">
                   <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
@@ -442,10 +442,10 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
 
           <!-- Document 2: Assessment Form / COR -->
           <div
-            style="background: #faf8fc; border: 1px solid rgba(53, 34, 100, 0.15); border-radius: var(--radius-sm); padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; overflow: hidden;">
+            style="background: #fdfafb; border: 1px solid rgba(112, 13, 35, 0.15); border-radius: var(--radius-sm); padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; overflow: hidden;">
             <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
               <div
-                style="width: 32px; height: 32px; border-radius: 6px; background: #ede6f7; color: #352264; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                style="width: 32px; height: 32px; border-radius: 6px; background: #fdebed; color: #700d23; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>

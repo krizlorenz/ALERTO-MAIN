@@ -79,7 +79,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
     <div class="navbar-inner">
       <a href="admin-homepage.php" class="brand" aria-label="ALERTO Home">
         <div class="logo-container">
-          <img src="logo/admin-main-logo.png" alt="ALERTO Admin Logo" class="logo-img">
+          <img src="logo/user-main-logo.png" alt="ALERTO Admin Logo" class="logo-img">
         </div>
         <div class="brand-text">
           <span class="brand-name">ALERTO</span>
@@ -225,7 +225,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                 </h3>
                 <p>Manage and verify student identification &amp; accounts</p>
               </div>
-              <span class="status-pill purple">Records</span>
+              <span class="status-pill red">Records</span>
             </div>
 
             <div class="board-cards-stack">
@@ -234,8 +234,8 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                 <div class="inner-stat-card featured-stat">
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
-                      <div class="stat-icon-slot icon-purple">
-                        <img src="icons/admin_dashboard_icons/pending.png" alt="Pending Review">
+                      <div class="stat-icon-slot icon-red">
+                        <img src="icons/user_dashboard_logos/pending-request.png" alt="Pending Review">
                       </div>
                       <span class="stat-card-title">Pending Review</span>
                     </div>
@@ -253,7 +253,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
                       <div class="stat-icon-slot icon-success">
-                        <img src="icons/admin_dashboard_icons/approved.png" alt="Approved">
+                        <img src="icons/user_dashboard_logos/approved.png" alt="Approved">
                       </div>
                       <span class="stat-card-title">Approved</span>
                     </div>
@@ -316,8 +316,8 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                 <div class="inner-stat-card featured-stat">
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
-                      <div class="stat-icon-slot icon-purple">
-                        <img src="icons/admin_dashboard_icons/active_request.png" alt="Active Requests">
+                      <div class="stat-icon-slot icon-red">
+                        <img src="icons/user-login-icons/request-assistance.png" alt="Active Requests">
                       </div>
                       <span class="stat-card-title">Active Requests</span>
                     </div>
@@ -331,7 +331,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
                       <div class="stat-icon-slot icon-warning">
-                        <img src="icons/admin_dashboard_icons/pending.png" alt="Pending Action">
+                        <img src="icons/user_dashboard_logos/pending-request.png" alt="Pending Action">
                       </div>
                       <span class="stat-card-title">Pending Action</span>
                     </div>
@@ -350,7 +350,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
                       <div class="stat-icon-slot icon-success">
-                        <img src="icons/admin_dashboard_icons/approved.png" alt="Approved">
+                        <img src="icons/user_dashboard_logos/approved.png" alt="Approved">
                       </div>
                       <span class="stat-card-title">Approved</span>
                     </div>
@@ -364,7 +364,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
                       <div class="stat-icon-slot icon-primary">
-                        <img src="icons/admin_dashboard_icons/in-progress.png" alt="In Progress">
+                        <img src="icons/user_dashboard_logos/in-progress.png" alt="In Progress">
                       </div>
                       <span class="stat-card-title">In Progress</span>
                     </div>
@@ -378,7 +378,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
                       <div class="stat-icon-slot icon-info">
-                        <img src="icons/admin_dashboard_icons/completed.png" alt="Completed">
+                        <img src="icons/user_dashboard_logos/completed.png" alt="Completed">
                       </div>
                       <span class="stat-card-title">Completed</span>
                     </div>
@@ -408,7 +408,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
           <div class="footer-brand-col">
             <div class="footer-brand-row">
               <div class="footer-logo-box">
-                <img src="logo/admin-main-logo.png" alt="ALERTO Admin Logo" class="footer-logo-img">
+                <img src="logo/user-main-logo.png" alt="ALERTO Admin Logo" class="footer-logo-img">
               </div>
               <div class="footer-brand-text">
                 <div class="footer-brand-title">ALERTO</div>
@@ -468,9 +468,9 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
     <div class="footer-wave-divider" aria-hidden="true">
       <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
         <path d="M0,0 C150,55 350,-25 500,30 C650,85 900,10 1200,45 L1200,120 L0,120 Z"
-          fill="rgba(98, 54, 212, 0.35)">
+          fill="rgba(178, 24, 60, 0.35)">
         </path>
-        <path d="M0,20 C180,75 320,5 520,50 C720,95 920,25 1200,60 L1200,120 L0,120 Z" fill="#2b1a4e"></path>
+        <path d="M0,20 C180,75 320,5 520,50 C720,95 920,25 1200,60 L1200,120 L0,120 Z" fill="#3a0410"></path>
       </svg>
     </div>
   </div>

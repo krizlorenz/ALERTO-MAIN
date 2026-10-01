@@ -89,7 +89,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
       <!-- Sidebar Brand -->
       <a href="admin-homepage.php" class="sidebar-brand">
         <div class="sidebar-logo">
-          <img src="logo/admin-main-logo.png" alt="ALERTO Admin Logo">
+          <img src="logo/user-main-logo.png" alt="ALERTO Admin Logo">
         </div>
         <div>
           <div class="sidebar-brand-name">ALERTO</div>
@@ -378,7 +378,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
         <span style="color: var(--admin-muted);">Location & Landmark:</span>
         <div style="display: flex; align-items: center; gap: 8px;">
           <strong id="modalLocation" style="color: var(--admin-text);">--</strong>
-          <button type="button" class="table-action-btn" id="toggleRequestMinimapBtn" onclick="toggleRequestMinimap()" style="padding: 2px 8px; font-size: 0.72rem; color: #352264; border-color: rgba(53, 34, 100, 0.25); background: #f6f3fc; display: inline-flex; align-items: center; gap: 4px;">
+          <button type="button" class="table-action-btn" id="toggleRequestMinimapBtn" onclick="toggleRequestMinimap()" style="padding: 2px 8px; font-size: 0.72rem; color: #700d23; border-color: rgba(112, 13, 35, 0.25); background: #fdf5f7; display: inline-flex; align-items: center; gap: 4px;">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
               <line x1="8" y1="2" x2="8" y2="18"></line>
@@ -390,9 +390,9 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
       </div>
 
       <!-- Collapsible Request Incident Minimap -->
-      <div id="requestMinimapCard" style="display: none; background: #faf8fc; border: 1.5px solid rgba(53, 34, 100, 0.15); border-radius: var(--radius-md); padding: var(--space-3); margin-top: -2px;">
+      <div id="requestMinimapCard" style="display: none; background: #fdfafb; border: 1.5px solid rgba(112, 13, 35, 0.15); border-radius: var(--radius-md); padding: var(--space-3); margin-top: -2px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: var(--fs-2xs);">
-          <span style="font-weight: 700; color: #352264;" id="requestMinimapCoordsLabel">📍 17.6534° N, 121.7512° E</span>
+          <span style="font-weight: 700; color: #700d23;" id="requestMinimapCoordsLabel">📍 17.6534° N, 121.7512° E</span>
           <span style="color: var(--admin-muted);">Emergency Pin Location</span>
         </div>
         <div id="adminRequestMinimap" style="height: 180px; width: 100%; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); z-index: 1;"></div>

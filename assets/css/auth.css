@@ -24,7 +24,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--admin-purple-mid);
+  color: #700d23;
   pointer-events: none;
   z-index: 2;
   overflow: hidden;
@@ -59,12 +59,12 @@
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  background-color: #fbf9fe;
+  background-color: #fdfbfb;
   background-image:
-    radial-gradient(at 10% 20%, rgba(142, 98, 255, 0.12) 0px, transparent 50%),
-    radial-gradient(at 90% 10%, rgba(94, 53, 216, 0.14) 0px, transparent 55%),
-    radial-gradient(at 80% 80%, rgba(180, 140, 255, 0.15) 0px, transparent 60%),
-    radial-gradient(rgba(53, 34, 100, 0.05) 1.2px, transparent 1.2px);
+    radial-gradient(at 10% 20%, rgba(214, 34, 76, 0.11) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(139, 18, 47, 0.13) 0px, transparent 55%),
+    radial-gradient(at 80% 80%, rgba(254, 180, 195, 0.14) 0px, transparent 60%),
+    radial-gradient(rgba(112, 13, 35, 0.05) 1.2px, transparent 1.2px);
   background-size: 100% 100%, 100% 100%, 100% 100%, 24px 24px;
   background-attachment: fixed;
   overflow-x: hidden;
@@ -132,7 +132,7 @@
   font-family: var(--heading-font);
   font-size: 1.25rem;
   font-weight: 800;
-  color: #352264;
+  color: #700d23;
   line-height: 1;
   letter-spacing: -0.02em;
 }
@@ -159,10 +159,10 @@
   font-size: var(--fs-xs);
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: #352264;
-  background: #f4effa;
-  border: 1px solid rgba(53, 34, 100, 0.16);
-  box-shadow: 0 2px 8px rgba(53, 34, 100, 0.04);
+  color: #700d23;
+  background: #fdebed;
+  border: 1px solid rgba(112, 13, 35, 0.16);
+  box-shadow: 0 2px 8px rgba(112, 13, 35, 0.04);
   position: relative;
 }
 
@@ -180,7 +180,7 @@
   left: 22%;
   right: 22%;
   height: 2.5px;
-  background: #352264;
+  background: #700d23;
   border-radius: 2px;
   opacity: 0.8;
 }
@@ -278,8 +278,8 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: #5e35d8;
-  background: #ede6fd;
+  color: #8b122f;
+  background: #fdebed;
   padding: 5px 14px;
   border-radius: var(--radius-pill);
   margin-bottom: 14px;
@@ -308,7 +308,7 @@
 
 .login-hero-heading .brand-highlight {
   display: block;
-  color: #352264;
+  color: #700d23;
 }
 
 .student-theme .login-hero-heading .brand-highlight {
@@ -364,12 +364,12 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #ede6fd;
-  color: #352264;
+  background: #fdebed;
+  color: #700d23;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(53, 34, 100, 0.05);
+  box-shadow: 0 4px 14px rgba(112, 13, 35, 0.05);
   transition: transform var(--transition-fast);
 }
 
@@ -418,8 +418,8 @@
   border-radius: 28px;
   padding: 36px 36px;
   box-shadow:
-    0 24px 64px rgba(35, 20, 65, 0.12),
-    0 4px 16px rgba(35, 20, 65, 0.04);
+    0 24px 64px rgba(70, 10, 25, 0.12),
+    0 4px 16px rgba(70, 10, 25, 0.04);
   border: 1.5px solid rgba(255, 255, 255, 0.9);
   width: 100%;
   max-width: 470px;
@@ -446,8 +446,8 @@
     padding: 22px 20px;
     border-radius: 24px;
     box-shadow:
-      0 16px 40px rgba(35, 20, 65, 0.08),
-      0 2px 10px rgba(35, 20, 65, 0.03);
+      0 16px 40px rgba(70, 10, 25, 0.08),
+      0 2px 10px rgba(70, 10, 25, 0.03);
   }
 
   .student-theme .login-portal-card {
@@ -462,8 +462,8 @@
     padding: 20px 16px;
     border-radius: 20px;
     box-shadow:
-      0 12px 32px rgba(35, 20, 65, 0.07),
-      0 2px 8px rgba(35, 20, 65, 0.03);
+      0 12px 32px rgba(70, 10, 25, 0.07),
+      0 2px 8px rgba(70, 10, 25, 0.03);
   }
 
   .student-theme .login-portal-card {
@@ -491,9 +491,9 @@
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: #f4effa;
-  border: 1.5px solid rgba(53, 34, 100, 0.12);
-  box-shadow: 0 4px 12px rgba(53, 34, 100, 0.06);
+  background: #fdebed;
+  border: 1.5px solid rgba(112, 13, 35, 0.12);
+  box-shadow: 0 4px 12px rgba(112, 13, 35, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -534,7 +534,7 @@
   font-family: var(--heading-font);
   font-size: 1.35rem;
   font-weight: 800;
-  color: #352264;
+  color: #700d23;
   line-height: 1.15;
   letter-spacing: -0.02em;
 }
@@ -599,15 +599,15 @@
   font-family: var(--body-font);
   color: var(--admin-text);
   background: #ffffff;
-  border: 1.5px solid #e7e2f0;
+  border: 1.5px solid #f2e4e7;
   border-radius: var(--radius-sm);
   outline: none;
   transition: all var(--transition-fast);
 }
 
 .portal-text-input:focus {
-  border-color: #5e35d8;
-  box-shadow: 0 0 0 3.5px rgba(94, 53, 216, 0.12);
+  border-color: #8b122f;
+  box-shadow: 0 0 0 3.5px rgba(139, 18, 47, 0.12);
 }
 
 .student-theme .portal-text-input:focus {
@@ -625,7 +625,7 @@
   right: 14px;
   font-size: var(--fs-xs);
   font-weight: 600;
-  color: #5e35d8;
+  color: #8b122f;
   background: none;
   border: none;
   cursor: pointer;
@@ -664,8 +664,8 @@
 }
 
 .password-eye-toggle-btn:hover {
-  color: #352264;
-  background: rgba(53, 34, 100, 0.08);
+  color: #700d23;
+  background: rgba(112, 13, 35, 0.08);
 }
 
 .student-theme .password-eye-toggle-btn:hover {
@@ -703,7 +703,7 @@
 }
 
 .remember-label input[type="checkbox"] {
-  accent-color: #352264;
+  accent-color: #700d23;
   width: 16px;
   height: 16px;
   cursor: pointer;
@@ -714,7 +714,7 @@
 }
 
 .forgot-link {
-  color: #5e35d8;
+  color: #8b122f;
   font-weight: 600;
   text-decoration: none;
 }
@@ -730,14 +730,14 @@
 .portal-submit-btn {
   width: 100%;
   padding: 13px var(--space-6);
-  background: #352264;
+  background: #700d23;
   color: #ffffff;
   font-size: var(--fs-sm);
   font-weight: 700;
   letter-spacing: 0.01em;
   border-radius: var(--radius-sm);
   border: none;
-  box-shadow: 0 8px 24px rgba(53, 34, 100, 0.28);
+  box-shadow: 0 8px 24px rgba(112, 13, 35, 0.28);
   cursor: pointer;
   margin-top: var(--space-2);
   min-height: 46px;
@@ -750,9 +750,9 @@
 }
 
 .portal-submit-btn:hover {
-  background: #462c82;
+  background: #8b122f;
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(53, 34, 100, 0.36);
+  box-shadow: 0 12px 32px rgba(112, 13, 35, 0.36);
 }
 
 .student-theme .portal-submit-btn:hover {
@@ -769,8 +769,8 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #faf8fd;
-  border: 1px solid #ede7f5;
+  background: #fdfafb;
+  border: 1px solid #f7e6e9;
   border-radius: var(--radius-sm);
   padding: 12px 14px;
   margin-top: var(--space-4);
@@ -784,7 +784,7 @@
 .restricted-lock-icon {
   width: 18px !important;
   height: 18px !important;
-  color: #352264;
+  color: #700d23;
   flex-shrink: 0;
 }
 
@@ -811,7 +811,7 @@
 }
 
 .register-switch-link a {
-  color: #5e35d8;
+  color: #8b122f;
   font-weight: 700;
   text-decoration: none;
 }
@@ -863,16 +863,16 @@
 }
 
 .role-switch-pill.admin-pill {
-  color: #352264;
-  background: #f4effa;
-  border: 1px solid rgba(53, 34, 100, 0.2);
+  color: #700d23;
+  background: #fdebed;
+  border: 1px solid rgba(112, 13, 35, 0.2);
 }
 
 .role-switch-pill.admin-pill:hover {
-  background: #ebe0f7;
-  color: #2b1754;
+  background: #fbd6dc;
+  color: #520818;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(53, 34, 100, 0.12);
+  box-shadow: 0 4px 12px rgba(112, 13, 35, 0.12);
 }
 
 .role-switch-pill.student-pill {
@@ -901,11 +901,11 @@
   display: block;
   width: 100%;
   height: 70px;
-  fill: #352264;
+  fill: #700d23;
 }
 
 .login-wave-footer svg path {
-  fill: #352264;
+  fill: #700d23;
 }
 
 .student-theme .login-wave-footer svg {
@@ -932,7 +932,7 @@
   padding: var(--space-8) var(--container-pad);
   position: relative;
   background-color: var(--admin-bg);
-  background-image: radial-gradient(rgba(53, 34, 100, 0.08) 1.25px, transparent 1.25px);
+  background-image: radial-gradient(rgba(112, 13, 35, 0.08) 1.25px, transparent 1.25px);
   background-size: 24px 24px;
   background-attachment: fixed;
   overflow-x: hidden;
@@ -947,11 +947,11 @@
   width: 100%;
   max-width: 620px;
   background: #ffffff;
-  border: 1.5px solid rgba(94, 53, 216, 0.16);
+  border: 1.5px solid rgba(112, 13, 35, 0.18);
   border-radius: var(--radius-xl);
   box-shadow:
-    0 24px 60px rgba(35, 20, 65, 0.14),
-    0 4px 16px rgba(35, 20, 65, 0.04);
+    0 24px 60px rgba(70, 10, 25, 0.14),
+    0 4px 16px rgba(70, 10, 25, 0.04);
   overflow: hidden;
   position: relative;
   z-index: 5;
@@ -966,11 +966,11 @@
 }
 
 .register-card-header {
-  background-color: #352264;
+  background-color: #5c091d;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(135deg, #2a164e 0%, #352264 55%, #462c82 100%);
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(135deg, #3a0410 0%, #5c091d 55%, #7a0f28 100%);
   background-size: 24px 24px, 24px 24px, 100% 100%;
   padding: var(--space-8) var(--space-8) var(--space-6) var(--space-8);
   position: relative;
@@ -1023,11 +1023,11 @@
   right: 0;
   height: 2px;
   background: linear-gradient(90deg,
-      rgba(142, 98, 255, 0) 0%,
-      rgba(142, 98, 255, 0.6) 30%,
-      rgba(215, 185, 255, 0.95) 50%,
-      rgba(142, 98, 255, 0.6) 70%,
-      rgba(142, 98, 255, 0) 100%);
+      rgba(214, 34, 76, 0) 0%,
+      rgba(214, 34, 76, 0.6) 30%,
+      rgba(255, 195, 208, 0.95) 50%,
+      rgba(214, 34, 76, 0.6) 70%,
+      rgba(214, 34, 76, 0) 100%);
 }
 
 .student-theme .register-card-header::after {
@@ -1175,8 +1175,8 @@
   font-size: var(--fs-sm);
   font-family: var(--body-font);
   color: var(--admin-text);
-  background: #faf8fd;
-  border: 1.5px solid var(--admin-border);
+  background: #fdfafb;
+  border: 1.5px solid #f2e4e7;
   border-radius: var(--radius-sm);
   outline: none;
   transition: all var(--transition-fast);
@@ -1200,7 +1200,7 @@
   transform: translateY(-50%);
   font-size: var(--fs-xs);
   font-weight: 600;
-  color: #5e35d8;
+  color: #8b122f;
   background: none;
   border: none;
   cursor: pointer;
@@ -1223,8 +1223,8 @@
 .auth-input:focus,
 .auth-select:focus {
   background: #ffffff;
-  border-color: var(--admin-purple);
-  box-shadow: 0 0 0 3.5px rgba(94, 53, 216, 0.14);
+  border-color: #8b122f;
+  box-shadow: 0 0 0 3.5px rgba(139, 18, 47, 0.14);
 }
 
 .student-theme .auth-input:focus,
@@ -1336,11 +1336,11 @@
   gap: 6px;
   font-size: var(--fs-2xs);
   font-weight: 700;
-  color: var(--admin-purple-deep);
-  background: var(--admin-purple-soft);
+  color: #700d23;
+  background: #fdebed;
   padding: 5px 12px;
   border-radius: var(--radius-pill);
-  border: 1px solid rgba(94, 53, 216, 0.18);
+  border: 1px solid rgba(112, 13, 35, 0.2);
   cursor: pointer;
   transition: all var(--transition-fast);
 }
@@ -1357,8 +1357,8 @@
 }
 
 .quick-fill-btn:hover {
-  background: #e4dafa;
-  border-color: var(--admin-purple);
+  background: #f9d8df;
+  border-color: #8b122f;
   transform: translateY(-1px);
 }
 
@@ -1374,14 +1374,14 @@
   justify-content: center;
   gap: var(--space-3);
   padding: 13px var(--space-6);
-  background: linear-gradient(135deg, #352264 0%, #482d86 50%, #5e35d8 100%);
+  background: linear-gradient(135deg, #5c091d 0%, #750e27 50%, #8b122f 100%);
   color: #ffffff;
   font-size: var(--fs-sm);
   font-weight: 700;
   letter-spacing: 0.02em;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 10px 28px rgba(53, 34, 100, 0.28);
+  box-shadow: 0 10px 28px rgba(112, 13, 35, 0.28);
   cursor: pointer;
   margin-top: var(--space-2);
   transition: all var(--transition-fast);
@@ -1400,7 +1400,8 @@
 
 .auth-submit-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 36px rgba(53, 34, 100, 0.38);
+  background: linear-gradient(135deg, #4d0718 0%, #680b22 50%, #7d1029 100%);
+  box-shadow: 0 14px 36px rgba(112, 13, 35, 0.38);
 }
 
 .student-theme .auth-submit-btn:hover {
@@ -1439,7 +1440,7 @@
   gap: 6px;
   font-size: var(--fs-xs);
   font-weight: 600;
-  color: var(--admin-purple-mid);
+  color: #700d23;
   text-decoration: none;
   transition: color var(--transition-fast);
 }
@@ -1449,7 +1450,7 @@
 }
 
 .auth-back-link:hover {
-  color: var(--admin-purple-bright);
+  color: #a31235;
 }
 
 .student-theme .auth-back-link:hover {
