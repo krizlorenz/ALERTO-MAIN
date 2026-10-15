@@ -159,8 +159,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="register-card-body">
 
         <?php if (!empty($error)): ?>
-          <div class="alert-banner alert-error" role="alert" style="display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: var(--status-rejected-bg, #fdf0f2); color: var(--status-rejected-text, #9c2438); border: 1.5px solid var(--status-rejected-border, #f8c9d1); line-height: 1.45;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; flex-shrink: 0; color: #b82b43; margin-top: 1px;">
+          <div class="alert-banner alert-error" role="alert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="12" y1="8" x2="12" y2="12"></line>
               <line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -170,8 +170,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <?php if (!empty($success)): ?>
-          <div class="alert-banner alert-success" role="alert" style="display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: var(--status-approved-bg, #edf7f0); color: var(--status-approved-text, #1e6b37); border: 1.5px solid var(--status-approved-border, #c2e7cd); line-height: 1.45;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; flex-shrink: 0; color: #238545; margin-top: 1px;">
+          <div class="alert-banner alert-success" role="alert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
               <polyline points="22 4 12 14.01 9 11.01"></polyline>
             </svg>
@@ -191,8 +191,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <span class="input-icon-slot" aria-hidden="true">
                 <img src="icons/user.svg" alt=""
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
+                <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                   <circle cx="12" cy="7" r="4"></circle>
                 </svg>
@@ -212,8 +212,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <span class="input-icon-slot" aria-hidden="true">
                 <img src="icons/id-badge.svg" alt=""
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
+                <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
                   <rect x="3" y="4" width="18" height="16" rx="2"></rect>
                   <line x1="7" y1="8" x2="17" y2="8"></line>
                   <line x1="7" y1="12" x2="13" y2="12"></line>
@@ -223,7 +223,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <input type="text" id="studentIdNumber" name="student_id" class="auth-input" placeholder="e.g. 24-XXXXX" pattern="\d{2}-\d{5}" maxlength="8" title="Format must be XX-XXXXX (e.g., 24-XXXXX)" required
                 autocomplete="username">
             </div>
-            <small class="input-hint" style="display:block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 4px;">Format must be XX-XXXXX (e.g., 24-XXXXX)</small>
+            <small class="input-hint">Format must be XX-XXXXX (e.g., 24-XXXXX)</small>
           </div>
 
           <!-- 3. Program & Year Level -->
@@ -238,8 +238,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span class="input-icon-slot" aria-hidden="true">
                   <img src="icons/cap.svg" alt=""
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" style="display:none;">
+                  <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
                     <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
                   </svg>
@@ -268,8 +268,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span class="input-icon-slot" aria-hidden="true">
                   <img src="icons/star.svg" alt=""
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" style="display:none;">
+                  <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
                     <polygon
                       points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
                     </polygon>
@@ -298,8 +298,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <span class="input-icon-slot" aria-hidden="true">
                 <img src="icons/phone.svg" alt=""
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
+                <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
                   <path
                     d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
                   </path>
@@ -320,8 +320,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <span class="input-icon-slot" aria-hidden="true">
                 <img src="icons/mail.svg" alt=""
                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round" style="display:none;">
+                <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                   <polyline points="22,6 12,13 2,6"></polyline>
                 </svg>
@@ -346,8 +346,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="upload-card-icon" aria-hidden="true">
                   <img src="icons/camera.svg" alt=""
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" style="display:none;">
+                  <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
                     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                     <circle cx="12" cy="13" r="4"></circle>
                   </svg>
@@ -370,8 +370,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="upload-card-icon" aria-hidden="true">
                   <img src="icons/document.svg" alt=""
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" style="display:none;">
+                  <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
                     <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -398,8 +398,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span class="input-icon-slot" aria-hidden="true">
                   <img src="icons/lock.svg" alt=""
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" style="display:none;">
+                  <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
                     <rect x="3" y="11" width="18" height="11" rx="2"></rect>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                   </svg>
@@ -424,8 +424,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span class="input-icon-slot" aria-hidden="true">
                   <img src="icons/shield-lock.svg" alt=""
                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" style="display:none;">
+                  <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                   </svg>
                 </span>
@@ -443,12 +443,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
 
           <!-- Submit Button -->
-          <button type="submit" class="auth-submit-btn" id="studentRegSubmitBtn" style="margin-top: var(--space-2, 8px);">
+          <button type="submit" class="auth-submit-btn" id="studentRegSubmitBtn">
             <span>Sign in</span>
-            <img src="icons/arrow-right.svg" alt="" style="width:16px;height:16px;"
+            <img src="icons/arrow-right.svg" alt=""
               onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+            <svg class="svg-fallback icon-16" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
@@ -459,10 +459,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Footer link back to Student Log In -->
         <div class="auth-footer-block">
           <div class="security-badge">
-            <img src="icons/shield-check.svg" alt="" style="width:14px;height:14px;"
+            <img src="icons/shield-check.svg" alt=""
               onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+            <svg class="svg-fallback icon-14" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
             <span>CSU-COEA Student Verification & Relief Coordination Standard</span>

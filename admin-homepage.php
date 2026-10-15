@@ -93,12 +93,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
   <link rel="stylesheet" href="assets/css/main.css?v=<?= time() ?>">
   <link rel="stylesheet" href="assets/css/components.css?v=<?= time() ?>">
   <link rel="stylesheet" href="assets/css/landing.css?v=<?= time() ?>">
-  <style>
-    /* Fix In Progress label breaking into two lines */
-    .dashboard-grid .stat-card-title {
-      white-space: nowrap !important;
-    }
-  </style>
+  <link rel="stylesheet" href="assets/css/admin.css?v=<?= time() ?>">
 </head>
 
 <body>
@@ -254,24 +249,24 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
 
         <!-- Flash alerts for settings updates -->
         <?php if (isset($_GET['toggled'])): ?>
-          <div class="alert-banner alert-success" role="alert" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: var(--space-6); padding: 14px 18px; border-radius: var(--radius-sm); font-size: var(--fs-xs); font-weight: 500; background-color: #edf7f0; color: #1e6b37; border: 1.5px solid #c2e7cd;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 20px; height: 20px; flex-shrink: 0; color: #1e6b37;">
+          <div class="alert-banner alert-success mb-6" role="alert">
+            <div class="alert-banner-content">
+              <svg class="alert-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
               <span>Student assistance request intake status has been successfully updated.</span>
             </div>
-            <button type="button" onclick="this.parentElement.style.display='none'" style="background: none; border: none; font-size: 1.2rem; color: #1e6b37; cursor: pointer;">&times;</button>
+            <button type="button" class="alert-banner-close" onclick="this.parentElement.style.display='none'">&times;</button>
           </div>
         <?php elseif (isset($_GET['saved_contacts'])): ?>
-          <div class="alert-banner alert-success" role="alert" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: var(--space-6); padding: 14px 18px; border-radius: var(--radius-sm); font-size: var(--fs-xs); font-weight: 500; background-color: #edf7f0; color: #1e6b37; border: 1.5px solid #c2e7cd;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 20px; height: 20px; flex-shrink: 0; color: #1e6b37;">
+          <div class="alert-banner alert-success mb-6" role="alert">
+            <div class="alert-banner-content">
+              <svg class="alert-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
               <span>COEASC DRRM contact information has been updated and published across all student and admin pages.</span>
             </div>
-            <button type="button" onclick="this.parentElement.style.display='none'" style="background: none; border: none; font-size: 1.2rem; color: #1e6b37; cursor: pointer;">&times;</button>
+            <button type="button" class="alert-banner-close" onclick="this.parentElement.style.display='none'">&times;</button>
           </div>
         <?php endif; ?>
 
@@ -466,48 +461,48 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
     </section>
 
     <!-- Portal Controls Section: Disaster Mode Switch & Contact Manager -->
-    <section class="admin-controls-section" id="systemControls" style="padding: var(--space-8) 0 var(--space-12); background: #faf7f8; border-top: 1px solid var(--admin-border);">
+    <section class="admin-controls-section" id="systemControls">
       <div class="container">
 
         <div class="dashboard-header-block">
-          <span class="dashboard-eyebrow" style="color: #700d23; font-weight: 700; text-transform: uppercase; font-size: var(--fs-2xs); letter-spacing: 0.08em; display: inline-flex; align-items: center; gap: 6px;">
+          <span class="controls-eyebrow">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
             System &amp; Incident Controls
           </span>
-          <h2 class="dashboard-main-title" style="font-family: var(--heading-font); font-size: clamp(1.4rem, 2vw + 0.8rem, 1.85rem); font-weight: 800; color: #700d23; margin-top: 4px;">Disaster Response &amp; Contact Controls</h2>
-          <p class="dashboard-main-subtitle" style="color: var(--admin-muted); font-size: var(--fs-xs); margin-top: 4px;">Control the student request submission intake during active disaster events and manage the displayed council contact information.</p>
+          <h2 class="controls-main-title">Disaster Response &amp; Contact Controls</h2>
+          <p class="controls-main-subtitle">Control the student request submission intake during active disaster events and manage the displayed council contact information.</p>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-6); margin-top: var(--space-6);">
+        <div class="controls-grid">
 
           <!-- Control 1: Student Request Intake Switch -->
-          <div style="background: #ffffff; border-radius: var(--radius-lg); padding: var(--space-6); border: 1.5px solid rgba(112, 13, 35, 0.12); box-shadow: var(--shadow-card); display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-5);">
+          <div class="control-card">
             <div>
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: var(--space-3); flex-wrap: wrap;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 42px; height: 42px; border-radius: 12px; background: #fdebed; color: #700d23; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(112, 13, 35, 0.15);">
+              <div class="control-card-header">
+                <div class="control-header-left">
+                  <div class="control-icon-box">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                   </div>
                   <div>
-                    <h3 style="font-family: var(--heading-font); font-size: var(--fs-md); font-weight: 700; color: var(--admin-text); line-height: 1.2;">Student Request Intake</h3>
-                    <span style="font-size: var(--fs-2xs); color: var(--admin-muted);">Post-Disaster Response Switch</span>
+                    <h3 class="control-title-text">Student Request Intake</h3>
+                    <span class="fs-2xs text-muted">Post-Disaster Response Switch</span>
                   </div>
                 </div>
 
                 <?php if ($isAssistanceEnabled): ?>
-                  <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: var(--radius-pill); font-size: var(--fs-2xs); font-weight: 700; background: #edf7f0; color: #1e6b37; border: 1.5px solid #c2e7cd;">
-                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block;"></span>
+                  <span class="control-status-pill is-active">
+                    <span class="control-status-dot dot-active"></span>
                     <span>ACTIVE (Open)</span>
                   </span>
                 <?php else: ?>
-                  <span style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: var(--radius-pill); font-size: var(--fs-2xs); font-weight: 700; background: #f1f5f9; color: #64748b; border: 1.5px solid #cbd5e1;">
-                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; display: inline-block;"></span>
+                  <span class="control-status-pill is-closed">
+                    <span class="control-status-dot dot-closed"></span>
                     <span>CLOSED (Stand Down)</span>
                   </span>
                 <?php endif; ?>
               </div>
 
-              <p style="font-size: var(--fs-xs); color: var(--admin-muted); line-height: 1.55; margin-bottom: var(--space-4);">
+              <p class="control-desc-text">
                 Turn this <strong>ON</strong> only when a post-disaster event affects the campus/students to open assistance requests. When <strong>OFF</strong>, the request button is unavailable and unclickable on all student devices to avoid spamming.
               </p>
             </div>
@@ -517,12 +512,12 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
               <input type="hidden" name="new_state" value="<?= $isAssistanceEnabled ? '0' : '1' ?>">
               
               <?php if ($isAssistanceEnabled): ?>
-                <button type="submit" style="width: 100%; min-height: 46px; padding: 12px 18px; border-radius: var(--radius-sm); font-family: var(--heading-font); font-weight: 700; font-size: var(--fs-xs); cursor: pointer; border: 1.5px solid #fecaca; background: #fef2f2; color: #991b1b; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition-fast);">
+                <button type="submit" class="control-btn-toggle-off">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                   <span>Turn OFF Request Intake (Stand Down)</span>
                 </button>
               <?php else: ?>
-                <button type="submit" style="width: 100%; min-height: 46px; padding: 12px 18px; border-radius: var(--radius-sm); font-family: var(--heading-font); font-weight: 700; font-size: var(--fs-xs); cursor: pointer; border: 1.5px solid #bbf7d0; background: #f0fdf4; color: #166534; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition-fast);">
+                <button type="submit" class="control-btn-toggle-on">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                   <span>Turn ON Request Intake (Activate Disaster Mode)</span>
                 </button>
@@ -531,37 +526,37 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
           </div>
 
           <!-- Control 2: COEASC DRRM Contact Information Manager -->
-          <div id="contactControls" style="background: #ffffff; border-radius: var(--radius-lg); padding: var(--space-6); border: 1.5px solid rgba(112, 13, 35, 0.12); box-shadow: var(--shadow-card); display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-5);">
+          <div id="contactControls" class="control-card">
             <div>
-              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: var(--space-3);">
-                <div style="width: 42px; height: 42px; border-radius: 12px; background: #fdebed; color: #700d23; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(112, 13, 35, 0.15);">
+              <div class="control-header-left mb-3">
+                <div class="control-icon-box">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                 </div>
                 <div>
-                  <h3 style="font-family: var(--heading-font); font-size: var(--fs-md); font-weight: 700; color: var(--admin-text); line-height: 1.2;">COEASC DRRM Contact Details</h3>
-                  <span style="font-size: var(--fs-2xs); color: var(--admin-muted);">Syncs across User &amp; Admin pages</span>
+                  <h3 class="control-title-text">COEASC DRRM Contact Details</h3>
+                  <span class="fs-2xs text-muted">Syncs across User &amp; Admin pages</span>
                 </div>
               </div>
 
-              <p style="font-size: var(--fs-xs); color: var(--admin-muted); line-height: 1.55; margin-bottom: var(--space-4);">
+              <p class="control-desc-text">
                 Update the official mobile contact number and email address displayed in student banners, contact sections, and footers.
               </p>
             </div>
 
-            <form method="POST" action="admin-homepage.php" style="display: flex; flex-direction: column; gap: var(--space-3);">
+            <form method="POST" action="admin-homepage.php" class="control-form-stack">
               <input type="hidden" name="action" value="update_contacts">
 
               <div>
-                <label style="display: block; font-size: var(--fs-2xs); font-weight: 700; color: var(--admin-text); margin-bottom: 4px;">DRRM Contact Number</label>
-                <input type="text" name="contact_phone" value="<?= htmlspecialchars($contactPhone) ?>" required class="auth-input" style="width: 100%; height: 42px; padding: 0 14px; font-size: var(--fs-xs); border: 1.5px solid var(--admin-border); border-radius: var(--radius-sm);">
+                <label class="control-field-label">DRRM Contact Number</label>
+                <input type="text" name="contact_phone" value="<?= htmlspecialchars($contactPhone) ?>" required class="control-input">
               </div>
 
               <div>
-                <label style="display: block; font-size: var(--fs-2xs); font-weight: 700; color: var(--admin-text); margin-bottom: 4px;">DRRM Official Email</label>
-                <input type="email" name="contact_email" value="<?= htmlspecialchars($contactEmail) ?>" required class="auth-input" style="width: 100%; height: 42px; padding: 0 14px; font-size: var(--fs-xs); border: 1.5px solid var(--admin-border); border-radius: var(--radius-sm);">
+                <label class="control-field-label">DRRM Official Email</label>
+                <input type="email" name="contact_email" value="<?= htmlspecialchars($contactEmail) ?>" required class="control-input">
               </div>
 
-              <button type="submit" style="width: 100%; min-height: 44px; margin-top: 2px; padding: 11px 18px; border-radius: var(--radius-sm); font-family: var(--heading-font); font-weight: 700; font-size: var(--fs-xs); cursor: pointer; border: none; background: #700d23; color: #ffffff; box-shadow: 0 4px 12px rgba(112, 13, 35, 0.25); display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+              <button type="submit" class="control-submit-btn">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
                 <span>Save &amp; Publish Contacts</span>
               </button>
@@ -618,18 +613,18 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
 
           <!-- Contact Info Column (NEW) -->
           <div class="footer-contact-col">
-            <h4 style="font-family: var(--heading-font); font-size: var(--fs-sm); font-weight: 700; color: #ffffff; margin-bottom: 12px;">DRRM Contacts</h4>
-            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs-xs); color: rgba(255,255,255,0.85);">
-              <li style="display: flex; align-items: center; gap: 8px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ff8fa3; flex-shrink: 0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                <span>Phone: <a href="tel:<?= htmlspecialchars($contactPhone) ?>" style="color: #ffffff; font-weight: 700; text-decoration: underline;"><?= htmlspecialchars($contactPhone) ?></a></span>
+            <h4 class="footer-contact-title">DRRM Contacts</h4>
+            <ul class="footer-contact-list">
+              <li class="footer-contact-item">
+                <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                <span>Phone: <a href="tel:<?= htmlspecialchars($contactPhone) ?>" class="footer-contact-link"><?= htmlspecialchars($contactPhone) ?></a></span>
               </li>
-              <li style="display: flex; align-items: center; gap: 8px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ff8fa3; flex-shrink: 0;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                <span>Email: <a href="mailto:<?= htmlspecialchars($contactEmail) ?>" style="color: #ffffff; font-weight: 700; text-decoration: underline; word-break: break-all;"><?= htmlspecialchars($contactEmail) ?></a></span>
+              <li class="footer-contact-item">
+                <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                <span>Email: <a href="mailto:<?= htmlspecialchars($contactEmail) ?>" class="footer-contact-link"><?= htmlspecialchars($contactEmail) ?></a></span>
               </li>
-              <li style="display: flex; align-items: center; gap: 8px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ff8fa3; flex-shrink: 0;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <li class="footer-contact-item">
+                <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                 <span>CSU Carig Campus, COEA</span>
               </li>
             </ul>
@@ -637,7 +632,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
 
           <!-- Quick Links Column -->
           <div class="footer-links-col">
-            <h4 style="font-family: var(--heading-font); font-size: var(--fs-sm); font-weight: 700; color: #ffffff; margin-bottom: 12px;">Quick Links</h4>
+            <h4 class="footer-contact-title">Quick Links</h4>
             <ul class="footer-nav-list">
               <li><a href="admin-homepage.php">Home</a></li>
               <li><a href="admin-verify.php">Student Verifications</a></li>

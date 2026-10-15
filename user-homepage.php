@@ -95,7 +95,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
         <?php if ($isAssistanceEnabled || $activeRequest): ?>
           <a href="user-request.php">Request Assistance</a>
         <?php else: ?>
-          <span style="color: rgba(255,255,255,0.45); font-size: var(--fs-sm); font-weight: 600; padding: 6px 10px; cursor: not-allowed;" title="Intake currently closed">Request Assistance (Closed)</span>
+          <span class="nav-link-disabled" title="Intake currently closed">Request Assistance (Closed)</span>
         <?php endif; ?>
         <a href="#contactSection">COEASC DRRM Contacts</a>
         <a href="user-homepage.php?action=logout" class="nav-logout-btn">Logout</a>
@@ -132,7 +132,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
             <span>Request Assistance</span>
           </a>
         <?php else: ?>
-          <a href="javascript:void(0)" onclick="alert('Notice: Assistance request submission is currently closed. The COEASC DRRM Department enables requests during active post-disaster response.');" style="opacity: 0.6;">
+          <a href="javascript:void(0)" class="mobile-nav-disabled" onclick="alert('Notice: Assistance request submission is currently closed. The COEASC DRRM Department enables requests during active post-disaster response.');">
             <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -188,15 +188,15 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
           <!-- Quick Action Button in Hero -->
           <div class="hero-cta-group">
             <?php if ($isAssistanceEnabled): ?>
-              <button type="button" class="hero-cta-btn request-btn" onclick="handleRequestAssistanceClick()" style="border: none; cursor: pointer;">
+              <button type="button" class="hero-cta-btn request-btn" onclick="handleRequestAssistanceClick()">
                 <span>+ Request Assistance Now</span>
               </button>
             <?php else: ?>
-              <div style="display: flex; flex-direction: column; gap: 6px;">
-                <button type="button" class="hero-cta-btn request-btn" disabled style="border: none; cursor: not-allowed; background: #94a3b8; color: #f8fafc; box-shadow: none; opacity: 0.8;" title="Assistance Request currently unavailable">
+              <div class="hero-cta-stack">
+                <button type="button" class="hero-cta-btn request-btn is-disabled" disabled title="Assistance Request currently unavailable">
                   <span>Assistance Request currently unavailable</span>
                 </button>
-                <span style="font-size: var(--fs-2xs); color: #78656a; font-weight: 600;">
+                <span class="hero-notice-note">
                   (Note: Request intake is enabled by council admins during post-disaster events.)
                 </span>
               </div>
@@ -208,48 +208,52 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
     </section>
 
     <!-- Student Dashboard Main Section -->
-    <section class="student-portal-section" style="padding: var(--space-8) 0 var(--space-12);">
-      <div class="container" style="display: flex; flex-direction: column; gap: var(--space-6);">
+    <section class="student-portal-section">
+      <div class="container student-portal-container">
 
         <!-- Action Status Alerts -->
         <?php if (isset($_GET['cancelled'])): ?>
-          <div class="alert-banner alert-warning" role="alert" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px; border-radius: var(--radius-sm, 10px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: #fff8f0; color: #9a4800; border: 1.5px solid #fed7aa; box-shadow: 0 4px 12px rgba(154, 72, 0, 0.08);">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px; flex-shrink: 0; color: #ea580c;">
+          <div class="alert-banner alert-warning" role="alert">
+            <div class="alert-banner-content">
+              <svg class="alert-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
               <span>Your assistance request has been successfully cancelled.</span>
             </div>
-            <button type="button" onclick="this.parentElement.style.display='none'" style="background: none; border: none; font-size: 1.2rem; color: #9a4800; cursor: pointer; padding: 0 4px;">&times;</button>
+            <button type="button" class="alert-banner-close" onclick="this.parentElement.style.display='none'">&times;</button>
           </div>
         <?php elseif (isset($_GET['requested'])): ?>
-          <div class="alert-banner alert-success" role="alert" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px; border-radius: var(--radius-sm, 10px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: #edf7f0; color: #1e6b37; border: 1.5px solid #c2e7cd; box-shadow: 0 4px 12px rgba(30, 107, 55, 0.08);">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 20px; height: 20px; flex-shrink: 0; color: #1e6b37;">
+          <div class="alert-banner alert-success" role="alert">
+            <div class="alert-banner-content">
+              <svg class="alert-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
               <span>Your assistance request has been submitted to the COEASC DRRM Department. You can track live category approval below.</span>
             </div>
-            <button type="button" onclick="this.parentElement.style.display='none'" style="background: none; border: none; font-size: 1.2rem; color: #1e6b37; cursor: pointer; padding: 0 4px;">&times;</button>
+            <button type="button" class="alert-banner-close" onclick="this.parentElement.style.display='none'">&times;</button>
           </div>
         <?php elseif (isset($_GET['updated'])): ?>
-          <div class="alert-banner alert-success" role="alert" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px; border-radius: var(--radius-sm, 10px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: #edf7f0; color: #1e6b37; border: 1.5px solid #c2e7cd; box-shadow: 0 4px 12px rgba(30, 107, 55, 0.08);">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 20px; height: 20px; flex-shrink: 0; color: #1e6b37;">
+          <div class="alert-banner alert-success" role="alert">
+            <div class="alert-banner-content">
+              <svg class="alert-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
               <span>Your assistance request details have been updated successfully.</span>
             </div>
-            <button type="button" onclick="this.parentElement.style.display='none'" style="background: none; border: none; font-size: 1.2rem; color: #1e6b37; cursor: pointer; padding: 0 4px;">&times;</button>
+            <button type="button" class="alert-banner-close" onclick="this.parentElement.style.display='none'">&times;</button>
           </div>
         <?php endif; ?>
 
         <!-- Disaster Intake Inactive Notice (Shown when intake is OFF and student has no active request) -->
         <?php if (!$isAssistanceEnabled && !$activeRequest): ?>
-          <div style="display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-radius: var(--radius-sm); font-size: var(--fs-xs); background: #f8fafc; color: #475569; border: 1.5px solid #e2e8f0;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #64748b; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <div class="alert-notice">
+            <svg class="alert-notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
             <div>
               <strong>Assistance Request Intake Inactive:</strong> The COEASC DRRM Department activates assistance submissions during or immediately after a disaster event affecting students. If you need direct council assistance, please contact the numbers below.
             </div>
@@ -263,8 +267,8 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
             </div>
             <div>
-              <div style="font-family: var(--heading-font); font-weight: 800; font-size: var(--fs-sm); line-height: 1.2;">COEASC DRRM CONTACTS</div>
-              <div style="font-size: var(--fs-2xs); opacity: 0.9; margin-top: 2px;">Direct contact with the Student Council DRRM Department for relief coordination &amp; inquiries</div>
+              <div class="hotline-title">COEASC DRRM CONTACTS</div>
+              <div class="hotline-subtitle">Direct contact with the Student Council DRRM Department for relief coordination &amp; inquiries</div>
             </div>
           </div>
           <div class="hotline-actions">
@@ -292,7 +296,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                 <h2>
                   <span><?= htmlspecialchars($user['full_name']) ?></span>
                   <span id="nameVerifiedCheck">
-                    <svg style="width: 20px; height: 20px; fill: #38d39f;" viewBox="0 0 24 24">
+                    <svg class="name-verified-icon" viewBox="0 0 24 24">
                       <path
                         d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                     </svg>
@@ -305,7 +309,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                   <span>&bull;</span>
                   <span><?= htmlspecialchars($user['year_level']) ?></span>
                 </div>
-                <div style="font-size: var(--fs-2xs); color: rgba(255,255,255,0.8); margin-top: 3px;">
+                <div class="gcash-email-text">
                   <?= htmlspecialchars($user['email']) ?>
                 </div>
               </div>
@@ -316,7 +320,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
               <span class="verification-decision-label">Verification Status</span>
               <div id="verificationBadgeContainer">
                 <span class="verification-badge approved" id="currentVerificationPill">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
                   <span>Approved (Verified)</span>
@@ -328,11 +332,11 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
         </section>
 
         <!-- Dynamic Locked Banner (Shown if student is unverified or pending) -->
-        <div class="locked-overlay-card" id="verificationLockedBanner" style="display: none;">
+        <div class="locked-overlay-card" id="verificationLockedBanner">
           <div class="locked-icon-text">
             <div class="locked-icon-badge">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round" style="width: 20px; height: 20px;">
+                stroke-linejoin="round">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                 <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
               </svg>
@@ -354,37 +358,35 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
 
           <div class="tracker-card-header">
             <div>
-              <h3 style="display: flex; align-items: center; gap: 8px;">
+              <h3 class="tracker-title-heading">
                 <span>Request Status Update</span>
                 <?php if ($activeRequest): 
                   $headerStatus = strtolower(trim($activeRequest['status'] ?? 'pending'));
                   if ($headerStatus === 'approved'): ?>
-                    <span style="font-size: var(--fs-2xs); background: #edf7f0; color: #1e6b37; border: 1px solid #c2e7cd; padding: 2px 10px; border-radius: var(--radius-pill); font-weight: 700;">Approved by Admin</span>
+                    <span class="badge-pill badge-verified">Approved by Admin</span>
                   <?php elseif ($headerStatus === 'pending'): ?>
-                    <span style="font-size: var(--fs-2xs); background: #fdf5ea; color: #9c6008; border: 1px solid #f7ddb2; padding: 2px 10px; border-radius: var(--radius-pill); font-weight: 700;">Pending Review</span>
+                    <span class="badge-pill badge-pending">Pending Review</span>
                   <?php elseif ($headerStatus === 'in_progress'): ?>
-                    <span style="font-size: var(--fs-2xs); background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd; padding: 2px 10px; border-radius: var(--radius-pill); font-weight: 700;">Dispatched</span>
+                    <span class="badge-pill badge-in-progress">Dispatched</span>
                   <?php elseif (in_array($headerStatus, ['completed', 'archived'])): ?>
-                    <span style="font-size: var(--fs-2xs); background: #edf7f0; color: #1e6b37; border: 1px solid #c2e7cd; padding: 2px 10px; border-radius: var(--radius-pill); font-weight: 700;">Completed</span>
+                    <span class="badge-pill badge-verified">Completed</span>
                   <?php endif; ?>
                 <?php endif; ?>
               </h3>
               <p>Live progress breakdown for your active disaster relief request and category approval.</p>
             </div>
-            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <div class="student-card-actions-flex">
               <?php 
                 $isArchivedOrCompleted = $activeRequest && in_array(strtolower(trim($activeRequest['status'] ?? '')), ['completed', 'archived']);
               ?>
               <?php if (!$activeRequest || $isArchivedOrCompleted): ?>
                 <?php if ($isAssistanceEnabled): ?>
-                  <button type="button" class="unlock-action-btn" onclick="handleRequestAssistanceClick()"
-                    style="background: #700d23; box-shadow: 0 4px 12px rgba(112, 13, 35, 0.2); border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                  <button type="button" class="unlock-action-btn btn-brand-primary" onclick="handleRequestAssistanceClick()">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     <span>Request Assistance</span>
                   </button>
                 <?php else: ?>
-                  <button type="button" class="unlock-action-btn" disabled
-                    style="background: #94a3b8; color: #f8fafc; box-shadow: none; border: none; cursor: not-allowed; opacity: 0.75; display: inline-flex; align-items: center; gap: 6px;"
+                  <button type="button" class="unlock-action-btn btn-disabled-muted" disabled
                     title="Assistance Request currently unavailable">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     <span>Assistance Request currently unavailable</span>
@@ -393,8 +395,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
               <?php else: 
                 $reqStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
               ?>
-                <a href="user-request.php" class="unlock-action-btn"
-                  style="background: #700d23; box-shadow: 0 4px 12px rgba(112, 13, 35, 0.2);">
+                <a href="user-request.php" class="unlock-action-btn btn-brand-primary">
                   <span>Update Request</span>
                 </a>
                 <?php if (in_array($reqStatusLower, ['pending', 'approved'])): ?>
@@ -414,23 +415,21 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
 
           <?php if (!$activeRequest): ?>
             <!-- Empty State when no active request exists -->
-            <div style="text-align: center; padding: 48px 24px; background: #faf7f8; border-radius: var(--radius-md); border: 1.5px dashed rgba(112, 13, 35, 0.2);">
-              <div style="width: 56px; height: 56px; border-radius: 50%; background: #fdebed; color: #700d23; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
+            <div class="request-empty-state">
+              <div class="request-empty-icon">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
               </div>
-              <h4 style="color: #700d23; margin-bottom: 6px; font-family: var(--heading-font); font-size: var(--fs-md);">No Active Relief Requests</h4>
-              <p style="color: var(--admin-muted); font-size: var(--fs-xs); margin-bottom: 22px; max-width: 480px; margin-left: auto; margin-right: auto;">
+              <h4 class="request-empty-title">No Active Relief Requests</h4>
+              <p class="request-empty-desc">
                 <?= $isAssistanceEnabled ? 'You currently have no pending or active disaster relief requests submitted to the council.' : 'Assistance submission is currently stands down. Council admins activate submissions during active disaster response.' ?>
               </p>
               <?php if ($isAssistanceEnabled): ?>
-                <button type="button" class="unlock-action-btn" onclick="handleRequestAssistanceClick()"
-                  style="background: #700d23; box-shadow: 0 4px 12px rgba(112, 13, 35, 0.2); border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                <button type="button" class="unlock-action-btn btn-brand-primary" onclick="handleRequestAssistanceClick()">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                   <span>Request Assistance Now</span>
                 </button>
               <?php else: ?>
-                <button type="button" class="unlock-action-btn" disabled
-                  style="background: #94a3b8; color: #f8fafc; box-shadow: none; border: none; cursor: not-allowed; opacity: 0.75; display: inline-flex; align-items: center; gap: 8px;">
+                <button type="button" class="unlock-action-btn btn-disabled-muted" disabled>
                   <span>Assistance Request currently unavailable</span>
                 </button>
               <?php endif; ?>
@@ -532,20 +531,20 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
 
             <!-- Category Approval Breakdown Badges -->
             <div class="category-breakdown-box">
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-                <span style="font-size: var(--fs-xs); font-weight: 700; color: var(--admin-text); display: flex; align-items: center; gap: 6px;">
+              <div class="category-breakdown-bar">
+                <span class="category-breakdown-title">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                   <span>Requested Assistance Categories &amp; Approval Status:</span>
                 </span>
-                <span style="font-size: var(--fs-2xs);">
+                <span class="category-status-indicator">
                   <?php if ($status === 'approved'): ?>
-                    <strong style="color: #1e6b37;">✓ All categories approved by Admin</strong>
+                    <strong class="status-text-approved">✓ All categories approved by Admin</strong>
                   <?php elseif ($status === 'in_progress'): ?>
-                    <strong style="color: #0284c7;">⚡ In Transit by DRRM Responders</strong>
+                    <strong class="status-text-progress">⚡ In Transit by DRRM Responders</strong>
                   <?php elseif ($status === 'completed'): ?>
-                    <strong style="color: #1e6b37;">✓ Aid Delivered to Student</strong>
+                    <strong class="status-text-approved">✓ Aid Delivered to Student</strong>
                   <?php else: ?>
-                    <strong style="color: #9c6008;">⏳ Awaiting Admin Category Review</strong>
+                    <strong class="status-text-pending">⏳ Awaiting Admin Category Review</strong>
                   <?php endif; ?>
                 </span>
               </div>
@@ -557,25 +556,25 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                     <span class="category-status-pill approved" title="Approved by Council Admin">
                       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       <span><?= htmlspecialchars($cat) ?></span>
-                      <span style="font-size: 0.68rem; opacity: 0.85; margin-left: 2px;">• Approved by Admin</span>
+                      <span class="category-pill-sub">• Approved by Admin</span>
                     </span>
                   <?php elseif ($status === 'in_progress'): ?>
                     <span class="category-status-pill in_progress" title="Category in Progress">
                       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
                       <span><?= htmlspecialchars($cat) ?></span>
-                      <span style="font-size: 0.68rem; opacity: 0.85; margin-left: 2px;">• Dispatched</span>
+                      <span class="category-pill-sub">• Dispatched</span>
                     </span>
                   <?php elseif ($status === 'completed'): ?>
                     <span class="category-status-pill completed" title="Category Delivered">
                       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                       <span><?= htmlspecialchars($cat) ?></span>
-                      <span style="font-size: 0.68rem; opacity: 0.85; margin-left: 2px;">• Delivered</span>
+                      <span class="category-pill-sub">• Delivered</span>
                     </span>
                   <?php else: ?>
                     <span class="category-status-pill pending" title="Category Pending Review">
                       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
                       <span><?= htmlspecialchars($cat) ?></span>
-                      <span style="font-size: 0.68rem; opacity: 0.85; margin-left: 2px;">• Pending Admin Review</span>
+                      <span class="category-pill-sub">• Pending Admin Review</span>
                     </span>
                   <?php endif; ?>
                 <?php endforeach; ?>
@@ -583,20 +582,19 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
             </div>
 
             <!-- Active Request Location & Summary Card -->
-            <div
-              style="background: #faf7f8; border-radius: var(--radius-md); padding: var(--space-5) var(--space-6); border: 1px solid rgba(112, 13, 35, 0.1); display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); font-size: var(--fs-xs);">
-              <div>
-                <span style="color: var(--admin-muted); display: block; margin-bottom: 2px;">Assistance Category:</span>
-                <strong style="color: #700d23; font-size: var(--fs-sm);"><?= htmlspecialchars($activeRequest['resources'] ?? 'N/A') ?></strong>
+            <div class="request-meta-card">
+              <div class="request-meta-item">
+                <span class="request-meta-label">Assistance Category:</span>
+                <strong class="request-meta-value-brand"><?= htmlspecialchars($activeRequest['resources'] ?? 'N/A') ?></strong>
               </div>
-              <div>
-                <span style="color: var(--admin-muted); display: block; margin-bottom: 2px;">Assigned Location / Landmark:</span>
-                <strong style="color: var(--admin-text);"><?= htmlspecialchars($activeRequest['landmark'] ?? 'N/A') ?></strong>
+              <div class="request-meta-item">
+                <span class="request-meta-label">Assigned Location / Landmark:</span>
+                <strong class="request-meta-value"><?= htmlspecialchars($activeRequest['landmark'] ?? 'N/A') ?></strong>
               </div>
               <?php if (!empty($activeRequest['description'])): ?>
-              <div style="grid-column: 1 / -1;">
-                <span style="color: var(--admin-muted); display: block; margin-bottom: 2px;">Student Remarks / Situation:</span>
-                <span style="color: var(--admin-text); line-height: 1.45;"><?= nl2br(htmlspecialchars($activeRequest['description'])) ?></span>
+              <div class="request-meta-item request-meta-full">
+                <span class="request-meta-label">Student Remarks / Situation:</span>
+                <span class="request-meta-value"><?= nl2br(htmlspecialchars($activeRequest['description'])) ?></span>
               </div>
               <?php endif; ?>
             </div>
@@ -606,16 +604,16 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
 
         <!-- Dedicated COEASC DRRM Department Contact Section -->
         <section class="emergency-contact-section" id="contactSection" aria-labelledby="drrmContactHeading">
-          <div class="dashboard-header-block" style="text-align: left; margin-bottom: var(--space-5);">
-            <span class="dashboard-eyebrow" style="color: #700d23; font-weight: 700; text-transform: uppercase; font-size: var(--fs-2xs); letter-spacing: 0.08em; display: inline-flex; align-items: center; gap: 6px;">
-              <span style="width: 8px; height: 8px; border-radius: 50%; background: #700d23; display: inline-block;"></span>
+          <div class="contact-header-block">
+            <span class="contact-eyebrow">
+              <span class="contact-eyebrow-dot"></span>
               COEASC Disaster Risk Reduction &amp; Management Department
             </span>
-            <h2 class="dashboard-main-title" id="drrmContactHeading" style="font-family: var(--heading-font); font-size: clamp(1.35rem, 2vw + 0.8rem, 1.85rem); font-weight: 800; color: #700d23; margin-top: 4px;">COEASC DRRM CONTACTS</h2>
-            <p class="dashboard-main-subtitle" style="color: var(--admin-muted); font-size: var(--fs-xs); margin-top: 4px;">Direct communication channels for the College of Engineering &amp; Architecture Student Council (COEASC) DRRM Department. Reach out for relief inquiries, coordination, and updates.</p>
+            <h2 class="contact-main-title" id="drrmContactHeading">COEASC DRRM CONTACTS</h2>
+            <p class="contact-main-subtitle">Direct communication channels for the College of Engineering &amp; Architecture Student Council (COEASC) DRRM Department. Reach out for relief inquiries, coordination, and updates.</p>
           </div>
 
-          <div class="emergency-contact-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+          <div class="emergency-contact-grid">
             <!-- Card 1: COEASC DRRM Phone Contact -->
             <div class="emergency-contact-card">
               <div>
@@ -627,7 +625,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                   </div>
                   <div>
                     <div class="emergency-contact-title">DRRM Department Contact</div>
-                    <span style="font-size: var(--fs-2xs); color: #700d23; font-weight: 700; background: #fdebed; padding: 2px 8px; border-radius: var(--radius-pill); border: 1px solid rgba(112, 13, 35, 0.2);">COEASC DRRM Department</span>
+                    <span class="contact-badge-hotline">COEASC DRRM Department</span>
                   </div>
                 </div>
                 <p class="emergency-contact-desc">
@@ -635,7 +633,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                 </p>
               </div>
               <div>
-                <div style="font-family: var(--heading-font); font-size: 1.25rem; font-weight: 800; color: #700d23; margin-bottom: 12px; letter-spacing: 0.02em;">
+                <div class="contact-number-display">
                   <?= htmlspecialchars($contactPhone) ?>
                 </div>
                 <a href="tel:<?= htmlspecialchars($contactPhone) ?>" class="emergency-contact-action primary-action" aria-label="Contact COEASC DRRM Department at <?= htmlspecialchars($contactPhone) ?>">
@@ -657,7 +655,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                   </div>
                   <div>
                     <div class="emergency-contact-title">COEASC DRRM Email</div>
-                    <span style="font-size: var(--fs-2xs); color: #0369a1; font-weight: 700; background: #f0f9ff; padding: 2px 8px; border-radius: var(--radius-pill); border: 1px solid #bae6fd;">Official DRRM Inbox</span>
+                    <span class="contact-badge-email">Official DRRM Inbox</span>
                   </div>
                 </div>
                 <p class="emergency-contact-desc">
@@ -665,7 +663,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                 </p>
               </div>
               <div>
-                <div style="font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.95rem; font-weight: 700; color: #700d23; margin-bottom: 12px; word-break: break-all;">
+                <div class="contact-email-display">
                   <?= htmlspecialchars($contactEmail) ?>
                 </div>
                 <a href="mailto:<?= htmlspecialchars($contactEmail) ?>" class="emergency-contact-action primary-action" aria-label="Send Email to COEASC DRRM Department">
@@ -724,20 +722,20 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
             </div>
           </div>
 
-          <!-- Contact Info Column (NEW) -->
+          <!-- Contact Info Column -->
           <div class="footer-contact-col">
-            <h4 style="font-family: var(--heading-font); font-size: var(--fs-sm); font-weight: 700; color: #ffffff; margin-bottom: 12px;">DRRM Contacts</h4>
-            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: var(--fs-xs); color: rgba(255,255,255,0.85);">
-              <li style="display: flex; align-items: center; gap: 8px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ff8fa3; flex-shrink: 0;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                <span>Phone: <a href="tel:<?= htmlspecialchars($contactPhone) ?>" style="color: #ffffff; font-weight: 700; text-decoration: underline;"><?= htmlspecialchars($contactPhone) ?></a></span>
+            <h4 class="footer-contact-title">DRRM Contacts</h4>
+            <ul class="footer-contact-list">
+              <li class="footer-contact-item">
+                <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                <span>Phone: <a href="tel:<?= htmlspecialchars($contactPhone) ?>" class="footer-contact-link"><?= htmlspecialchars($contactPhone) ?></a></span>
               </li>
-              <li style="display: flex; align-items: center; gap: 8px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ff8fa3; flex-shrink: 0;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                <span>Email: <a href="mailto:<?= htmlspecialchars($contactEmail) ?>" style="color: #ffffff; font-weight: 700; text-decoration: underline; word-break: break-all;"><?= htmlspecialchars($contactEmail) ?></a></span>
+              <li class="footer-contact-item">
+                <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                <span>Email: <a href="mailto:<?= htmlspecialchars($contactEmail) ?>" class="footer-contact-link"><?= htmlspecialchars($contactEmail) ?></a></span>
               </li>
-              <li style="display: flex; align-items: center; gap: 8px;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ff8fa3; flex-shrink: 0;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <li class="footer-contact-item">
+                <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                 <span>CSU Carig Campus, COEA</span>
               </li>
             </ul>
@@ -745,7 +743,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
 
           <!-- Quick Links Column -->
           <div class="footer-links-col">
-            <h4 style="font-family: var(--heading-font); font-size: var(--fs-sm); font-weight: 700; color: #ffffff; margin-bottom: 12px;">Quick Links</h4>
+            <h4 class="footer-contact-title">Quick Links</h4>
             <ul class="footer-nav-list">
               <li><a href="user-homepage.php">Home</a></li>
               <li><a href="user-request.php">Request Assistance</a></li>
@@ -799,7 +797,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
 
       if (state === 'approved' || state === 'verified') {
         pill.innerHTML = `
-          <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="20 6 9 17 4 12"></polyline>
           </svg>
           <span>Approved (Verified)</span>
@@ -810,7 +808,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
       }
       else if (state === 'pending' || state === 'unverified') {
         pill.innerHTML = `
-          <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
             <polyline points="12 6 12 12 14 14"></polyline>
           </svg>
@@ -824,7 +822,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
       }
       else if (state === 'rejected') {
         pill.innerHTML = `
-          <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
@@ -838,7 +836,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
       }
       else if (state === 'banned') {
         pill.innerHTML = `
-          <svg style="width:14px;height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
           </svg>

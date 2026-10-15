@@ -110,8 +110,8 @@
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/id-badge.svg" alt=""
                       onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                      stroke-linejoin="round" style="display:none;">
+                    <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
                       <rect x="3" y="4" width="18" height="16" rx="2"></rect>
                       <line x1="7" y1="8" x2="17" y2="8"></line>
                       <line x1="7" y1="12" x2="13" y2="12"></line>
@@ -121,7 +121,7 @@
                   <input type="text" id="userIdentifier" class="portal-text-input"
                     placeholder="Enter Student ID (e.g. 24-XXXXX) or Admin Email" required autocomplete="username" name="identifier">
                 </div>
-                <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 4px;">Students: Enter Student ID (e.g. 24-XXXXX) &bull; Admins: Enter registered Email</small>
+                <small class="input-hint">Students: Enter Student ID (e.g. 24-XXXXX) &bull; Admins: Enter registered Email</small>
               </div>
 
               <!-- Field 2: Password -->
@@ -131,8 +131,8 @@
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/lock.svg" alt=""
                       onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                      stroke-linejoin="round" style="display:none;">
+                    <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
                       <rect x="3" y="11" width="18" height="11" rx="2"></rect>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
@@ -206,12 +206,12 @@
       <button type="button" class="modal-close-btn" onclick="closeForgotPasswordModal()" aria-label="Close modal">&times;</button>
     </div>
 
-    <form id="forgotPasswordForm" method="POST" action="user-login.php" onsubmit="handleForgotPasswordSubmit(event)" style="margin: 0;">
+    <form id="forgotPasswordForm" class="modal-form-no-margin" method="POST" action="user-login.php" onsubmit="handleForgotPasswordSubmit(event)">
       <input type="hidden" name="action" value="forgot_password">
       <input type="hidden" name="ajax" value="1">
 
       <div class="modal-body-content">
-        <div id="resetStatusBanner" style="display: none; padding: 10px 14px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; line-height: 1.45;"></div>
+        <div id="resetStatusBanner" class="modal-status-banner"></div>
 
         <!-- Reset Field 1: Identifier -->
         <div class="input-group">
@@ -225,9 +225,9 @@
                 <line x1="7" y1="16" x2="10" y2="16"></line>
               </svg>
             </span>
-            <input type="text" id="resetIdentifier" name="reset_identifier" class="portal-text-input" placeholder="e.g. 24-00909 or email@domain.com" required autocomplete="username">
+            <input type="text" id="resetIdentifier" name="reset_identifier" class="portal-text-input" placeholder="e.g. 24-XXXXX or admin@email.com" required autocomplete="username">
           </div>
-          <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 3px;">Students: Student ID (XX-XXXXX) &bull; Admins: Registered Email</small>
+          <small class="input-hint">Students: Student ID (XX-XXXXX) &bull; Admins: Registered Email</small>
         </div>
 
         <!-- Reset Field 2: Secondary Verification Detail -->
@@ -239,9 +239,9 @@
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
               </svg>
             </span>
-            <input type="text" id="resetVerification" name="reset_verification" class="portal-text-input" placeholder="e.g. 0912 345 6789 or registered email" required autocomplete="off">
+            <input type="text" id="resetVerification" name="reset_verification" class="portal-text-input" placeholder="09xx xxx xxxx or registered email" required autocomplete="off">
           </div>
-          <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 3px;">Used for identity verification to secure your account</small>
+          <small class="input-hint">Used for identity verification to secure your account</small>
         </div>
 
         <!-- Reset Field 3: New Password -->
@@ -415,16 +415,7 @@
     function showResetBanner(message, type) {
       const banner = document.getElementById('resetStatusBanner');
       if (!banner) return;
-      banner.style.display = 'block';
-      if (type === 'success') {
-        banner.style.backgroundColor = '#edf7f0';
-        banner.style.color = '#1e6b37';
-        banner.style.border = '1.5px solid #c2e7cd';
-      } else {
-        banner.style.backgroundColor = '#fdf0f2';
-        banner.style.color = '#9c2438';
-        banner.style.border = '1.5px solid #f8c9d1';
-      }
+      banner.className = `modal-status-banner is-${type}`;
       banner.textContent = message;
     }
   </script>

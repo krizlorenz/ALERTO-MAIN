@@ -177,8 +177,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <!-- Error & Success Message Containers -->
             <?php if (!empty($error)): ?>
-              <div class="alert-banner alert-error" role="alert" style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: var(--status-rejected-bg, #fdf0f2); color: var(--status-rejected-text, #9c2438); border: 1.5px solid var(--status-rejected-border, #f8c9d1); margin: 0 0 16px 0; line-height: 1.45;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; flex-shrink: 0; color: #b82b43; margin-top: 1px;">
+              <div class="alert-banner alert-error" role="alert">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="12" y1="8" x2="12" y2="12"></line>
                   <line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -188,8 +188,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <?php if (!empty($success)): ?>
-              <div class="alert-banner alert-success" role="alert" style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 14px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: var(--status-approved-bg, #edf7f0); color: var(--status-approved-text, #1e6b37); border: 1.5px solid var(--status-approved-border, #c2e7cd); margin: 0 0 16px 0; line-height: 1.45;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; flex-shrink: 0; color: #238545; margin-top: 1px;">
+              <div class="alert-banner alert-success" role="alert">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                   <polyline points="22 4 12 14.01 9 11.01"></polyline>
                 </svg>
@@ -206,7 +206,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="input-container">
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/id-badge.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <rect x="3" y="4" width="18" height="16" rx="2"></rect>
                       <line x1="7" y1="8" x2="17" y2="8"></line>
                       <line x1="7" y1="12" x2="13" y2="12"></line>
@@ -215,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   </span>
                   <input type="text" id="userIdentifier" name="identifier" class="portal-text-input" placeholder="Enter Student ID (e.g. 24-XXXXX) or Admin Email" required autocomplete="username" value="<?= htmlspecialchars($_POST['identifier'] ?? $_POST['student_id'] ?? $_POST['email'] ?? '') ?>">
                 </div>
-                <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 4px;">Students: Enter Student ID (e.g. 24-XXXXX) &bull; Admins: Enter registered Email</small>
+                <small class="input-hint">Students: Enter Student ID (e.g. 24-XXXXX) &bull; Admins: Enter registered Email</small>
               </div>
 
               <!-- Field 2: Password -->
@@ -224,7 +224,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="input-container">
                   <span class="input-icon-slot" aria-hidden="true">
                     <img src="icons/lock.svg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <svg class="svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <rect x="3" y="11" width="18" height="11" rx="2"></rect>
                       <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                     </svg>
@@ -295,13 +295,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <button type="button" class="modal-close-btn" onclick="closeForgotPasswordModal()" aria-label="Close modal">&times;</button>
     </div>
 
-    <form id="forgotPasswordForm" method="POST" action="user-login.php" onsubmit="handleForgotPasswordSubmit(event)" style="margin: 0;">
+    <form id="forgotPasswordForm" method="POST" action="user-login.php" onsubmit="handleForgotPasswordSubmit(event)">
       <input type="hidden" name="action" value="forgot_password">
       <input type="hidden" name="ajax" value="1">
 
       <div class="modal-body-content">
         <!-- Live status notification inside modal -->
-        <div id="resetStatusBanner" style="display: none; padding: 10px 14px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; line-height: 1.45;"></div>
+        <div id="resetStatusBanner" class="modal-status-banner"></div>
 
         <!-- Reset Field 1: Identifier -->
         <div class="input-group">
@@ -315,9 +315,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <line x1="7" y1="16" x2="10" y2="16"></line>
               </svg>
             </span>
-            <input type="text" id="resetIdentifier" name="reset_identifier" class="portal-text-input" placeholder="e.g. 24-00909 or email@domain.com" required autocomplete="username">
+            <input type="text" id="resetIdentifier" name="reset_identifier" class="portal-text-input" placeholder="e.g. 24-XXXXX or admin@email.com" required autocomplete="username">
           </div>
-          <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 3px;">Students: Student ID (XX-XXXXX) &bull; Admins: Registered Email</small>
+          <small class="input-hint">Students: Student ID (XX-XXXXX) &bull; Admins: Registered Email</small>
         </div>
 
         <!-- Reset Field 2: Secondary Verification Detail -->
@@ -329,9 +329,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
               </svg>
             </span>
-            <input type="text" id="resetVerification" name="reset_verification" class="portal-text-input" placeholder="e.g. 0912 345 6789 or registered email" required autocomplete="off">
+            <input type="text" id="resetVerification" name="reset_verification" class="portal-text-input" placeholder="09xx xxx xxxx or registered email" required autocomplete="off">
           </div>
-          <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 3px;">Used for identity verification to secure your account</small>
+          <small class="input-hint">Used for identity verification to secure your account</small>
         </div>
 
         <!-- Reset Field 3: New Password -->
@@ -507,16 +507,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function showResetBanner(message, type) {
       const banner = document.getElementById('resetStatusBanner');
       if (!banner) return;
-      banner.style.display = 'block';
-      if (type === 'success') {
-        banner.style.backgroundColor = '#edf7f0';
-        banner.style.color = '#1e6b37';
-        banner.style.border = '1.5px solid #c2e7cd';
-      } else {
-        banner.style.backgroundColor = '#fdf0f2';
-        banner.style.color = '#9c2438';
-        banner.style.border = '1.5px solid #f8c9d1';
-      }
+      banner.className = `modal-status-banner is-${type}`;
       banner.textContent = message;
     }
 

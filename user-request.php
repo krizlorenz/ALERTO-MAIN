@@ -137,13 +137,13 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
           <span class="auth-badge-terminal">CSU-CARIG • COEA</span>
         </div>
 
-        <div class="request-title-box" style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div class="request-title-box request-title-flex">
           <div>
             <h1 class="request-main-title"><?= $activeRequest ? 'Update Assistance Request' : 'Assistance Request' ?></h1>
             <p class="request-sub-title">CSU-COEA Disaster Relief & Emergency Response Coordination</p>
           </div>
           <?php if ($activeRequest): ?>
-            <span style="background: #fef3c7; color: #d97706; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
+            <span class="request-status-pill">
               Status: <?= htmlspecialchars($activeRequest['status']) ?>
             </span>
           <?php endif; ?>
@@ -152,40 +152,44 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
 
       <!-- Assistance Request Alerts -->
       <?php if (!empty($error)): ?>
-        <div class="alert-banner alert-error" role="alert" style="display: flex; align-items: flex-start; gap: 10px; margin: 20px 28px 0; padding: 12px 14px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: var(--status-rejected-bg, #fdf0f2); color: var(--status-rejected-text, #9c2438); border: 1.5px solid var(--status-rejected-border, #f8c9d1); line-height: 1.45;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 18px; height: 18px; flex-shrink: 0; color: #b82b43; margin-top: 1px;">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          <div><?= htmlspecialchars($error) ?></div>
+        <div class="alert-banner alert-error request-alert-banner" role="alert">
+          <div class="alert-banner-content">
+            <svg class="alert-banner-icon request-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div><?= htmlspecialchars($error) ?></div>
+          </div>
         </div>
       <?php endif; ?>
 
       <?php if ($activeRequest && in_array($activeStatusLower, ['in_progress', 'completed', 'cancelled'])): ?>
-        <div class="alert-banner alert-info" role="alert" style="display: flex; align-items: flex-start; gap: 10px; margin: 20px 28px 0; padding: 12px 14px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: #f0f4ff; color: #1e40af; border: 1.5px solid #bfdbfe; line-height: 1.45;">
+        <div class="alert-banner alert-info request-alert-banner" role="alert">
           <div>Your request status is currently <strong><?= ucfirst($activeRequest['status']) ?></strong>. Online modifications are locked once dispatch operations are underway.</div>
         </div>
       <?php elseif (!$activeRequest && !$isAssistanceEnabled): ?>
-        <div class="alert-banner alert-warning" role="alert" style="display: flex; align-items: flex-start; gap: 12px; margin: 20px 28px; padding: 20px 22px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: #fff8f0; color: #9a4800; border: 1.5px solid #fed7aa; line-height: 1.55;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 22px; height: 22px; flex-shrink: 0; color: #ea580c; margin-top: 2px;">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          <div>
-            <strong style="display: block; font-size: var(--fs-sm); margin-bottom: 4px; color: #700d23;">Assistance Request Intake Currently Closed</strong>
-            The COEASC DRRM Department enables assistance request submissions during or immediately after a disaster event in the campus area to coordinate relief and prevent spam submissions.
-            <div style="margin-top: 14px;">
-              <a href="user-homepage.php" class="unlock-action-btn" style="background: #700d23; color: #ffffff; padding: 9px 18px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; border-radius: var(--radius-sm); font-weight: 700;">
-                &larr; Return to Dashboard
-              </a>
+        <div class="alert-banner alert-warning request-alert-banner alert-warning-intake" role="alert">
+          <div class="alert-banner-content">
+            <svg class="alert-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div>
+              <strong class="request-alert-title">Assistance Request Intake Currently Closed</strong>
+              The COEASC DRRM Department enables assistance request submissions during or immediately after a disaster event in the campus area to coordinate relief and prevent spam submissions.
+              <div class="request-alert-actions">
+                <a href="user-homepage.php" class="unlock-action-btn btn-brand-primary">
+                  &larr; Return to Dashboard
+                </a>
+              </div>
             </div>
           </div>
         </div>
       <?php else: ?>
         <?php if ($activeRequest): ?>
-          <div class="alert-banner alert-info" role="alert" style="display: flex; align-items: flex-start; gap: 10px; margin: 20px 28px 0; padding: 12px 14px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; background-color: #f0f4ff; color: #1e40af; border: 1.5px solid #bfdbfe; line-height: 1.45;">
+          <div class="alert-banner alert-info request-alert-banner" role="alert">
             <div>You have an active request. You can update your requirements below while processing is underway.</div>
           </div>
         <?php endif; ?>
@@ -264,10 +268,9 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
                   <span id="googleCoordsText">📍 <?= htmlspecialchars($currentLat) ?>° N, <?= htmlspecialchars($currentLng) ?>° E</span>
                 </div>
                 <button type="button" class="gps-locate-btn" onclick="useCurrentGoogleGPS()">
-                  <img src="icons/crosshair.svg" alt="" style="width:12px;height:12px;"
-                    onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                    style="display:none;width:12px;height:12px;">
+                  <img src="icons/crosshair.svg" alt="" class="icon-12"
+                    onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="icon-12 is-hidden">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="22" y1="12" x2="18" y2="12"></line>
                     <line x1="6" y1="12" x2="2" y2="12"></line>
@@ -290,10 +293,9 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
               </div>
 
               <div class="map-pin-note">
-                <img src="icons/info.svg" alt="" style="width:13px;height:13px;"
-                  onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  style="display:none;width:13px;height:13px;">
+                <img src="icons/info.svg" alt="" class="icon-13"
+                  onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-13 is-hidden">
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="12" y1="16" x2="12" y2="12"></line>
                   <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -316,16 +318,16 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
           </div>
 
           <div class="auth-extras-row">
-            <span style="font-size: var(--fs-2xs); color: var(--admin-muted);">All information is transmitted directly to COEA DRRM Council.</span>
+            <span class="text-muted fs-2xs">All information is transmitted directly to COEA DRRM Council.</span>
           </div>
 
           <!-- Submit & Cancel Buttons -->
-          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: var(--space-2);">
-            <button type="submit" class="request-submit-btn" id="assistanceSubmitBtn" style="flex: 1; min-width: 200px; margin-top: 0;">
+          <div class="request-actions-row">
+            <button type="submit" class="request-submit-btn request-submit-flex" id="assistanceSubmitBtn">
               <span><?= $activeRequest ? 'Save Request Updates' : 'Submit Assistance Request' ?></span>
             </button>
             <?php if ($activeRequest && in_array($activeStatusLower, ['pending', 'approved'])): ?>
-              <button type="button" class="request-cancel-btn" id="assistanceCancelBtn" onclick="handleUserCancelRequest()" style="flex: 0 1 auto; min-width: 160px; margin-top: 0;">
+              <button type="button" class="request-cancel-btn request-cancel-flex" id="assistanceCancelBtn" onclick="handleUserCancelRequest()">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"></circle>
                   <line x1="15" y1="9" x2="9" y2="15"></line>
@@ -340,13 +342,11 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
       <?php endif; ?>
 
       <!-- Security Protocol Footer -->
-      <div
-        style="padding: 14px var(--space-8) var(--space-6); background: #ffffff; border-top: 1px solid rgba(112, 13, 35, 0.08); text-align: center;">
-        <div class="security-badge" style="justify-content: center;">
-          <img src="icons/shield-check.svg" alt="" style="width:14px;height:14px;"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            style="display:none;">
+      <div class="request-card-footer">
+        <div class="security-badge security-badge-center">
+          <img src="icons/shield-check.svg" alt="" class="icon-14"
+            onerror="this.classList.add('is-hidden'); this.nextElementSibling.classList.remove('is-hidden');">
+          <svg class="icon-14 is-hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
           </svg>
           <span>COEA-SC DRRM Operations Security Standard</span>
@@ -407,8 +407,8 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
       const googleRedPinIcon = L.divIcon({
         className: 'google-red-pin-drop',
         html: `
-          <div style="position:relative; width:36px; height:48px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.35));">
-            <svg viewBox="0 0 24 32" style="width:36px; height:48px; display:block;">
+          <div class="google-pin-container">
+            <svg viewBox="0 0 24 32" class="google-pin-svg">
               <path fill="#EA4335" stroke="#B31412" stroke-width="0.75" d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20s12-11 12-20c0-6.63-5.37-12-12-12z"/>
               <circle cx="12" cy="11" r="4.5" fill="#700D23"/>
             </svg>

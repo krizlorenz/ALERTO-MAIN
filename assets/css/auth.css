@@ -1649,4 +1649,89 @@ dialog[id$="Modal"]::backdrop {
 .modal-submit-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+/* Input Helper Text & Hints */
+.input-hint {
+  display: block;
+  font-size: var(--fs-2xs, 0.75rem);
+  color: var(--admin-muted, #718096);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* Auth Page Alert Banners */
+.alert-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm, 8px);
+  font-size: var(--fs-xs, 0.8125rem);
+  font-weight: 500;
+  line-height: 1.45;
+  margin-bottom: 16px;
+}
+
+.alert-banner svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.alert-banner.alert-error {
+  background-color: var(--status-rejected-bg, #fdf0f2);
+  color: var(--status-rejected-text, #9c2438);
+  border: 1.5px solid var(--status-rejected-border, #f8c9d1);
+}
+
+.alert-banner.alert-error svg {
+  color: #b82b43;
+}
+
+.alert-banner.alert-success {
+  background-color: var(--status-approved-bg, #edf7f0);
+  color: var(--status-approved-text, #1e6b37);
+  border: 1.5px solid var(--status-approved-border, #c2e7cd);
+}
+
+.alert-banner.alert-success svg {
+  color: #238545;
+}
+
+/* Modal Status Banner */
+.modal-status-banner {
+  display: none;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm, 8px);
+  font-size: var(--fs-xs, 0.8125rem);
+  font-weight: 500;
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+
+.modal-status-banner.is-error {
+  display: block;
+  background-color: var(--status-rejected-bg, #fdf0f2);
+  color: var(--status-rejected-text, #9c2438);
+  border: 1.5px solid var(--status-rejected-border, #f8c9d1);
+}
+
+.modal-status-banner.is-success {
+  display: block;
+  background-color: var(--status-approved-bg, #edf7f0);
+  color: var(--status-approved-text, #1e6b37);
+  border: 1.5px solid var(--status-approved-border, #c2e7cd);
+}
+
+/* Submit & Badge Icon Helpers */
+.auth-submit-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+.security-badge img {
+  width: 14px;
+  height: 14px;
 }

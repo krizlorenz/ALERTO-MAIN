@@ -101,13 +101,6 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
   <link rel="stylesheet" href="assets/css/main.css?v=<?= time() ?>">
   <link rel="stylesheet" href="assets/css/components.css?v=<?= time() ?>">
   <link rel="stylesheet" href="assets/css/admin.css?v=<?= time() ?>">
-  <style>
-    /* Ensure status pills never break text formatting across lines */
-    .status-pill {
-      white-space: nowrap !important;
-      display: inline-block;
-    }
-  </style>
 </head>
 <body>
 
@@ -224,7 +217,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
       
       <!-- Mobile Header Bar -->
       <header class="admin-mobile-header">
-        <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="mobile-header-left">
           <button type="button" class="admin-mobile-toggle-btn" id="sidebarMobileToggle" aria-label="Open sidebar menu" aria-expanded="false" aria-controls="adminSidebar">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -232,9 +225,9 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
               <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
           </button>
-          <span style="font-family: var(--heading-font); font-weight: 800; color: var(--admin-purple-mid); font-size: 1.15rem;">ALERTO Admin</span>
+          <span class="mobile-header-title">ALERTO Admin</span>
         </div>
-        <a href="admin-homepage.php" class="table-action-btn" style="font-size: var(--fs-2xs);">Exit Portal</a>
+        <a href="admin-homepage.php" class="table-action-btn fs-2xs">Exit Portal</a>
       </header>
 
       <div class="admin-content-body">
@@ -288,13 +281,13 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
                   <th scope="col">Location</th>
                   <th scope="col">Status</th>
                   <th scope="col">Submitted</th>
-                  <th scope="col" style="text-align: right;">Action</th>
+                  <th scope="col" class="text-right">Action</th>
                 </tr>
               </thead>
               <tbody id="requestsTableBody">
                 <?php if (empty($requests)): ?>
                 <tr>
-                  <td colspan="7" style="text-align: center; padding: 40px; color: var(--admin-muted);">No assistance requests found in the database.</td>
+                  <td colspan="7" class="table-empty-message">No assistance requests found in the database.</td>
                 </tr>
                 <?php else: ?>
                   <?php foreach ($requests as $req): 
@@ -344,7 +337,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
                     <td><?= htmlspecialchars($landmarkVal) ?></td>
                     <td><span class="status-pill <?= $pillClass ?>"><?= $statusLabel ?></span></td>
                     <td><?= $submittedDateStr ?></td>
-                    <td style="text-align: right;">
+                    <td class="text-right">
                       <button type="button" class="table-action-btn" onclick="openRequestModal(
                         '<?= addslashes($requestCode) ?>',
                         '<?= addslashes($req['full_name']) ?>',
@@ -368,7 +361,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
           </div>
 
           <!-- Empty State (Shows when search has no matches) -->
-          <div class="table-empty-state" id="tableEmptyState" style="display: none;">
+          <div class="table-empty-state" id="tableEmptyState">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -385,7 +378,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
             </div>
             <div class="table-pagination-controls">
               <button type="button" class="pagination-btn" disabled>&larr; Previous</button>
-              <button type="button" class="pagination-btn" style="background: var(--admin-purple); color: #ffffff; border-color: var(--admin-purple);">1</button>
+              <button type="button" class="pagination-btn pagination-btn-active">1</button>
               <button type="button" class="pagination-btn">Next &rarr;</button>
             </div>
           </div>
@@ -398,42 +391,42 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
 
   <!-- Detail Review Modal Dialog -->
   <dialog id="requestDetailModal">
-    <div style="padding: var(--space-6); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between;">
+    <div class="modal-box-header">
       <div>
         <span class="admin-page-eyebrow" id="modalRequestEyebrow">Request Details</span>
-        <h3 id="modalRequestId" style="font-size: var(--fs-lg); color: var(--admin-text);">REQ-00021</h3>
+        <h3 id="modalRequestId" class="modal-box-title">REQ-00021</h3>
       </div>
-      <button type="button" onclick="closeRequestModal()" style="font-size: 1.5rem; color: var(--admin-muted); cursor: pointer; padding: 4px 8px; border: none; background: transparent;">&times;</button>
+      <button type="button" onclick="closeRequestModal()" class="modal-close-icon-btn" aria-label="Close modal">&times;</button>
     </div>
 
-    <div style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); font-size: var(--fs-sm); max-height: 75vh; overflow-y: auto;">
-      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
-        <span style="color: var(--admin-muted);">Name:</span>
-        <strong id="modalRequesterName" style="color: var(--admin-text);">--</strong>
+    <div class="modal-body-scrollable">
+      <div class="modal-detail-row">
+        <span class="modal-detail-label">Name:</span>
+        <strong id="modalRequesterName" class="modal-detail-value">--</strong>
       </div>
-      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
-        <span style="color: var(--admin-muted);">Student ID:</span>
-        <span id="modalStudentId" style="font-family: monospace; font-weight: 600;">--</span>
+      <div class="modal-detail-row">
+        <span class="modal-detail-label">Student ID:</span>
+        <span id="modalStudentId" class="modal-detail-value-mono">--</span>
       </div>
-      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
-        <span style="color: var(--admin-muted);">Contact Number:</span>
-        <strong id="modalContactNumber" style="font-family: monospace; color: var(--admin-text);">--</strong>
+      <div class="modal-detail-row">
+        <span class="modal-detail-label">Contact Number:</span>
+        <strong id="modalContactNumber" class="modal-detail-value-mono">--</strong>
       </div>
-      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
-        <span style="color: var(--admin-muted);">Email Address:</span>
-        <span id="modalEmailAddress" style="color: var(--admin-text);">--</span>
+      <div class="modal-detail-row">
+        <span class="modal-detail-label">Email Address:</span>
+        <span id="modalEmailAddress" class="modal-detail-value">--</span>
       </div>
-      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
-        <span style="color: var(--admin-muted);">Assistance Needed:</span>
-        <strong id="modalAssistanceType" style="color: var(--admin-purple-mid);">--</strong>
+      <div class="modal-detail-row">
+        <span class="modal-detail-label">Assistance Needed:</span>
+        <strong id="modalAssistanceType" class="modal-detail-value-mono">--</strong>
       </div>
       
       <!-- Incident Location with Interactive Minimap Button -->
-      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2); flex-wrap: wrap; gap: 6px;">
-        <span style="color: var(--admin-muted);">Location & Landmark:</span>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <strong id="modalLocation" style="color: var(--admin-text);">--</strong>
-          <button type="button" class="table-action-btn" id="toggleRequestMinimapBtn" onclick="toggleRequestMinimap()" style="padding: 2px 8px; font-size: 0.72rem; color: #700d23; border-color: rgba(112, 13, 35, 0.25); background: #fdf5f7; display: inline-flex; align-items: center; gap: 4px;">
+      <div class="modal-detail-row">
+        <span class="modal-detail-label">Location &amp; Landmark:</span>
+        <div class="flex-items-center-gap-2">
+          <strong id="modalLocation" class="modal-detail-value">--</strong>
+          <button type="button" class="table-action-btn modal-minimap-btn" id="toggleRequestMinimapBtn" onclick="toggleRequestMinimap()">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
               <line x1="8" y1="2" x2="8" y2="18"></line>
@@ -445,66 +438,65 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
       </div>
 
       <!-- Collapsible Request Incident Minimap -->
-      <div id="requestMinimapCard" style="display: none; background: #fdfafb; border: 1.5px solid rgba(112, 13, 35, 0.15); border-radius: var(--radius-md); padding: var(--space-3); margin-top: -2px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: var(--fs-2xs);">
-          <span style="font-weight: 700; color: #700d23;" id="requestMinimapCoordsLabel">📍 17.6534° N, 121.7512° E</span>
-          <span style="color: var(--admin-muted);">Emergency Pin Location</span>
+      <div id="requestMinimapCard" class="modal-minimap-card">
+        <div class="modal-minimap-header">
+          <span class="modal-minimap-coords" id="requestMinimapCoordsLabel">📍 17.6534° N, 121.7512° E</span>
+          <span class="modal-detail-label">Emergency Pin Location</span>
         </div>
-        <div id="adminRequestMinimap" style="height: 180px; width: 100%; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); z-index: 1;"></div>
+        <div id="adminRequestMinimap" class="modal-minimap-container"></div>
       </div>
 
-      <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--admin-border-subtle); padding-bottom: var(--space-2);">
-        <span style="color: var(--admin-muted);">Status:</span>
+      <div class="modal-detail-row">
+        <span class="modal-detail-label">Status:</span>
         <span id="modalStatusBadge"><span class="status-pill pending">Pending</span></span>
       </div>
-      <div>
-        <span style="color: var(--admin-muted); display: block; margin-bottom: 4px;">Incident Notes & Description:</span>
-        <div id="modalDescription" style="background: var(--admin-bg); padding: var(--space-3); border-radius: var(--radius-sm); color: var(--admin-text-secondary); line-height: 1.5;">
+      <div class="modal-notes-section">
+        <span class="modal-notes-label">Incident Notes &amp; Description:</span>
+        <div id="modalDescription" class="modal-notes-box">
           --
         </div>
       </div>
     </div>
 
-    <div style="padding: var(--space-4) var(--space-6); background: var(--admin-bg); border-top: 1px solid var(--admin-border); display: flex; justify-content: flex-end; gap: var(--space-3);" id="requestModalFooterActions">
+    <div class="modal-box-footer" id="requestModalFooterActions">
       <!-- Populated dynamically based on request status -->
     </div>
   </dialog>
 
   <!-- 1. Disaster Response & Incident Controls Modal Dialog -->
   <dialog id="controlsModal" aria-labelledby="controlsModalTitle">
-    <div style="padding: var(--space-5) var(--space-6); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between; background: #ffffff;">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="width: 38px; height: 38px; border-radius: 10px; background: #fdebed; color: #700d23; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(112, 13, 35, 0.15);">
+    <div class="modal-header-accent">
+      <div class="modal-header-left">
+        <div class="modal-header-icon-box">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
         </div>
         <div>
-          <span class="admin-page-eyebrow" style="color: #700d23; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; display: block;">System &amp; Incident Controls</span>
-          <h3 id="controlsModalTitle" style="font-family: var(--heading-font); font-size: 1.15rem; color: var(--admin-text); font-weight: 700; margin: 0; line-height: 1.2;">Student Request Intake</h3>
+          <span class="modal-header-eyebrow">System &amp; Incident Controls</span>
+          <h3 id="controlsModalTitle" class="modal-header-title-text">Student Request Intake</h3>
         </div>
       </div>
-      <button type="button" onclick="closeControlsModal()"
-        style="font-size: 1.5rem; color: var(--admin-muted); cursor: pointer; padding: 4px 8px; border: none; background: transparent; line-height: 1;" aria-label="Close modal">&times;</button>
+      <button type="button" onclick="closeControlsModal()" class="modal-close-icon-btn" aria-label="Close modal">&times;</button>
     </div>
 
-    <div style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5); font-size: var(--fs-sm); max-height: 70vh; overflow-y: auto; background: #ffffff;">
+    <div class="modal-body-scrollable">
       
       <!-- Live Status Banner -->
       <?php if ($isAssistanceEnabled): ?>
-        <div style="padding: 14px 16px; background: #edf7f0; border-radius: var(--radius-md); border: 1.5px solid #c2e7cd; display: flex; align-items: flex-start; gap: 12px;">
-          <div style="width: 10px; height: 10px; border-radius: 50%; background: #22c55e; margin-top: 5px; flex-shrink: 0; box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);"></div>
+        <div class="modal-banner-active">
+          <div class="modal-banner-dot-active"></div>
           <div>
-            <div style="font-weight: 700; font-size: 0.85rem; color: #1e6b37; margin-bottom: 2px;">INTAKE STATUS: ACTIVE (OPEN)</div>
-            <p style="font-size: 0.75rem; color: #2d5a3b; line-height: 1.45; margin: 0;">
+            <div class="modal-banner-title-active">INTAKE STATUS: ACTIVE (OPEN)</div>
+            <p class="modal-banner-desc-active">
               Student request submissions are currently <strong>OPEN</strong>. Students can access the request form and submit emergency disaster relief requests.
             </p>
           </div>
         </div>
       <?php else: ?>
-        <div style="padding: 14px 16px; background: #fef2f2; border-radius: var(--radius-md); border: 1.5px solid #fecaca; display: flex; align-items: flex-start; gap: 12px;">
-          <div style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444; margin-top: 5px; flex-shrink: 0; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);"></div>
+        <div class="modal-banner-paused">
+          <div class="modal-banner-dot-paused"></div>
           <div>
-            <div style="font-weight: 700; font-size: 0.85rem; color: #991b1b; margin-bottom: 2px;">INTAKE STATUS: PAUSED (STAND DOWN)</div>
-            <p style="font-size: 0.75rem; color: #7f1d1d; line-height: 1.45; margin: 0;">
+            <div class="modal-banner-title-paused">INTAKE STATUS: PAUSED (STAND DOWN)</div>
+            <p class="modal-banner-desc-paused">
               Student request intake is currently <strong>PAUSED</strong>. The "Request Assistance" button is unavailable and disabled on all student screens to avoid spamming.
             </p>
           </div>
@@ -512,25 +504,25 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
       <?php endif; ?>
 
       <!-- Switch Action Box -->
-      <div style="padding: 16px; background: #faf7f8; border-radius: var(--radius-md); border: 1.5px solid rgba(112, 13, 35, 0.12); display: flex; flex-direction: column; gap: 12px;">
+      <div class="modal-switch-box">
         <div>
-          <strong style="font-size: 0.85rem; color: var(--admin-text); display: block; margin-bottom: 4px;">Toggle Request Submission State</strong>
-          <p style="font-size: 0.75rem; color: var(--admin-muted); line-height: 1.45; margin: 0;">
+          <strong class="modal-switch-title">Toggle Request Submission State</strong>
+          <p class="modal-switch-desc">
             Turn this <strong>ON</strong> immediately when a natural disaster or emergency affects students to start collecting requests. In non-disaster periods, keep it <strong>OFF</strong>.
           </p>
         </div>
 
-        <form method="POST" action="admin-request.php" onsubmit="return confirm('<?= $isAssistanceEnabled ? 'Are you sure you want to CLOSE student request submissions? The request button will be unavailable for students.' : 'Are you sure you want to ACTIVATE student request submissions? The request button will become functional again for students.' ?>')" style="margin: 0;">
+        <form method="POST" action="admin-request.php" onsubmit="return confirm('<?= $isAssistanceEnabled ? 'Are you sure you want to CLOSE student request submissions? The request button will be unavailable for students.' : 'Are you sure you want to ACTIVATE student request submissions? The request button will become functional again for students.' ?>')" class="modal-form-no-margin">
           <input type="hidden" name="action" value="toggle_assistance">
           <input type="hidden" name="new_state" value="<?= $isAssistanceEnabled ? '0' : '1' ?>">
 
           <?php if ($isAssistanceEnabled): ?>
-            <button type="submit" style="width: 100%; min-height: 44px; padding: 10px 16px; border-radius: var(--radius-sm); font-family: var(--heading-font); font-weight: 700; font-size: 0.82rem; cursor: pointer; border: 1.5px solid #fecaca; background: #fef2f2; color: #991b1b; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition-fast);">
+            <button type="submit" class="control-btn-toggle-off">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
               <span>Turn OFF Request Intake (Stand Down)</span>
             </button>
           <?php else: ?>
-            <button type="submit" style="width: 100%; min-height: 44px; padding: 10px 16px; border-radius: var(--radius-sm); font-family: var(--heading-font); font-weight: 700; font-size: 0.82rem; cursor: pointer; border: 1.5px solid #bbf7d0; background: #f0fdf4; color: #166534; display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all var(--transition-fast);">
+            <button type="submit" class="control-btn-toggle-on">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
               <span>Turn ON Request Intake (Activate Disaster Mode)</span>
             </button>
@@ -540,66 +532,64 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
 
     </div>
 
-    <div style="padding: var(--space-4) var(--space-6); background: var(--admin-bg); border-top: 1px solid var(--admin-border); display: flex; justify-content: flex-end; align-items: center; gap: var(--space-3);">
+    <div class="modal-box-footer">
       <button type="button" class="table-action-btn" onclick="closeControlsModal()">Close</button>
     </div>
   </dialog>
 
   <!-- 2. DRRM Emergency Contacts Modal Dialog -->
   <dialog id="contactsModal" aria-labelledby="contactsModalTitle">
-    <div style="padding: var(--space-5) var(--space-6); border-bottom: 1px solid var(--admin-border); display: flex; align-items: center; justify-content: space-between; background: #ffffff;">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <div style="width: 38px; height: 38px; border-radius: 10px; background: #fdebed; color: #700d23; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid rgba(112, 13, 35, 0.15);">
+    <div class="modal-header-accent">
+      <div class="modal-header-left">
+        <div class="modal-header-icon-box">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
         </div>
         <div>
-          <span class="admin-page-eyebrow" style="color: #700d23; font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; display: block;">COEASC DRRM Department</span>
-          <h3 id="contactsModalTitle" style="font-family: var(--heading-font); font-size: 1.15rem; color: var(--admin-text); font-weight: 700; margin: 0; line-height: 1.2;">Emergency Contact Details</h3>
+          <span class="modal-header-eyebrow">COEASC DRRM Department</span>
+          <h3 id="contactsModalTitle" class="modal-header-title-text">Emergency Contact Details</h3>
         </div>
       </div>
-      <button type="button" onclick="closeContactsModal()"
-        style="font-size: 1.5rem; color: var(--admin-muted); cursor: pointer; padding: 4px 8px; border: none; background: transparent; line-height: 1;" aria-label="Close modal">&times;</button>
+      <button type="button" onclick="closeContactsModal()" class="modal-close-icon-btn" aria-label="Close modal">&times;</button>
     </div>
 
-    <form method="POST" action="admin-request.php" style="margin: 0;">
+    <form method="POST" action="admin-request.php" class="modal-form-no-margin">
       <input type="hidden" name="action" value="update_contacts">
 
-      <div style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); font-size: var(--fs-sm); max-height: 70vh; overflow-y: auto; background: #ffffff;">
-        
-        <p style="font-size: 0.75rem; color: var(--admin-muted); line-height: 1.45; margin: 0;">
+      <div class="modal-body-scrollable">
+        <p class="modal-switch-desc">
           Update the council contact numbers and email address displayed in student banners, emergency contact sections, and footers across devices.
         </p>
 
         <!-- Contact Phone Number -->
         <div>
-          <label for="portalModalPhoneReq" style="display: block; font-weight: 700; font-size: 0.8rem; color: var(--admin-text); margin-bottom: 6px;">DRRM Contact Hotline Number</label>
-          <div style="position: relative;">
-            <input type="text" id="portalModalPhoneReq" name="contact_phone" value="<?= htmlspecialchars($contactPhone) ?>" required class="filter-input" style="width: 100%; height: 42px; padding-left: 36px;" placeholder="e.g. 09556678451">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 12px; top: 13px; color: var(--admin-muted); pointer-events: none;">
+          <label for="portalModalPhoneReq" class="control-field-label">DRRM Contact Hotline Number</label>
+          <div class="modal-input-group">
+            <input type="text" id="portalModalPhoneReq" name="contact_phone" value="<?= htmlspecialchars($contactPhone) ?>" required class="modal-input-field" placeholder="e.g. 09556678451">
+            <svg class="modal-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
             </svg>
           </div>
-          <span style="font-size: 0.7rem; color: var(--admin-muted); display: block; margin-top: 4px;">Primary phone line for student disaster calls and SMS.</span>
+          <span class="modal-field-hint">Primary phone line for student disaster calls and SMS.</span>
         </div>
 
         <!-- Contact Email Address -->
         <div>
-          <label for="portalModalEmailReq" style="display: block; font-weight: 700; font-size: 0.8rem; color: var(--admin-text); margin-bottom: 6px;">DRRM Contact Email Address</label>
-          <div style="position: relative;">
-            <input type="email" id="portalModalEmailReq" name="contact_email" value="<?= htmlspecialchars($contactEmail) ?>" required class="filter-input" style="width: 100%; height: 42px; padding-left: 36px;" placeholder="e.g. alertoCOEA@gmail.com">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 12px; top: 13px; color: var(--admin-muted); pointer-events: none;">
+          <label for="portalModalEmailReq" class="control-field-label">DRRM Contact Email Address</label>
+          <div class="modal-input-group">
+            <input type="email" id="portalModalEmailReq" name="contact_email" value="<?= htmlspecialchars($contactEmail) ?>" required class="modal-input-field" placeholder="e.g. alertoCOEA@gmail.com">
+            <svg class="modal-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
               <polyline points="22,6 12,13 2,6"></polyline>
             </svg>
           </div>
-          <span style="font-size: 0.7rem; color: var(--admin-muted); display: block; margin-top: 4px;">Official council email for inquiries and assistance logs.</span>
+          <span class="modal-field-hint">Official council email for inquiries and assistance logs.</span>
         </div>
 
       </div>
 
-      <div style="padding: var(--space-4) var(--space-6); background: var(--admin-bg); border-top: 1px solid var(--admin-border); display: flex; justify-content: flex-end; align-items: center; gap: var(--space-3);">
+      <div class="modal-box-footer">
         <button type="button" class="table-action-btn" onclick="closeContactsModal()">Cancel</button>
-        <button type="submit" class="table-action-btn btn-filled" style="background: #700d23; border-color: #700d23; color: #ffffff;">Save Contacts</button>
+        <button type="submit" class="table-action-btn btn-filled">Save Contacts</button>
       </div>
     </form>
   </dialog>
@@ -660,29 +650,29 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
       if (statusLower === 'pending') {
         footerEl.innerHTML = `
           <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
-          <button type="button" class="table-action-btn" style="border-color: var(--status-rejected-border, #f8c9d1); color: var(--status-rejected-text, #9c2438); background: #ffffff;" onmouseenter="this.style.background='#fdf0f2'" onmouseleave="this.style.background='#ffffff'" onclick="handleModalRejectRequest()">Reject Request</button>
-          <button type="button" class="table-action-btn btn-filled" style="background: #4f46e5; color: #ffffff;" onclick="sendStatusUpdateToServer('approved', 'Request approved successfully.')">Approve</button>
+          <button type="button" class="table-action-btn btn-reject-action" onclick="handleModalRejectRequest()">Reject Request</button>
+          <button type="button" class="table-action-btn btn-filled btn-indigo-action" onclick="sendStatusUpdateToServer('approved', 'Request approved successfully.')">Approve</button>
         `;
       } else if (statusLower === 'approved') {
         footerEl.innerHTML = `
           <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
-          <button type="button" class="table-action-btn" style="border-color: var(--status-rejected-border, #f8c9d1); color: var(--status-rejected-text, #9c2438); background: #ffffff;" onmouseenter="this.style.background='#fdf0f2'" onmouseleave="this.style.background='#ffffff'" onclick="handleModalRejectRequest()">Reject Request</button>
-          <button type="button" class="table-action-btn btn-filled" style="background: #4f46e5; color: #ffffff;" onclick="sendStatusUpdateToServer('in_progress', 'Relief aid assigned and marked In Progress.')">Assign Relief Aid</button>
+          <button type="button" class="table-action-btn btn-reject-action" onclick="handleModalRejectRequest()">Reject Request</button>
+          <button type="button" class="table-action-btn btn-filled btn-indigo-action" onclick="sendStatusUpdateToServer('in_progress', 'Relief aid assigned and marked In Progress.')">Assign Relief Aid</button>
         `;
       } else if (statusLower === 'in progress' || statusLower === 'in_progress') {
         footerEl.innerHTML = `
           <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
-          <button type="button" class="table-action-btn btn-filled" style="background: #4f46e5; color: #ffffff;" onclick="sendStatusUpdateToServer('completed', 'Request marked as completed and delivered.')">Complete</button>
+          <button type="button" class="table-action-btn btn-filled btn-indigo-action" onclick="sendStatusUpdateToServer('completed', 'Relief delivered and marked Completed.')">Complete</button>
         `;
       } else if (statusLower === 'completed') {
         footerEl.innerHTML = `
           <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
-          <button type="button" class="table-action-btn btn-filled" style="background: #4f46e5; color: #ffffff;" onclick="sendStatusUpdateToServer('archived', 'Request archived successfully.')">Archive</button>
+          <button type="button" class="table-action-btn btn-filled btn-indigo-action" onclick="sendStatusUpdateToServer('archived', 'Request archived successfully.')">Archive</button>
         `;
       } else if (statusLower === 'rejected') {
         footerEl.innerHTML = `
           <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
-          <button type="button" class="table-action-btn btn-filled" style="background: #4f46e5; color: #ffffff;" onclick="sendStatusUpdateToServer('pending', 'Request restored to Pending.')">Restore to Pending</button>
+          <button type="button" class="table-action-btn btn-filled btn-indigo-action" onclick="sendStatusUpdateToServer('pending', 'Request restored to Pending.')">Restore to Pending</button>
         `;
       } else if (statusLower === 'cancelled') {
         footerEl.innerHTML = `
@@ -691,7 +681,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
       } else if (statusLower === 'archived') {
         footerEl.innerHTML = `
           <button type="button" class="table-action-btn" onclick="closeRequestModal()">Close</button>
-          <button type="button" class="table-action-btn btn-filled" style="background: #4f46e5; color: #ffffff;" onclick="sendStatusUpdateToServer('completed', 'Request restored to completed.')">Restore to Completed</button>
+          <button type="button" class="table-action-btn btn-filled btn-indigo-action" onclick="sendStatusUpdateToServer('completed', 'Request restored to Completed.')">Restore to Completed</button>
         `;
       } else {
         footerEl.innerHTML = `
@@ -803,7 +793,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
             const googleRedPinIcon = L.divIcon({
               className: 'custom-google-pin',
               html: `
-                <div style="position: relative; cursor: pointer; transform: translate(-50%, -100%);">
+                <div class="google-pin-container">
                   <svg width="32" height="42" viewBox="0 0 24 32" fill="none">
                     <path d="M12 0C5.37 0 0 5.37 0 12c0 9 12 20 12 20s12-11 12-20c0-6.63-5.37-12-12-12z" fill="#ea4335"/>
                     <circle cx="12" cy="11" r="4.5" fill="#ffffff"/>
