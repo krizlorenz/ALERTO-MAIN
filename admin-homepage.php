@@ -277,7 +277,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
 
         <div class="dashboard-header-block">
           <span class="dashboard-eyebrow">Operations &amp; Oversight</span>
-          <h2 class="dashboard-main-title" id="dashboardOverviewHeading">Council Operations Overview</h2>
+          <h2 class="dashboard-main-title" id="dashboardOverviewHeading">COEASC DRRM Operations Overview</h2>
           <p class="dashboard-main-subtitle">Real-time status breakdown for student profile verifications and active relief assistance requests.</p>
         </div>
 
@@ -343,7 +343,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                     </div>
                   </div>
                   <div class="stat-card-number"><?= $rejectedVerifyCount ?></div>
-                  <div class="stat-card-desc">Invalid ID details</div>
+                  <div class="stat-card-desc">Invalid information details</div>
                 </div>
 
                 <!-- Banned -->
@@ -508,11 +508,11 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
               </div>
 
               <p style="font-size: var(--fs-xs); color: var(--admin-muted); line-height: 1.55; margin-bottom: var(--space-4);">
-                Turn this <strong>ON</strong> only when a post-disaster event affects the campus/students to open assistance requests. When <strong>OFF</strong>, the request button is grayed out and unclickable on all student devices to avoid spamming.
+                Turn this <strong>ON</strong> only when a post-disaster event affects the campus/students to open assistance requests. When <strong>OFF</strong>, the request button is unavailable and unclickable on all student devices to avoid spamming.
               </p>
             </div>
 
-            <form method="POST" action="admin-homepage.php" onsubmit="return confirm('<?= $isAssistanceEnabled ? 'Are you sure you want to CLOSE student request submissions? The request button will be grayed out for students.' : 'Are you sure you want to ACTIVATE student request submissions? The request button will become functional again for students.' ?>')">
+            <form method="POST" action="admin-homepage.php" onsubmit="return confirm('<?= $isAssistanceEnabled ? 'Are you sure you want to CLOSE student request submissions? The request button will be unavailable for students.' : 'Are you sure you want to ACTIVATE student request submissions? The request button will become functional again for students.' ?>')">
               <input type="hidden" name="action" value="toggle_assistance">
               <input type="hidden" name="new_state" value="<?= $isAssistanceEnabled ? '0' : '1' ?>">
               

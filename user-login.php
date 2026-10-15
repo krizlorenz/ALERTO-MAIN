@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In | ALERTO - CSU-Carig Student Council</title>
+  <title>Account Log In | ALERTO - CSU-Carig Student Council</title>
 
   <!-- Google Fonts: Poppins & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         <!-- Left Hero Content -->
         <div class="login-hero-content">
-          <span class="login-eyebrow-tag">Account Sign In</span>
+          <span class="login-eyebrow-tag">Account Log In</span>
           
           <h1 class="login-hero-heading">
             Welcome to
@@ -167,11 +167,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Card Header -->
             <div class="portal-card-header">
               <div class="portal-avatar-circle" aria-hidden="true">
-                <img src="icons/user_admin_login_icon/user-login.png" alt="Sign In">
+                <img src="icons/user_admin_login_icon/user-login.png" alt="Log In">
               </div>
               <div class="portal-title-block">
-                <h2>Account Sign In</h2>
-                <p>Enter your student ID or institutional credentials to access your account.</p>
+                <h2>Account Log In</h2>
+                <p>Enter your student ID or Admin credentials to access your account.</p>
               </div>
             </div>
 
@@ -197,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               </div>
             <?php endif; ?>
 
-            <!-- Sign In Form -->
+            <!-- Log In Form -->
             <form class="login-form-body" id="unifiedLoginForm" action="user-login.php" method="POST">
               
               <!-- Field 1: Identifier (Student ID or Email) -->
@@ -213,9 +213,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       <line x1="7" y1="16" x2="10" y2="16"></line>
                     </svg>
                   </span>
-                  <input type="text" id="userIdentifier" name="identifier" class="portal-text-input" placeholder="e.g. 24-00909 or email@domain.com" required autocomplete="username" value="<?= htmlspecialchars($_POST['identifier'] ?? $_POST['student_id'] ?? $_POST['email'] ?? '') ?>">
+                  <input type="text" id="userIdentifier" name="identifier" class="portal-text-input" placeholder="Enter Student ID (e.g. 24-XXXXX) or Admin Email" required autocomplete="username" value="<?= htmlspecialchars($_POST['identifier'] ?? $_POST['student_id'] ?? $_POST['email'] ?? '') ?>">
                 </div>
-                <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 4px;">Students: Enter Student ID (e.g. 24-00909) &bull; Admins: Enter registered Email</small>
+                <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 4px;">Students: Enter Student ID (e.g. 24-XXXXX) &bull; Admins: Enter registered Email</small>
               </div>
 
               <!-- Field 2: Password -->
@@ -245,7 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   <input type="checkbox" id="userRememberMe" name="rememberMe">
                   <span>Remember me</span>
                 </label>
-                <a href="javascript:void(0)" onclick="alert('Password reset instructions will be sent to your registered email address.')" class="forgot-link">Forgot password?</a>
+                <a href="javascript:void(0)" onclick="openForgotPasswordModal()" class="forgot-link" id="forgotPasswordLink">Forgot password?</a>
               </div>
 
               <!-- Submit Button -->
@@ -256,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               <!-- Centered Card Footer Options -->
               <div class="login-card-footer-stack">
                 <div class="register-switch-link">
-                  First time logging in? <a href="user-sign-in.php">Sign in</a>
+                  First time logging in? <a href="user-sign-in.php">Create Account</a>
                 </div>
               </div>
 
@@ -277,6 +277,118 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   </div>
 
+  <!-- Forgot Password Modal Dialog -->
+  <dialog id="forgotPasswordModal" class="auth-modal" aria-labelledby="forgotPasswordTitle">
+    <div class="modal-header-banner">
+      <div class="modal-header-info">
+        <div class="modal-header-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+        </div>
+        <div>
+          <h3 id="forgotPasswordTitle" class="modal-header-title">Reset Account Password</h3>
+          <p class="modal-header-sub">Verify your account credentials to set a new password</p>
+        </div>
+      </div>
+      <button type="button" class="modal-close-btn" onclick="closeForgotPasswordModal()" aria-label="Close modal">&times;</button>
+    </div>
+
+    <form id="forgotPasswordForm" method="POST" action="user-login.php" onsubmit="handleForgotPasswordSubmit(event)" style="margin: 0;">
+      <input type="hidden" name="action" value="forgot_password">
+      <input type="hidden" name="ajax" value="1">
+
+      <div class="modal-body-content">
+        <!-- Live status notification inside modal -->
+        <div id="resetStatusBanner" style="display: none; padding: 10px 14px; border-radius: var(--radius-sm, 8px); font-size: var(--fs-xs, 0.8125rem); font-weight: 500; line-height: 1.45;"></div>
+
+        <!-- Reset Field 1: Identifier -->
+        <div class="input-group">
+          <label for="resetIdentifier" class="input-label">Student ID or Admin Email</label>
+          <div class="input-container">
+            <span class="input-icon-slot" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                <line x1="7" y1="8" x2="17" y2="8"></line>
+                <line x1="7" y1="12" x2="13" y2="12"></line>
+                <line x1="7" y1="16" x2="10" y2="16"></line>
+              </svg>
+            </span>
+            <input type="text" id="resetIdentifier" name="reset_identifier" class="portal-text-input" placeholder="e.g. 24-00909 or email@domain.com" required autocomplete="username">
+          </div>
+          <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 3px;">Students: Student ID (XX-XXXXX) &bull; Admins: Registered Email</small>
+        </div>
+
+        <!-- Reset Field 2: Secondary Verification Detail -->
+        <div class="input-group">
+          <label for="resetVerification" class="input-label">Registered Contact Number or Email</label>
+          <div class="input-container">
+            <span class="input-icon-slot" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </span>
+            <input type="text" id="resetVerification" name="reset_verification" class="portal-text-input" placeholder="e.g. 0912 345 6789 or registered email" required autocomplete="off">
+          </div>
+          <small class="input-hint" style="display: block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 3px;">Used for identity verification to secure your account</small>
+        </div>
+
+        <!-- Reset Field 3: New Password -->
+        <div class="input-group">
+          <label for="resetNewPassword" class="input-label">New Password</label>
+          <div class="input-container">
+            <span class="input-icon-slot" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </span>
+            <input type="password" id="resetNewPassword" name="new_password" class="portal-text-input has-eye" placeholder="At least 6 characters" minlength="6" required autocomplete="new-password">
+            <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'resetNewPassword')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Reset Field 4: Confirm New Password -->
+        <div class="input-group">
+          <label for="resetConfirmPassword" class="input-label">Confirm New Password</label>
+          <div class="input-container">
+            <span class="input-icon-slot" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </span>
+            <input type="password" id="resetConfirmPassword" name="confirm_password" class="portal-text-input has-eye" placeholder="Re-enter your new password" minlength="6" required autocomplete="new-password">
+            <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'resetConfirmPassword')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer-actions">
+        <button type="button" class="modal-cancel-btn" onclick="closeForgotPasswordModal()">Cancel</button>
+        <button type="submit" class="modal-submit-btn" id="resetSubmitBtn">
+          <span>Reset Password</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </dialog>
+
   <script>
     // Toggle Password Visibility with Eye Icon
     function togglePasswordEye(btn, inputId) {
@@ -289,6 +401,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
         : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
     }
+
+    // Modal Open & Close Functions
+    function openForgotPasswordModal() {
+      const modal = document.getElementById('forgotPasswordModal');
+      if (!modal) return;
+      const statusBanner = document.getElementById('resetStatusBanner');
+      if (statusBanner) statusBanner.style.display = 'none';
+
+      // Prepopulate identifier if user typed something in main login form
+      const loginIdentifier = document.getElementById('userIdentifier');
+      const resetIdentifier = document.getElementById('resetIdentifier');
+      if (loginIdentifier && resetIdentifier && loginIdentifier.value.trim() && !resetIdentifier.value.trim()) {
+        resetIdentifier.value = loginIdentifier.value.trim();
+      }
+
+      modal.showModal();
+    }
+
+    function closeForgotPasswordModal() {
+      const modal = document.getElementById('forgotPasswordModal');
+      if (modal) modal.close();
+    }
+
+    // Close when clicking modal backdrop
+    const forgotModalElem = document.getElementById('forgotPasswordModal');
+    if (forgotModalElem) {
+      forgotModalElem.addEventListener('click', (e) => {
+        const rect = forgotModalElem.getBoundingClientRect();
+        const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.top + rect.height
+          && rect.left <= e.clientX && e.clientX <= rect.left + rect.width);
+        if (!isInDialog) {
+          forgotModalElem.close();
+        }
+      });
+    }
+
+    // Handle Forgot Password Form Submission with Live Feedback
+    async function handleForgotPasswordSubmit(e) {
+      e.preventDefault();
+      const form = document.getElementById('forgotPasswordForm');
+      const submitBtn = document.getElementById('resetSubmitBtn');
+      const banner = document.getElementById('resetStatusBanner');
+      if (!form || !submitBtn || !banner) return;
+
+      const p1 = document.getElementById('resetNewPassword').value;
+      const p2 = document.getElementById('resetConfirmPassword').value;
+
+      if (p1 !== p2) {
+        showResetBanner('New password and confirmation do not match.', 'error');
+        return;
+      }
+      if (p1.length < 6) {
+        showResetBanner('Password must be at least 6 characters.', 'error');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const originalBtnHtml = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<span>Updating...</span>';
+
+      try {
+        const formData = new FormData(form);
+        const res = await fetch('user-login.php', {
+          method: 'POST',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          body: formData
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          showResetBanner(data.message || 'Password reset successful!', 'success');
+          submitBtn.innerHTML = '<span>Success!</span>';
+          submitBtn.style.background = '#1e6b37';
+
+          // Update main login identifier field
+          if (data.identifier) {
+            const loginId = document.getElementById('userIdentifier');
+            if (loginId) loginId.value = data.identifier;
+          }
+
+          setTimeout(() => {
+            closeForgotPasswordModal();
+            form.reset();
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHtml;
+            submitBtn.style.background = '';
+            const userPwd = document.getElementById('userPassword');
+            if (userPwd) {
+              userPwd.focus();
+            }
+          }, 1500);
+        } else {
+          showResetBanner(data.message || 'Verification failed. Please check your details.', 'error');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHtml;
+        }
+      } catch (err) {
+        showResetBanner('An unexpected error occurred. Please try again.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnHtml;
+      }
+    }
+
+    function showResetBanner(message, type) {
+      const banner = document.getElementById('resetStatusBanner');
+      if (!banner) return;
+      banner.style.display = 'block';
+      if (type === 'success') {
+        banner.style.backgroundColor = '#edf7f0';
+        banner.style.color = '#1e6b37';
+        banner.style.border = '1.5px solid #c2e7cd';
+      } else {
+        banner.style.backgroundColor = '#fdf0f2';
+        banner.style.color = '#9c2438';
+        banner.style.border = '1.5px solid #f8c9d1';
+      }
+      banner.textContent = message;
+    }
+
+    // Auto-open modal if URL has ?action=forgot-password or ?forgot_password=1
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('action') === 'forgot-password' || params.get('forgot_password') === '1') {
+        openForgotPasswordModal();
+      }
+    });
   </script>
 </body>
 </html>

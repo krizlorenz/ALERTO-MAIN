@@ -286,7 +286,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
           </div>
           <div class="admin-top-stat">
             <div class="top-stat-number" id="pendingVerificationCount"><?= $pendingCount ?></div>
-            <div class="top-stat-label">Pending Review</div>
+            <div class="top-stat-label">Pending Verification</div>
           </div>
         </div>
 
@@ -408,7 +408,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
           <!-- Table Footer -->
           <div class="table-footer">
             <div class="table-pagination-info" id="verificationPaginationInfo">
-              Showing 1 to <?= count($students) ?> entries
+              <?= count($students) > 0 ? 'Showing 1 to ' . count($students) . ' of ' . count($students) . ' entries' : 'Showing 0 of 0 entries' ?>
             </div>
             <div class="table-pagination-controls">
               <button type="button" class="pagination-btn" disabled>&larr; Previous</button>
@@ -574,7 +574,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
           <div>
             <div style="font-weight: 700; font-size: 0.85rem; color: #991b1b; margin-bottom: 2px;">INTAKE STATUS: PAUSED (STAND DOWN)</div>
             <p style="font-size: 0.75rem; color: #7f1d1d; line-height: 1.45; margin: 0;">
-              Student request intake is currently <strong>PAUSED</strong>. The "Request Assistance" button is grayed out and disabled on all student screens to avoid spamming.
+              Student request intake is currently <strong>PAUSED</strong>. The "Request Assistance" button is unavailable and disabled on all student screens to avoid spamming.
             </p>
           </div>
         </div>
@@ -589,7 +589,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
           </p>
         </div>
 
-        <form method="POST" action="admin-verify.php" onsubmit="return confirm('<?= $isAssistanceEnabled ? 'Are you sure you want to CLOSE student request submissions? The request button will be grayed out for students.' : 'Are you sure you want to ACTIVATE student request submissions? The request button will become functional again for students.' ?>')" style="margin: 0;">
+        <form method="POST" action="admin-verify.php" onsubmit="return confirm('<?= $isAssistanceEnabled ? 'Are you sure you want to CLOSE student request submissions? The request button will be unavailable for students.' : 'Are you sure you want to ACTIVATE student request submissions? The request button will become functional again for students.' ?>')" style="margin: 0;">
           <input type="hidden" name="action" value="toggle_assistance">
           <input type="hidden" name="new_state" value="<?= $isAssistanceEnabled ? '0' : '1' ?>">
 
@@ -875,7 +875,11 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
           emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
         }
         if (paginationInfo) {
-          paginationInfo.textContent = `Showing 1 to ${visibleCount} of ${totalEntries} entries`;
+          if (visibleCount === 0) {
+            paginationInfo.textContent = `Showing 0 of ${totalEntries} entries`;
+          } else {
+            paginationInfo.textContent = `Showing 1 to ${visibleCount} of ${totalEntries} entries`;
+          }
         }
       }
 

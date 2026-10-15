@@ -193,11 +193,11 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
               </button>
             <?php else: ?>
               <div style="display: flex; flex-direction: column; gap: 6px;">
-                <button type="button" class="hero-cta-btn request-btn" disabled style="border: none; cursor: not-allowed; background: #94a3b8; color: #f8fafc; box-shadow: none; opacity: 0.8;" title="Assistance request intake is currently closed">
-                  <span>+ Request Assistance (Currently Closed)</span>
+                <button type="button" class="hero-cta-btn request-btn" disabled style="border: none; cursor: not-allowed; background: #94a3b8; color: #f8fafc; box-shadow: none; opacity: 0.8;" title="Assistance Request currently unavailable">
+                  <span>Assistance Request currently unavailable</span>
                 </button>
                 <span style="font-size: var(--fs-2xs); color: #78656a; font-weight: 600;">
-                  ℹ️ Request intake is enabled by council admins during post-disaster events.
+                  (Note: Request intake is enabled by council admins during post-disaster events.)
                 </span>
               </div>
             <?php endif; ?>
@@ -263,7 +263,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
             </div>
             <div>
-              <div style="font-family: var(--heading-font); font-weight: 800; font-size: var(--fs-sm); line-height: 1.2;">COEASC DRRM Department Contacts</div>
+              <div style="font-family: var(--heading-font); font-weight: 800; font-size: var(--fs-sm); line-height: 1.2;">COEASC DRRM CONTACTS</div>
               <div style="font-size: var(--fs-2xs); opacity: 0.9; margin-top: 2px;">Direct contact with the Student Council DRRM Department for relief coordination &amp; inquiries</div>
             </div>
           </div>
@@ -313,7 +313,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
 
             <!-- Right Verification Decision Badge -->
             <div class="gcash-status-badge-container">
-              <span class="verification-decision-label">Council Verification Status</span>
+              <span class="verification-decision-label">Verification Status</span>
               <div id="verificationBadgeContainer">
                 <span class="verification-badge approved" id="currentVerificationPill">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;">
@@ -385,9 +385,9 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
                 <?php else: ?>
                   <button type="button" class="unlock-action-btn" disabled
                     style="background: #94a3b8; color: #f8fafc; box-shadow: none; border: none; cursor: not-allowed; opacity: 0.75; display: inline-flex; align-items: center; gap: 6px;"
-                    title="Assistance request intake is currently closed by the council">
+                    title="Assistance Request currently unavailable">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    <span>Intake Closed</span>
+                    <span>Assistance Request currently unavailable</span>
                   </button>
                 <?php endif; ?>
               <?php else: 
@@ -431,7 +431,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
               <?php else: ?>
                 <button type="button" class="unlock-action-btn" disabled
                   style="background: #94a3b8; color: #f8fafc; box-shadow: none; border: none; cursor: not-allowed; opacity: 0.75; display: inline-flex; align-items: center; gap: 8px;">
-                  <span>Request Intake Currently Closed</span>
+                  <span>Assistance Request currently unavailable</span>
                 </button>
               <?php endif; ?>
             </div>
@@ -611,7 +611,7 @@ $initials = implode('', array_map(fn($n) => strtoupper($n[0] ?? ''), array_slice
               <span style="width: 8px; height: 8px; border-radius: 50%; background: #700d23; display: inline-block;"></span>
               COEASC Disaster Risk Reduction &amp; Management Department
             </span>
-            <h2 class="dashboard-main-title" id="drrmContactHeading" style="font-family: var(--heading-font); font-size: clamp(1.35rem, 2vw + 0.8rem, 1.85rem); font-weight: 800; color: #700d23; margin-top: 4px;">COEASC DRRM Department Contacts</h2>
+            <h2 class="dashboard-main-title" id="drrmContactHeading" style="font-family: var(--heading-font); font-size: clamp(1.35rem, 2vw + 0.8rem, 1.85rem); font-weight: 800; color: #700d23; margin-top: 4px;">COEASC DRRM CONTACTS</h2>
             <p class="dashboard-main-subtitle" style="color: var(--admin-muted); font-size: var(--fs-xs); margin-top: 4px;">Direct communication channels for the College of Engineering &amp; Architecture Student Council (COEASC) DRRM Department. Reach out for relief inquiries, coordination, and updates.</p>
           </div>
 

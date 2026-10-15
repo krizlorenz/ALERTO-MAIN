@@ -137,15 +137,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="auth-header-top-row">
           <div class="auth-live-status">
             <span class="live-pulse-dot" aria-hidden="true"></span>
-            <span>Student Verification</span>
+            <span>Student Registration</span>
           </div>
           <span class="auth-badge-terminal">CSU-CARIG • COEA</span>
         </div>
 
         <div class="auth-title-lockup">
-          <div class="auth-logo-box">
-            <img src="logo/user-main-logo.png" alt="ALERTO Student Logo">
-          </div>
+          <a href="user-login.php" class="auth-logo-link" title="Back to Login page">
+            <div class="auth-logo-box">
+              <img src="logo/user-main-logo.png" alt="ALERTO Student Logo">
+            </div>
+          </a>
           <div class="auth-text-meta">
             <h1>Create Student Profile</h1>
             <p>CSU-COEA Disaster Relief & Assistance Access</p>
@@ -195,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   <circle cx="12" cy="7" r="4"></circle>
                 </svg>
               </span>
-              <input type="text" id="studentFullName" name="full_name" class="auth-input" placeholder="e.g. Kriz Bonifacio" required
+              <input type="text" id="studentFullName" name="full_name" class="auth-input" placeholder="e.g. Juan Dela Cruz" required
                 autocomplete="name">
             </div>
           </div>
@@ -218,10 +220,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   <line x1="7" y1="16" x2="10" y2="16"></line>
                 </svg>
               </span>
-              <input type="text" id="studentIdNumber" name="student_id" class="auth-input" placeholder="e.g. 24-00909" pattern="\d{2}-\d{5}" maxlength="8" title="Format must be XX-XXXXX (e.g., 24-00909)" required
+              <input type="text" id="studentIdNumber" name="student_id" class="auth-input" placeholder="e.g. 24-XXXXX" pattern="\d{2}-\d{5}" maxlength="8" title="Format must be XX-XXXXX (e.g., 24-XXXXX)" required
                 autocomplete="username">
             </div>
-            <small class="input-hint" style="display:block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 4px;">Format must be XX-XXXXX (e.g., 24-00909)</small>
+            <small class="input-hint" style="display:block; font-size: var(--fs-2xs, 0.75rem); color: var(--admin-muted, #718096); margin-top: 4px;">Format must be XX-XXXXX (e.g., 24-XXXXX)</small>
           </div>
 
           <!-- 3. Program & Year Level -->
@@ -303,7 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   </path>
                 </svg>
               </span>
-              <input type="tel" id="studentContact" name="contact_number" class="auth-input" placeholder="e.g. 0912 345 6789" required
+              <input type="tel" id="studentContact" name="contact_number" class="auth-input" placeholder="09xx xxx xxxx" required
                 autocomplete="tel">
             </div>
           </div>
@@ -324,7 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   <polyline points="22,6 12,13 2,6"></polyline>
                 </svg>
               </span>
-              <input type="email" id="studentEmail" name="email" class="auth-input" placeholder="e.g. kriz.bonifacio@gmail.com"
+              <input type="email" id="studentEmail" name="email" class="auth-input" placeholder="e.g. student@gmail.com"
                 required autocomplete="email">
             </div>
           </div>
@@ -356,10 +358,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               </div>
             </div>
 
-            <!-- Assessment Form (COR) -->
+            <!-- Assessment Form or COG -->
             <div class="form-field-group">
               <label class="form-label">
-                <span>Assessment Form (COR)</span>
+                <span>Assessment Form or COG</span>
                 <span class="form-label-tag">PDF, JPG</span>
               </label>
               <div class="upload-card-box" onclick="document.getElementById('assessmentFileInput').click()">
@@ -376,8 +378,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <line x1="16" y1="17" x2="8" y2="17"></line>
                   </svg>
                 </div>
-                <span class="upload-main-text" id="corText">Upload Assessment Form</span>
-                <span class="upload-sub-text">Certificate of Registration</span>
+                <span class="upload-main-text" id="corText">Upload Assessment Form or COG</span>
+                <span class="upload-sub-text">Assessment Form or Certificate of Grades</span>
                 <span class="file-selected-badge" id="corBadge">File attached &check;</span>
               </div>
             </div>
@@ -413,10 +415,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               </div>
             </div>
 
-            <!-- Repeat Password -->
+            <!-- Re-enter Password -->
             <div class="form-field-group">
               <label for="studentRepeatPassword" class="form-label">
-                <span>Repeat Password</span>
+                <span>Re-enter Password</span>
               </label>
               <div class="input-with-icon">
                 <span class="input-icon-slot" aria-hidden="true">
@@ -428,7 +430,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   </svg>
                 </span>
                 <input type="password" id="studentRepeatPassword" name="confirm_password" class="auth-input has-eye"
-                  placeholder="Confirm password" required autocomplete="new-password">
+                  placeholder="Re-enter password" required autocomplete="new-password">
                 <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'studentRepeatPassword')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -440,21 +442,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
           </div>
 
-          <!-- Quick Fill Option -->
-          <div class="auth-extras-row" style="justify-content: flex-end;">
-            <button type="button" class="quick-fill-btn" onclick="quickFillStudentProfile()">
-              <img src="icons/bolt.svg" alt="" style="width:12px;height:12px;"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                style="display:none;">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-              </svg>
-              <span>Fill Sample Student</span>
-            </button>
-          </div>
-
           <!-- Submit Button -->
-          <button type="submit" class="auth-submit-btn" id="studentRegSubmitBtn">
+          <button type="submit" class="auth-submit-btn" id="studentRegSubmitBtn" style="margin-top: var(--space-2, 8px);">
             <span>Sign in</span>
             <img src="icons/arrow-right.svg" alt="" style="width:16px;height:16px;"
               onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
@@ -467,7 +456,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         </form>
 
-        <!-- Footer link back to Student Sign In -->
+        <!-- Footer link back to Student Log In -->
         <div class="auth-footer-block">
           <div class="security-badge">
             <img src="icons/shield-check.svg" alt="" style="width:14px;height:14px;"
@@ -480,7 +469,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
 
           <a href="user-login.php" class="auth-back-link">
-            <span>Already registered? <strong>Sign In to your account &rarr;</strong></span>
+            <span>Already registered? <strong>Log in to your account &rarr;</strong></span>
           </a>
         </div>
 
@@ -510,18 +499,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       btn.innerHTML = isPwd
         ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
         : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
-    }
-
-    // Quick Fill Student Profile
-    function quickFillStudentProfile() {
-      document.getElementById('studentFullName').value = 'Kriz Bonifacio';
-      document.getElementById('studentIdNumber').value = '24-00909';
-      document.getElementById('studentProgram').value = 'BS in Civil Engineering';
-      document.getElementById('studentYearLevel').value = '3rd Year';
-      document.getElementById('studentContact').value = '0917 890 1234';
-      document.getElementById('studentEmail').value = 'kriz@gmail.com';
-      document.getElementById('studentPassword').value = 'studentPass2026';
-      document.getElementById('studentRepeatPassword').value = 'studentPass2026';
     }
   </script>
 </body>

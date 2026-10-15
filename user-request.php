@@ -298,7 +298,7 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
                   <line x1="12" y1="16" x2="12" y2="12"></line>
                   <line x1="12" y1="8" x2="12.01" y2="8"></line>
                 </svg>
-                <span>Click anywhere on the map or drag the red pin directly to your exact stranded location.</span>
+                <span>Click anywhere on the map or drag the red pin directly to your exact location.</span>
               </div>
 
             </div>
@@ -315,18 +315,8 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
               required><?= htmlspecialchars($activeRequest['description'] ?? '') ?></textarea>
           </div>
 
-          <!-- Quick Fill Sample Request Button -->
           <div class="auth-extras-row">
             <span style="font-size: var(--fs-2xs); color: var(--admin-muted);">All information is transmitted directly to COEA DRRM Council.</span>
-            <button type="button" class="quick-fill-btn" onclick="quickFillAssistanceRequest()">
-              <img src="icons/bolt.svg" alt="" style="width:12px;height:12px;"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                style="display:none;">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-              </svg>
-              <span>Fill Sample Request</span>
-            </button>
           </div>
 
           <!-- Submit & Cancel Buttons -->
@@ -480,19 +470,7 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
       }
     }
 
-    // Quick Fill Sample Request Form
-    function quickFillAssistanceRequest() {
-      document.getElementById('chkFood').checked = true;
-      document.getElementById('cardFood').classList.add('selected');
 
-      document.getElementById('chkWater').checked = true;
-      document.getElementById('cardWater').classList.add('selected');
-
-      document.getElementById('locationLandmark').value = 'Yellow 2-Story House, Purok 3 (Across CSU Carig Gate 2, Carig Sur)';
-      document.getElementById('emergencyMessage').value = 'Floodwaters rising above knee level. 4 students stranded on upper floor with limited clean drinking water.';
-
-      updateAssistanceType();
-    }
 
     // Cancel Active Request confirmation and submission
     function handleUserCancelRequest() {
