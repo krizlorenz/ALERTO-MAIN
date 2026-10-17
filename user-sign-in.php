@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'alerto-db.php';
+require_once 'notification-service.php';
 
 $error = '';
 $success = '';
@@ -63,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
 
                     $success = "Resubmission successful! Your updated profile is pending verification.";
+                    notify_admin_student_registered($pdo, $existingUser['id']);
                 } else {
                     $error = "Failed to upload verification documents. Please try again.";
                 }
@@ -96,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtDoc->execute([$user_id, $target_selfie, $target_cor]);
 
                 $success = "Registration successful! Your account is pending verification by an administrator.";
+                notify_admin_student_registered($pdo, $user_id);
             } else {
                 $error = "Failed to upload verification documents. Please try again.";
             }

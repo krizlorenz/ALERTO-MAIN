@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'alerto-db.php';
+require_once 'notification-service.php';
 
 // 1. Process logout first
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
@@ -46,10 +47,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 // 4. Handle user verification status updates (supports AJAX fetch or regular POST)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'], $_POST['status'])) {
     $target_id = intval($_POST['user_id']);
-    $new_status = $_POST['status'];
+    $new_status = trim($_POST['status']);
     if (in_array($new_status, ['verified', 'rejected', 'banned'])) {
-        $stmt = $pdo->prepare("UPDATE users SET status = ? WHERE id = ?");
-        $stmt->execute([$new_status, $target_id]);
+        // Fetch current status to ensure genuine transition
+        $stmtOld = $pdo->prepare("SELECT status FROM users WHERE id = ?");
+        $stmtOld->execute([$target_id]);
+        $old_status = $stmtOld->fetchColumn();
+
+        if ($old_status !== false && strtolower(trim($old_status)) !== strtolower(trim($new_status))) {
+            $stmt = $pdo->prepare("UPDATE users SET status = ? WHERE id = ?");
+            $stmt->execute([$new_status, $target_id]);
+
+            notify_student_verification_status($pdo, $target_id, $new_status, $old_status);
+        }
         
         // If requested via AJAX/fetch, exit early with success JSON
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {

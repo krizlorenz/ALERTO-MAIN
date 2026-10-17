@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'alerto-db.php';
+require_once 'notification-service.php';
 
 // 1. Process logout request first
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
@@ -49,8 +50,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_id'], $_POST[
     $req_status = trim($_POST['status']);
     
     if (in_array($req_status, ['pending', 'approved', 'in_progress', 'completed', 'archived', 'rejected'])) {
-        $stmt = $pdo->prepare("UPDATE assistance_requests SET status = ? WHERE id = ? AND LOWER(status) != 'cancelled'");
-        $stmt->execute([$req_status, $req_id]);
+        // Fetch current status to ensure genuine transition
+        $stmtOld = $pdo->prepare("SELECT status FROM assistance_requests WHERE id = ? AND LOWER(status) != 'cancelled'");
+        $stmtOld->execute([$req_id]);
+        $old_status = $stmtOld->fetchColumn();
+
+        if ($old_status !== false && strtolower(trim($old_status)) !== strtolower(trim($req_status))) {
+            $stmt = $pdo->prepare("UPDATE assistance_requests SET status = ? WHERE id = ? AND LOWER(status) != 'cancelled'");
+            $stmt->execute([$req_status, $req_id]);
+
+            // Notify student only for: approved, in_progress, completed, rejected (no cancellation or archive emails)
+            if (in_array($req_status, ['approved', 'in_progress', 'completed', 'rejected'])) {
+                notify_student_request_status($pdo, $req_id, $req_status, $old_status);
+            }
+        }
         
         header("Location: admin-request.php");
         exit;

@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'alerto-db.php';
+require_once 'notification-service.php';
 
 if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['student', 'admin', 'superadmin'])) {
     header("Location: user-login.php");
@@ -80,6 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     VALUES (?, ?, ?, ?, ?, ?, ?, 'pending')
                 ");
                 if ($stmt->execute([$requestCode, $_SESSION['user_id'], $assistance_type, $landmark, $latitude, $longitude, $description])) {
+                    $newRequestId = $pdo->lastInsertId();
+                    notify_admin_assistance_request($pdo, $newRequestId);
                     header("Location: user-homepage.php?requested=1");
                     exit;
                 } else {
