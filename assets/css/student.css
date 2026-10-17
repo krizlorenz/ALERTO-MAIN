@@ -576,7 +576,7 @@
 }
 
 .request-id-tag {
-  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-family: var(--accent-font);
   font-size: var(--fs-xs);
   font-weight: 700;
   color: #700d23;
@@ -1911,7 +1911,7 @@
 }
 
 .contact-email-display {
-  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-family: var(--accent-font);
   font-size: 0.95rem;
   font-weight: 700;
   color: #0369a1;
@@ -1919,42 +1919,7 @@
   margin-bottom: 4px;
 }
 
-.footer-contact-title {
-  font-family: var(--heading-font);
-  font-size: var(--fs-sm);
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 12px;
-}
 
-.footer-contact-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: var(--fs-xs);
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.footer-contact-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.footer-contact-link {
-  color: #ffffff;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  font-weight: 600;
-  transition: color var(--transition-fast);
-}
-
-.footer-contact-link:hover {
-  color: #ffb4c2;
-}
 
 .name-verified-icon {
   width: 20px;

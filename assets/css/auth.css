@@ -1071,7 +1071,7 @@
 }
 
 .auth-badge-terminal {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--accent-font);
   font-size: var(--fs-2xs);
   color: rgba(255, 255, 255, 0.65);
 }
@@ -1556,7 +1556,7 @@ dialog[id$="Modal"]::backdrop {
 }
 
 .modal-header-title {
-  font-family: var(--heading-font, 'Poppins', sans-serif);
+  font-family: var(--heading-font);
   font-size: 1.125rem;
   color: #1a202c;
   font-weight: 700;

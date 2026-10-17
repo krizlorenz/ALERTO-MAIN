@@ -104,11 +104,11 @@ $activeStatusLower = strtolower(trim($activeRequest['status'] ?? ''));
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= $activeRequest ? 'Update Assistance Request' : 'Assistance Request' ?> | ALERTO - CSU-Carig Student Council</title>
 
-  <!-- Google Fonts: Poppins & Inter -->
+  <!-- Google Fonts: Plus Jakarta Sans, Inter & JetBrains Mono (3-Font System) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
     rel="stylesheet">
 
   <!-- Interactive Map Engine (Supports Google Maps Tiles & Live Pinning) -->

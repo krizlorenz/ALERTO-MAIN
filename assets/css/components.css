@@ -749,6 +749,93 @@
   display: block;
 }
 
+/* Footer DRRM Contact Column */
+.footer-contact-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-contact-col h4,
+.footer-contact-title {
+  font-family: var(--heading-font);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff !important;
+  margin-bottom: 10px;
+  position: relative;
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 768px) {
+  .footer-contact-col h4,
+  .footer-contact-title {
+    font-size: var(--fs-base);
+    margin-bottom: var(--space-4);
+  }
+}
+
+.footer-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .footer-contact-list {
+    gap: var(--space-3);
+  }
+}
+
+.footer-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #ffffff !important;
+  line-height: 1.5;
+}
+
+@media (min-width: 768px) {
+  .footer-contact-item {
+    font-size: var(--fs-sm);
+  }
+}
+
+.footer-contact-bullet {
+  color: #ffffff !important;
+  font-size: 1.15rem;
+  line-height: 1;
+  display: inline-block;
+  flex-shrink: 0;
+  font-weight: 800;
+}
+
+.footer-contact-item span {
+  color: #ffffff !important;
+}
+
+.footer-contact-link {
+  color: #ffffff !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 600;
+  transition: color var(--transition-fast);
+}
+
+.footer-contact-link:hover {
+  color: #ffb4c2 !important;
+}
+
+.footer-contact-icon {
+  width: 14px;
+  height: 14px;
+  color: #ff8fa3;
+  flex-shrink: 0;
+}
+
 .footer-links-col h4 {
   font-size: 0.95rem;
   font-weight: 700;
@@ -848,12 +935,7 @@
   user-select: none;
 }
 
-.footer-contact-icon {
-  width: 14px;
-  height: 14px;
-  color: #ff8fa3;
-  flex-shrink: 0;
-}
+
 
 .icon-12 {
   width: 12px;
@@ -1050,7 +1132,7 @@
 .modal-box-title {
   font-size: var(--fs-lg, 1.125rem);
   color: var(--admin-text, #1e293b);
-  font-family: var(--heading-font, 'Poppins', sans-serif);
+  font-family: var(--heading-font);
   font-weight: 700;
   margin: 0;
 }
@@ -1097,7 +1179,7 @@
 }
 
 .modal-detail-value-mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--accent-font);
   font-weight: 600;
   color: var(--admin-purple-mid, #700d23);
 }

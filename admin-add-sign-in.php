@@ -52,11 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add New Admin | ALERTO - CSU-Carig Student Council</title>
 
-  <!-- Google Fonts: Poppins & Inter -->
+  <!-- Google Fonts: Plus Jakarta Sans, Inter & JetBrains Mono (3-Font System) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
     rel="stylesheet">
 
   <!-- Core Stylesheets -->
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="auth-title-lockup">
           <div class="auth-logo-box">
-            <img src="logo/user-main-logo.png" alt="ALERTO Admin Logo">
+            <img src="logo/main_logo.png" alt="ALERTO Admin Logo">
           </div>
           <div class="auth-text-meta">
             <h1>Create New Admin Profile</h1>

@@ -97,11 +97,11 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Verification | ALERTO - CSU-Carig Student Council</title>
 
-  <!-- Google Fonts: Poppins & Inter -->
+  <!-- Google Fonts: Plus Jakarta Sans, Inter & JetBrains Mono (3-Font System) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
     rel="stylesheet">
 
   <!-- Core Stylesheets -->
@@ -123,7 +123,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
       <!-- Sidebar Brand -->
       <a href="admin-homepage.php" class="sidebar-brand">
         <div class="sidebar-logo">
-          <img src="logo/user-main-logo.png" alt="ALERTO Admin Logo">
+          <img src="logo/main_logo.png" alt="ALERTO Admin Logo">
         </div>
         <div>
           <div class="sidebar-brand-name">ALERTO</div>
@@ -170,7 +170,7 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
           <span class="nav-item-badge"><?= $activeRequestsCount ?></span>
         </a>
 
-        <a href="admin-homepage.php#systemControls" onclick="openControlsModal(); return false;" class="nav-item-link" title="Disaster Response Intake &amp; Incident Controls">
+        <a href="admin-controls.php" class="nav-item-link" title="Disaster Response Controls &amp; DRRM Contacts">
           <span class="nav-item-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round">
@@ -178,20 +178,10 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
           </span>
-          <span>Controls</span>
+          <span>Controls &amp; Contacts</span>
           <span class="nav-item-badge <?= $isAssistanceEnabled ? 'badge-online' : 'badge-offline' ?>">
             <?= $isAssistanceEnabled ? 'Active' : 'Paused' ?>
           </span>
-        </a>
-
-        <a href="admin-homepage.php#contactControls" onclick="openContactsModal(); return false;" class="nav-item-link" title="COEASC DRRM Contact Information">
-          <span class="nav-item-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-            </svg>
-          </span>
-          <span>Contacts</span>
         </a>
 
         <?php if ($_SESSION['role'] === 'superadmin'): ?>
@@ -490,167 +480,20 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
     </div>
   </dialog>
 
-  <!-- 1. Disaster Response & Incident Controls Modal Dialog -->
-  <dialog id="controlsModal" aria-labelledby="controlsModalTitle">
-    <div class="modal-header-accent">
-      <div class="modal-header-left">
-        <div class="modal-header-icon-box">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-        </div>
-        <div>
-          <span class="modal-header-eyebrow">System &amp; Incident Controls</span>
-          <h3 id="controlsModalTitle" class="modal-header-title-text">Student Request Intake</h3>
-        </div>
-      </div>
-      <button type="button" onclick="closeControlsModal()" class="modal-close-icon-btn" aria-label="Close modal">&times;</button>
-    </div>
-
-    <div class="modal-body-scrollable">
-      
-      <!-- Live Status Banner -->
-      <?php if ($isAssistanceEnabled): ?>
-        <div class="modal-banner-active">
-          <div class="modal-banner-dot-active"></div>
-          <div>
-            <div class="modal-banner-title-active">INTAKE STATUS: ACTIVE (OPEN)</div>
-            <p class="modal-banner-desc-active">
-              Student request submissions are currently <strong>OPEN</strong>. Students can access the request form and submit emergency disaster relief requests.
-            </p>
-          </div>
-        </div>
-      <?php else: ?>
-        <div class="modal-banner-paused">
-          <div class="modal-banner-dot-paused"></div>
-          <div>
-            <div class="modal-banner-title-paused">INTAKE STATUS: PAUSED (STAND DOWN)</div>
-            <p class="modal-banner-desc-paused">
-              Student request intake is currently <strong>PAUSED</strong>. The "Request Assistance" button is unavailable and disabled on all student screens to avoid spamming.
-            </p>
-          </div>
-        </div>
-      <?php endif; ?>
-
-      <!-- Switch Action Box -->
-      <div class="modal-switch-box">
-        <div>
-          <strong class="modal-switch-title">Toggle Request Submission State</strong>
-          <p class="modal-switch-desc">
-            Turn this <strong>ON</strong> immediately when a natural disaster or emergency affects students to start collecting requests. In non-disaster periods, keep it <strong>OFF</strong>.
-          </p>
-        </div>
-
-        <form method="POST" action="admin-verify.php" onsubmit="return confirm('<?= $isAssistanceEnabled ? 'Are you sure you want to CLOSE student request submissions? The request button will be unavailable for students.' : 'Are you sure you want to ACTIVATE student request submissions? The request button will become functional again for students.' ?>')" class="modal-form-no-margin">
-          <input type="hidden" name="action" value="toggle_assistance">
-          <input type="hidden" name="new_state" value="<?= $isAssistanceEnabled ? '0' : '1' ?>">
-
-          <?php if ($isAssistanceEnabled): ?>
-            <button type="submit" class="control-btn-toggle-off">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-              <span>Turn OFF Request Intake (Stand Down)</span>
-            </button>
-          <?php else: ?>
-            <button type="submit" class="control-btn-toggle-on">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span>Turn ON Request Intake (Activate Disaster Mode)</span>
-            </button>
-          <?php endif; ?>
-        </form>
-      </div>
-
-    </div>
-
-    <div class="modal-box-footer">
-      <button type="button" class="table-action-btn" onclick="closeControlsModal()">Close</button>
-    </div>
-  </dialog>
-
-  <!-- 2. DRRM Emergency Contacts Modal Dialog -->
-  <dialog id="contactsModal" aria-labelledby="contactsModalTitle">
-    <div class="modal-header-accent">
-      <div class="modal-header-left">
-        <div class="modal-header-icon-box">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-        </div>
-        <div>
-          <span class="modal-header-eyebrow">COEASC DRRM Department</span>
-          <h3 id="contactsModalTitle" class="modal-header-title-text">Emergency Contact Details</h3>
-        </div>
-      </div>
-      <button type="button" onclick="closeContactsModal()" class="modal-close-icon-btn" aria-label="Close modal">&times;</button>
-    </div>
-
-    <form method="POST" action="admin-verify.php" class="modal-form-no-margin">
-      <input type="hidden" name="action" value="update_contacts">
-
-      <div class="modal-body-scrollable">
-        <p class="modal-switch-desc">
-          Update the council contact numbers and email address displayed in student banners, emergency contact sections, and footers across devices.
-        </p>
-
-        <!-- Contact Phone Number -->
-        <div>
-          <label for="contactModalPhone" class="control-field-label">DRRM Contact Hotline Number</label>
-          <div class="modal-input-group">
-            <input type="text" id="contactModalPhone" name="contact_phone" value="<?= htmlspecialchars($contactPhone) ?>" required class="modal-input-field" placeholder="e.g. 09556678451">
-            <svg class="modal-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-            </svg>
-          </div>
-          <span class="modal-field-hint">Primary phone line for student disaster calls and SMS.</span>
-        </div>
-
-        <!-- Contact Email Address -->
-        <div>
-          <label for="contactModalEmail" class="control-field-label">DRRM Contact Email Address</label>
-          <div class="modal-input-group">
-            <input type="email" id="contactModalEmail" name="contact_email" value="<?= htmlspecialchars($contactEmail) ?>" required class="modal-input-field" placeholder="e.g. alertoCOEA@gmail.com">
-            <svg class="modal-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-              <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-          </div>
-          <span class="modal-field-hint">Official council email for inquiries and assistance logs.</span>
-        </div>
-
-      </div>
-
-      <div class="modal-box-footer">
-        <button type="button" class="table-action-btn" onclick="closeContactsModal()">Cancel</button>
-        <button type="submit" class="table-action-btn btn-filled">Save Contacts</button>
-      </div>
-    </form>
-  </dialog>
-
   <!-- Client Script for Search & Sidebar -->
   <script src="assets/js/main.js"></script>
   <script>
     function openControlsModal() {
-      const modal = document.getElementById('controlsModal');
-      if (modal && typeof modal.showModal === 'function') {
-        modal.showModal();
-      }
+      window.location.href = 'admin-controls.php';
     }
 
-    function closeControlsModal() {
-      const modal = document.getElementById('controlsModal');
-      if (modal && typeof modal.close === 'function') {
-        modal.close();
-      }
-    }
+    function closeControlsModal() {}
 
     function openContactsModal() {
-      const modal = document.getElementById('contactsModal');
-      if (modal && typeof modal.showModal === 'function') {
-        modal.showModal();
-      }
+      window.location.href = 'admin-controls.php#contactsPanel';
     }
 
-    function closeContactsModal() {
-      const modal = document.getElementById('contactsModal');
-      if (modal && typeof modal.close === 'function') {
-        modal.close();
-      }
-    }
+    function closeContactsModal() {}
 
     let currentStudentId = '';
     let currentDatabaseId = null;

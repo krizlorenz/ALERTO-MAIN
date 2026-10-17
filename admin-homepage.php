@@ -82,11 +82,11 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>ALERTO - CSU-Carig Student Council Admin</title>
 
-  <!-- Google Fonts: Poppins & Inter -->
+  <!-- Google Fonts: Plus Jakarta Sans, Inter & JetBrains Mono (3-Font System) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
     rel="stylesheet">
 
   <!-- Core Stylesheets -->
@@ -103,7 +103,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
     <div class="navbar-inner">
       <a href="admin-homepage.php" class="brand" aria-label="ALERTO Home">
         <div class="logo-container">
-          <img src="logo/user-main-logo.png" alt="ALERTO Admin Logo" class="logo-img">
+          <img src="logo/main_logo.png" alt="ALERTO Admin Logo" class="logo-img">
         </div>
         <div class="brand-text">
           <span class="brand-name">ALERTO</span>
@@ -116,8 +116,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
         <a href="admin-homepage.php" class="active">Home</a>
         <a href="admin-verify.php">Verify</a>
         <a href="admin-request.php">Requests</a>
-        <a href="#systemControls">Controls</a>
-        <a href="#contactControls">Contacts</a>
+        <a href="admin-controls.php">Controls &amp; Contacts</a>
         <?php if ($_SESSION['role'] === 'superadmin'): ?>
         <a href="admin-add-sign-in.php">Add New Admin</a>
         <?php endif; ?>
@@ -172,20 +171,12 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
         </a>
       </li>
       <li>
-        <a href="#systemControls">
+        <a href="admin-controls.php">
           <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"></circle>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
           </svg>
-          <span>Controls</span>
-        </a>
-      </li>
-      <li>
-        <a href="#contactControls">
-          <svg class="mobile-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-          </svg>
-          <span>Contacts</span>
+          <span>Controls &amp; Contacts</span>
         </a>
       </li>
       <?php if ($_SESSION['role'] === 'superadmin'): ?>
@@ -382,7 +373,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
                   <div class="stat-card-header">
                     <div class="stat-card-label-group">
                       <div class="stat-icon-slot icon-red">
-                        <img src="icons/user-login-icons/request-assistance.png" alt="Active Requests">
+                        <img src="icons/admin_dashboard_icons/shield.png" alt="Active Requests">
                       </div>
                       <span class="stat-card-title">Active Requests</span>
                     </div>
@@ -471,6 +462,12 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
           </span>
           <h2 class="controls-main-title">Disaster Response &amp; Contact Controls</h2>
           <p class="controls-main-subtitle">Control the student request submission intake during active disaster events and manage the displayed council contact information.</p>
+          <div style="margin-top: 10px;">
+            <a href="admin-controls.php" class="table-action-btn" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; padding: 6px 14px; font-weight: 600;">
+              <span>Open Solo Controls &amp; Contacts Screen</span>
+              <span>&rarr;</span>
+            </a>
+          </div>
         </div>
 
         <div class="controls-grid">
@@ -580,7 +577,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
           <div class="footer-brand-col">
             <div class="footer-brand-row">
               <div class="footer-logo-box">
-                <img src="logo/user-main-logo.png" alt="ALERTO Admin Logo" class="footer-logo-img">
+                <img src="logo/main_logo.png" alt="ALERTO Admin Logo" class="footer-logo-img">
               </div>
               <div class="footer-brand-text">
                 <div class="footer-brand-title">ALERTO</div>
@@ -611,19 +608,22 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
             </div>
           </div>
 
-          <!-- Contact Info Column (NEW) -->
+          <!-- Contact Info Column -->
           <div class="footer-contact-col">
             <h4 class="footer-contact-title">DRRM Contacts</h4>
             <ul class="footer-contact-list">
               <li class="footer-contact-item">
+                <span class="footer-contact-bullet" aria-hidden="true">•</span>
                 <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                 <span>Phone: <a href="tel:<?= htmlspecialchars($contactPhone) ?>" class="footer-contact-link"><?= htmlspecialchars($contactPhone) ?></a></span>
               </li>
               <li class="footer-contact-item">
+                <span class="footer-contact-bullet" aria-hidden="true">•</span>
                 <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                 <span>Email: <a href="mailto:<?= htmlspecialchars($contactEmail) ?>" class="footer-contact-link"><?= htmlspecialchars($contactEmail) ?></a></span>
               </li>
               <li class="footer-contact-item">
+                <span class="footer-contact-bullet" aria-hidden="true">•</span>
                 <svg class="footer-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                 <span>CSU Carig Campus, COEA</span>
               </li>
@@ -637,7 +637,7 @@ $completedRequestsCount = $stmtCompletedReq->fetchColumn();
               <li><a href="admin-homepage.php">Home</a></li>
               <li><a href="admin-verify.php">Student Verifications</a></li>
               <li><a href="admin-request.php">Assistance Requests</a></li>
-              <li><a href="#systemControls">Portal Controls</a></li>
+              <li><a href="admin-controls.php">Controls &amp; Contacts</a></li>
               <?php if ($_SESSION['role'] === 'superadmin'): ?>
               <li><a href="admin-add-sign-in.php">Add New Admin</a></li>
               <?php endif; ?>
