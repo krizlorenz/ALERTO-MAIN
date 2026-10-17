@@ -369,12 +369,12 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
           <!-- Table Footer -->
           <div class="table-footer">
             <div class="table-pagination-info" id="verificationPaginationInfo">
-              <?= count($students) > 0 ? 'Showing 1 to ' . count($students) . ' of ' . count($students) . ' entries' : 'Showing 0 of 0 entries' ?>
+              <?= count($students) > 0 ? 'Showing 1 to ' . min(7, count($students)) . ' of ' . count($students) . ' entries' : 'Showing 0 of 0 entries' ?>
             </div>
-            <div class="table-pagination-controls">
+            <div class="table-pagination-controls" id="verificationPaginationControls">
               <button type="button" class="pagination-btn" disabled>&larr; Previous</button>
               <button type="button" class="pagination-btn pagination-btn-active">1</button>
-              <button type="button" class="pagination-btn">Next &rarr;</button>
+              <button type="button" class="pagination-btn" <?= count($students) <= 7 ? 'disabled' : '' ?>>Next &rarr;</button>
             </div>
           </div>
         </div>
@@ -633,20 +633,113 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
       }
     }
 
-    // Search and Filter logic
+    // Search, Filter and Pagination logic (7 rows per page)
     document.addEventListener('DOMContentLoaded', () => {
       const searchInput = document.getElementById('verificationSearchInput');
       const statusSelect = document.getElementById('verificationStatusFilter');
-      const tableRows = document.querySelectorAll('#verificationsTableBody tr');
+      const tableRows = Array.from(document.querySelectorAll('#verificationsTableBody tr[data-status]'));
       const emptyState = document.getElementById('verificationEmptyState');
       const paginationInfo = document.getElementById('verificationPaginationInfo');
-      const totalEntries = tableRows.length;
+      const paginationControls = document.getElementById('verificationPaginationControls');
 
-      function filterTable() {
+      const PAGE_SIZE = 7;
+      let currentPage = 1;
+
+      function renderPaginationControls(totalPages, totalMatching) {
+        if (!paginationControls) return;
+        paginationControls.innerHTML = '';
+
+        // Previous button
+        const prevBtn = document.createElement('button');
+        prevBtn.type = 'button';
+        prevBtn.className = 'pagination-btn';
+        prevBtn.innerHTML = '&larr; Previous';
+        prevBtn.disabled = currentPage <= 1 || totalMatching === 0;
+        prevBtn.addEventListener('click', () => {
+          if (currentPage > 1) {
+            currentPage--;
+            filterAndPaginate();
+          }
+        });
+        paginationControls.appendChild(prevBtn);
+
+        // Page number buttons
+        const pagesCount = Math.max(1, totalPages);
+        if (pagesCount <= 7) {
+          for (let p = 1; p <= pagesCount; p++) {
+            const pageBtn = document.createElement('button');
+            pageBtn.type = 'button';
+            pageBtn.className = 'pagination-btn' + (p === currentPage && totalMatching > 0 ? ' pagination-btn-active' : (p === 1 && totalMatching === 0 ? ' pagination-btn-active' : ''));
+            pageBtn.textContent = p;
+            if (p !== currentPage && totalMatching > 0) {
+              pageBtn.addEventListener('click', () => {
+                currentPage = p;
+                filterAndPaginate();
+              });
+            }
+            paginationControls.appendChild(pageBtn);
+          }
+        } else {
+          const createPageBtn = (p) => {
+            const pageBtn = document.createElement('button');
+            pageBtn.type = 'button';
+            pageBtn.className = 'pagination-btn' + (p === currentPage ? ' pagination-btn-active' : '');
+            pageBtn.textContent = p;
+            if (p !== currentPage) {
+              pageBtn.addEventListener('click', () => {
+                currentPage = p;
+                filterAndPaginate();
+              });
+            }
+            return pageBtn;
+          };
+
+          const createEllipsis = () => {
+            const span = document.createElement('span');
+            span.className = 'pagination-btn';
+            span.style.cursor = 'default';
+            span.style.opacity = '0.6';
+            span.textContent = '...';
+            return span;
+          };
+
+          paginationControls.appendChild(createPageBtn(1));
+          if (currentPage > 3) {
+            paginationControls.appendChild(createEllipsis());
+          }
+
+          const startPage = Math.max(2, currentPage - 1);
+          const endPage = Math.min(pagesCount - 1, currentPage + 1);
+          for (let p = startPage; p <= endPage; p++) {
+            paginationControls.appendChild(createPageBtn(p));
+          }
+
+          if (currentPage < pagesCount - 2) {
+            paginationControls.appendChild(createEllipsis());
+          }
+          paginationControls.appendChild(createPageBtn(pagesCount));
+        }
+
+        // Next button
+        const nextBtn = document.createElement('button');
+        nextBtn.type = 'button';
+        nextBtn.className = 'pagination-btn';
+        nextBtn.innerHTML = 'Next &rarr;';
+        nextBtn.disabled = currentPage >= totalPages || totalMatching === 0;
+        nextBtn.addEventListener('click', () => {
+          if (currentPage < totalPages) {
+            currentPage++;
+            filterAndPaginate();
+          }
+        });
+        paginationControls.appendChild(nextBtn);
+      }
+
+      function filterAndPaginate() {
         const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
         const statusFilter = statusSelect ? statusSelect.value.toLowerCase() : 'all';
-        let visibleCount = 0;
 
+        const matchingRows = [];
         tableRows.forEach(row => {
           const searchData = (row.getAttribute('data-search') || '').toLowerCase();
           const rowStatus = (row.getAttribute('data-status') || '').toLowerCase();
@@ -655,27 +748,65 @@ $activeRequestsCount = $stmtActiveCount->fetchColumn();
           const matchesStatus = statusFilter === 'all' || rowStatus === statusFilter;
 
           if (matchesQuery && matchesStatus) {
-            row.style.display = '';
-            visibleCount++;
+            matchingRows.push(row);
           } else {
             row.style.display = 'none';
           }
         });
 
-        if (emptyState) {
-          emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
-        }
-        if (paginationInfo) {
-          if (visibleCount === 0) {
-            paginationInfo.textContent = `Showing 0 of ${totalEntries} entries`;
-          } else {
-            paginationInfo.textContent = `Showing 1 to ${visibleCount} of ${totalEntries} entries`;
+        const totalMatching = matchingRows.length;
+        const totalPages = Math.ceil(totalMatching / PAGE_SIZE) || 1;
+
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        if (totalMatching === 0) {
+          if (paginationInfo) {
+            paginationInfo.textContent = 'Showing 0 to 0 of 0 entries';
           }
+          if (emptyState) {
+            emptyState.style.display = 'block';
+          }
+        } else {
+          if (emptyState) {
+            emptyState.style.display = 'none';
+          }
+          const startIndex = (currentPage - 1) * PAGE_SIZE;
+          const endIndex = Math.min(startIndex + PAGE_SIZE, totalMatching);
+          const displayStart = startIndex + 1;
+          const displayEnd = endIndex;
+
+          if (paginationInfo) {
+            paginationInfo.textContent = `Showing ${displayStart} to ${displayEnd} of ${totalMatching} entries`;
+          }
+
+          matchingRows.forEach((row, idx) => {
+            if (idx >= startIndex && idx < endIndex) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
         }
+
+        renderPaginationControls(totalPages, totalMatching);
       }
 
-      if (searchInput) searchInput.addEventListener('input', filterTable);
-      if (statusSelect) statusSelect.addEventListener('change', filterTable);
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          currentPage = 1;
+          filterAndPaginate();
+        });
+      }
+
+      if (statusSelect) {
+        statusSelect.addEventListener('change', () => {
+          currentPage = 1;
+          filterAndPaginate();
+        });
+      }
+
+      filterAndPaginate();
     });
   </script>
 </body>
