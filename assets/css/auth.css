@@ -1734,4 +1734,554 @@ dialog[id$="Modal"]::backdrop {
 .security-badge img {
   width: 14px;
   height: 14px;
+}
+
+/* ==========================================================================
+   Cisco-Style ALERTO Password Reset & Set Password Screens
+   ========================================================================== */
+
+/* Page 1: Create or Update Password (Split Layout) */
+.cisco-auth-wrapper {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  background: #ffffff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.cisco-hero-panel {
+  background: radial-gradient(circle at 80% 20%, #1e1b4b 0%, #0a1120 50%, #050811 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 70px;
+  color: #ffffff;
+}
+
+.cisco-hero-art {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cisco-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 480px;
+}
+
+.cisco-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.cisco-brand-logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.cisco-brand-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  line-height: 1.1;
+}
+
+.cisco-brand-sub {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.cisco-hero-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+  font-weight: 700;
+  line-height: 1.15;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+
+.cisco-hero-desc {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: #cbd5e1;
+  font-weight: 400;
+}
+
+/* Right Panel */
+.cisco-form-panel {
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 32px 48px 40px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.cisco-top-nav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
+
+.cisco-lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  font-size: 0.8125rem;
+  color: #475569;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.cisco-lang-btn:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.cisco-lang-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #16a34a;
+}
+
+.cisco-form-center {
+  max-width: 440px;
+  width: 100%;
+  margin: 40px auto;
+}
+
+.cisco-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.18s ease;
+  margin-bottom: 24px;
+}
+
+.cisco-back-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.cisco-page-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+}
+
+.cisco-page-subtitle {
+  font-size: 0.9375rem;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0 0 28px 0;
+}
+
+.cisco-form-group {
+  margin-bottom: 24px;
+}
+
+.cisco-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 8px;
+}
+
+.cisco-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 16px;
+  border: 1.5px solid #2563eb;
+  border-radius: 6px;
+  font-size: 0.9375rem;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.cisco-input:focus {
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+}
+
+.cisco-submit-btn {
+  display: inline-block;
+  padding: 11px 40px;
+  border-radius: 9999px;
+  background: #700d23;
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(112, 13, 35, 0.28);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+}
+
+.cisco-submit-btn:hover {
+  background: #8b122f;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(112, 13, 35, 0.38);
+}
+
+.cisco-submit-btn:active {
+  transform: translateY(0);
+}
+
+.cisco-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cisco-dev-alert {
+  margin-top: 24px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  color: #166534;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.cisco-dev-alert a {
+  color: #15803d;
+  font-weight: 700;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+/* Modal Dev Placeholder Preview Button */
+.modal-dev-preview-box {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(112, 13, 35, 0.2);
+  display: flex;
+  justify-content: center;
+}
+
+.modal-dev-preview-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: #fdf2f4;
+  border: 1px solid rgba(112, 13, 35, 0.22);
+  border-radius: 8px;
+  color: #700d23;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.modal-dev-preview-btn:hover {
+  background: #fae4e8;
+  border-color: #700d23;
+  color: #5c091d;
+  transform: translateY(-1px);
+}
+
+.modal-dev-pill {
+  background: #700d23;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Page 2: Set Your Password (Photo 2 Layout with ALERTO Theme) */
+.set-pwd-wrapper {
+  min-height: 100vh;
+  background: #fbf7f8;
+  background-image: 
+    radial-gradient(circle at 10% 10%, rgba(112, 13, 35, 0.035) 0%, transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(112, 13, 35, 0.03) 0%, transparent 40%);
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.set-pwd-banner {
+  height: 88px;
+  background: radial-gradient(circle at 75% 20%, #1e1b4b 0%, #0a1120 60%, #050811 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.08);
+}
+
+.set-pwd-banner-brand {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.set-pwd-banner-brand img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.set-pwd-banner-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+}
+
+.set-pwd-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 16px 48px;
+  box-sizing: border-box;
+}
+
+.set-pwd-card {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border: 1.5px solid rgba(112, 13, 35, 0.16);
+  border-radius: 20px;
+  box-shadow: 
+    0 24px 60px rgba(70, 10, 25, 0.10),
+    0 4px 16px rgba(70, 10, 25, 0.04);
+  padding: 36px 36px 32px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+@media (max-width: 540px) {
+  .set-pwd-card {
+    padding: 24px 18px 24px;
+    border-radius: 16px;
+  }
+}
+
+.set-pwd-top-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.set-pwd-megaphone-badge {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #eaf6ed;
+  border: 1px solid #ccebd3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.set-pwd-heading {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.02em;
+}
+
+.set-pwd-accent-bar {
+  height: 3.5px;
+  width: 100%;
+  background: #22c55e;
+  border-radius: 2px;
+  margin: 0 0 18px 0;
+}
+
+.set-pwd-subtitle {
+  font-size: 0.9375rem;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+}
+
+.set-pwd-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 8px;
+}
+
+.set-pwd-dev-notice {
+  background: #fdf2f4;
+  border: 1px dashed rgba(112, 13, 35, 0.28);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.8125rem;
+  color: #700d23;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.set-pwd-dev-badge {
+  background: #700d23;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.set-pwd-field {
+  margin-bottom: 20px;
+}
+
+.set-pwd-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.set-pwd-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 46px 0 16px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  color: #0f172a;
+  background: #fdfafb;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.set-pwd-input:focus {
+  background: #ffffff;
+  border-color: #8b122f;
+  box-shadow: 0 0 0 3.5px rgba(139, 18, 47, 0.14);
+}
+
+.set-pwd-eye-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.set-pwd-eye-btn:hover {
+  color: #8b122f;
+}
+
+.set-pwd-requirements {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin: -10px 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.set-pwd-submit-btn {
+  width: 100%;
+  max-width: 240px;
+  padding: 13px 32px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #5c091d 0%, #750e27 50%, #8b122f 100%);
+  color: #ffffff;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(112, 13, 35, 0.28);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+}
+
+.set-pwd-submit-btn:hover {
+  background: linear-gradient(135deg, #4d0718 0%, #680b22 50%, #7d1029 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(112, 13, 35, 0.38);
+}
+
+/* Responsive Overrides */
+@media (max-width: 900px) {
+  .cisco-auth-wrapper {
+    grid-template-columns: 1fr;
+  }
+  .cisco-hero-panel {
+    padding: 40px 24px;
+    min-height: 240px;
+  }
+  .cisco-hero-heading {
+    font-size: 1.85rem;
+  }
+  .cisco-form-panel {
+    padding: 24px 20px;
+  }
 }

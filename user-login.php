@@ -6,6 +6,83 @@ $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Forgot Password Action (AJAX / JSON)
+    if (isset($_POST['action']) && $_POST['action'] === 'forgot_password') {
+        header('Content-Type: application/json; charset=utf-8');
+
+        $email = trim($_POST['email'] ?? $_POST['reset_verification'] ?? '');
+
+        if (empty($email)) {
+            echo json_encode(['success' => false, 'message' => 'Please enter your registered email address.']);
+            exit;
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            echo json_encode(['success' => false, 'message' => 'Please enter a valid email address.']);
+            exit;
+        }
+
+        try {
+            // Find user matching email address
+            $stmt = $pdo->prepare("SELECT id, student_id, email, full_name, status, role FROM users WHERE LOWER(email) = LOWER(?) LIMIT 1");
+            $stmt->execute([$email]);
+            $user = $stmt->fetch();
+
+            if (!$user) {
+                echo json_encode(['success' => false, 'message' => 'No account found with that email address.']);
+                exit;
+            }
+
+            if (isset($user['status']) && $user['status'] === 'banned') {
+                echo json_encode(['success' => false, 'message' => 'This account has been deactivated. Please contact an administrator.']);
+                exit;
+            }
+
+            // Generate secure token (64 hex characters)
+            $token = bin2hex(random_bytes(32));
+
+            // Invalidate any existing tokens for this email
+            $del = $pdo->prepare("DELETE FROM password_resets WHERE LOWER(email) = LOWER(?)");
+            $del->execute([$email]);
+
+            // Store new token in database (1-hour validity using MySQL time)
+            $ins = $pdo->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))");
+            $ins->execute([$user['email'], $token]);
+
+            // Construct password reset link to Photo 2 page (reset-password.php)
+            $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+            $host = $_SERVER['HTTP_HOST'];
+            $dir = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+            $resetUrl = $scheme . '://' . $host . $dir . '/reset-password.php?token=' . urlencode($token);
+
+            // Send Email
+            $to = $user['email'];
+            $subject = "ALERTO - Password Reset Request";
+            $message = "Hello " . htmlspecialchars($user['full_name'] ?: 'User') . ",\n\n"
+                     . "We received a request to reset or update your ALERTO account password.\n\n"
+                     . "Please click the link below to set your new password:\n"
+                     . $resetUrl . "\n\n"
+                     . "This link will expire in 1 hour. If you did not make this request, you can safely ignore this email.\n\n"
+                     . "Best regards,\n"
+                     . "ALERTO CSU-COEA Student Council";
+            $headers = "From: ALERTO Support <no-reply@alerto.csu.edu.ph>\r\n"
+                     . "Reply-To: no-reply@alerto.csu.edu.ph\r\n"
+                     . "X-Mailer: PHP/" . phpversion();
+
+            @mail($to, $subject, $message, $headers);
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Instructions to reset your password have been sent to your email address.',
+                'dev_url' => $resetUrl
+            ]);
+            exit;
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => 'A database error occurred. Please try again later.']);
+            exit;
+        }
+    }
+
     $identifier = trim($_POST['identifier'] ?? $_POST['student_id'] ?? $_POST['email'] ?? '');
     $password   = $_POST['password'] ?? '';
 
@@ -289,7 +366,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div>
           <h3 id="forgotPasswordTitle" class="modal-header-title">Reset Account Password</h3>
-          <p class="modal-header-sub">Verify your account credentials to set a new password</p>
+          <p class="modal-header-sub">Enter your registered email address to reset or update your password.</p>
         </div>
       </div>
       <button type="button" class="modal-close-btn" onclick="closeForgotPasswordModal()" aria-label="Close modal">&times;</button>
@@ -303,75 +380,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Live status notification inside modal -->
         <div id="resetStatusBanner" class="modal-status-banner"></div>
 
-        <!-- Reset Field 1: Identifier -->
+        <!-- Reset Field: Registered Email Only (Photo 2 style: No placeholder) -->
         <div class="input-group">
-          <label for="resetIdentifier" class="input-label">Student ID or Admin Email</label>
+          <label for="resetEmail" class="input-label">Email *</label>
           <div class="input-container">
             <span class="input-icon-slot" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="16" rx="2"></rect>
-                <line x1="7" y1="8" x2="17" y2="8"></line>
-                <line x1="7" y1="12" x2="13" y2="12"></line>
-                <line x1="7" y1="16" x2="10" y2="16"></line>
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
               </svg>
             </span>
-            <input type="text" id="resetIdentifier" name="reset_identifier" class="portal-text-input" placeholder="e.g. 24-XXXXX or admin@email.com" required autocomplete="username">
-          </div>
-          <small class="input-hint">Students: Student ID (XX-XXXXX) &bull; Admins: Registered Email</small>
-        </div>
-
-        <!-- Reset Field 2: Secondary Verification Detail -->
-        <div class="input-group">
-          <label for="resetVerification" class="input-label">Registered Contact Number or Email</label>
-          <div class="input-container">
-            <span class="input-icon-slot" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-            </span>
-            <input type="text" id="resetVerification" name="reset_verification" class="portal-text-input" placeholder="09xx xxx xxxx or registered email" required autocomplete="off">
-          </div>
-          <small class="input-hint">Used for identity verification to secure your account</small>
-        </div>
-
-        <!-- Reset Field 3: New Password -->
-        <div class="input-group">
-          <label for="resetNewPassword" class="input-label">New Password</label>
-          <div class="input-container">
-            <span class="input-icon-slot" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-            </span>
-            <input type="password" id="resetNewPassword" name="new_password" class="portal-text-input has-eye" placeholder="At least 6 characters" minlength="6" required autocomplete="new-password">
-            <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'resetNewPassword')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            </button>
+            <input type="email" id="resetEmail" name="email" class="portal-text-input" required autocomplete="email">
           </div>
         </div>
 
-        <!-- Reset Field 4: Confirm New Password -->
-        <div class="input-group">
-          <label for="resetConfirmPassword" class="input-label">Confirm New Password</label>
-          <div class="input-container">
-            <span class="input-icon-slot" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2"></rect>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-              </svg>
-            </span>
-            <input type="password" id="resetConfirmPassword" name="confirm_password" class="portal-text-input has-eye" placeholder="Re-enter your new password" minlength="6" required autocomplete="new-password">
-            <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'resetConfirmPassword')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            </button>
-          </div>
+        <!-- Temporary Button to Access Set Password Page -->
+        <div class="modal-dev-preview-box">
+          <a href="reset-password.php" class="modal-dev-preview-btn">
+            <span>Set Password Page &rarr;</span>
+          </a>
         </div>
 
       </div>
@@ -379,7 +406,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <div class="modal-footer-actions">
         <button type="button" class="modal-cancel-btn" onclick="closeForgotPasswordModal()">Cancel</button>
         <button type="submit" class="modal-submit-btn" id="resetSubmitBtn">
-          <span>Reset Password</span>
+          <span>Submit</span>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
@@ -402,18 +429,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
     }
 
+
+    // Close when clicking modal backdrop
     // Modal Open & Close Functions
     function openForgotPasswordModal() {
       const modal = document.getElementById('forgotPasswordModal');
       if (!modal) return;
       const statusBanner = document.getElementById('resetStatusBanner');
-      if (statusBanner) statusBanner.style.display = 'none';
+      if (statusBanner) {
+        statusBanner.style.display = 'none';
+        statusBanner.innerHTML = '';
+      }
 
-      // Prepopulate identifier if user typed something in main login form
+      // Prepopulate email if user typed an email in main login form
       const loginIdentifier = document.getElementById('userIdentifier');
-      const resetIdentifier = document.getElementById('resetIdentifier');
-      if (loginIdentifier && resetIdentifier && loginIdentifier.value.trim() && !resetIdentifier.value.trim()) {
-        resetIdentifier.value = loginIdentifier.value.trim();
+      const resetEmail = document.getElementById('resetEmail');
+      if (loginIdentifier && resetEmail && loginIdentifier.value.includes('@') && !resetEmail.value.trim()) {
+        resetEmail.value = loginIdentifier.value.trim();
       }
 
       modal.showModal();
@@ -443,23 +475,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       const form = document.getElementById('forgotPasswordForm');
       const submitBtn = document.getElementById('resetSubmitBtn');
       const banner = document.getElementById('resetStatusBanner');
-      if (!form || !submitBtn || !banner) return;
+      const emailInput = document.getElementById('resetEmail');
+      if (!form || !submitBtn || !banner || !emailInput) return;
 
-      const p1 = document.getElementById('resetNewPassword').value;
-      const p2 = document.getElementById('resetConfirmPassword').value;
-
-      if (p1 !== p2) {
-        showResetBanner('New password and confirmation do not match.', 'error');
-        return;
-      }
-      if (p1.length < 6) {
-        showResetBanner('Password must be at least 6 characters.', 'error');
+      const email = emailInput.value.trim();
+      if (!email) {
+        showResetBanner('Please enter your registered email address.', 'error');
         return;
       }
 
       submitBtn.disabled = true;
       const originalBtnHtml = submitBtn.innerHTML;
-      submitBtn.innerHTML = '<span>Updating...</span>';
+      submitBtn.innerHTML = '<span>Sending...</span>';
 
       try {
         const formData = new FormData(form);
@@ -471,29 +498,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         const data = await res.json();
         if (data.success) {
-          showResetBanner(data.message || 'Password reset successful!', 'success');
-          submitBtn.innerHTML = '<span>Success!</span>';
+          showResetBanner(data.message || 'Instructions to reset your password have been sent to your email address.', 'success');
+          submitBtn.innerHTML = '<span>Sent!</span>';
           submitBtn.style.background = '#1e6b37';
-
-          // Update main login identifier field
-          if (data.identifier) {
-            const loginId = document.getElementById('userIdentifier');
-            if (loginId) loginId.value = data.identifier;
-          }
-
-          setTimeout(() => {
-            closeForgotPasswordModal();
-            form.reset();
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnHtml;
-            submitBtn.style.background = '';
-            const userPwd = document.getElementById('userPassword');
-            if (userPwd) {
-              userPwd.focus();
-            }
-          }, 1500);
         } else {
-          showResetBanner(data.message || 'Verification failed. Please check your details.', 'error');
+          showResetBanner(data.message || 'Failed to send password reset link. Please check your email.', 'error');
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalBtnHtml;
         }
@@ -507,8 +516,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     function showResetBanner(message, type) {
       const banner = document.getElementById('resetStatusBanner');
       if (!banner) return;
+      banner.style.display = 'block';
       banner.className = `modal-status-banner is-${type}`;
-      banner.textContent = message;
+      banner.innerHTML = message;
     }
 
     // Auto-open modal if URL has ?action=forgot-password or ?forgot_password=1
