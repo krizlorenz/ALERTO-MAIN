@@ -358,7 +358,7 @@ function send_password_reset_email($recipientEmail, $recipientName, $resetUrl, $
               <div style='max-width: 560px; margin: 0 auto; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);'>
                 <div style='background: linear-gradient(135deg, #700d23 0%, #4a0917 100%); padding: 28px; text-align: center;'>
                   <h1 style='color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px;'>ALERTO</h1>
-                  <p style='color: #fbcfe8; margin: 4px 0 0; font-size: 13px;'>CSU-Carig Student Council &bull; COEA</p>
+                  <p style='color: #fbcfe8; margin: 4px 0 0; font-size: 13px;'> COEA Student Council &bull; CSU-Carig</p>
                 </div>
                 <div style='padding: 32px;'>
                   <h2 style='margin-top: 0; color: #0f172a; font-size: 18px;'>Password Reset Request</h2>
