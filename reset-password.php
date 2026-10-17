@@ -1,77 +1,52 @@
 <?php
 session_start();
 require_once 'alerto-db.php';
+require_once 'password-recovery.php';
 
 $token = trim($_GET['token'] ?? $_POST['token'] ?? '');
-$isPlaceholderMode = empty($token) || $token === 'placeholder' || $token === 'dev';
 $errorMessage = '';
 $successMessage = '';
 $isValidToken = false;
 $userEmail = '';
 
-if ($isPlaceholderMode) {
-    // Dev/Placeholder Preview mode: allow direct access and testing before co-dev email integration
-    $isValidToken = true;
-    $userEmail = 'dev.preview@csu.edu.ph';
+// Handle Password Reset Submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $newPassword = $_POST['new_password'] ?? '';
+    $confirmPassword = $_POST['confirm_password'] ?? '';
+    $csrfToken = $_POST['csrf_token'] ?? '';
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $newPassword = $_POST['new_password'] ?? '';
-        $confirmPassword = $_POST['confirm_password'] ?? '';
+    $result = consume_token_and_reset_password($pdo, $token, $newPassword, $confirmPassword, $csrfToken);
 
-        if (empty($newPassword) || empty($confirmPassword)) {
-            $errorMessage = "Please fill in all required fields.";
-        } elseif ($newPassword !== $confirmPassword) {
-            $errorMessage = "Passwords do not match.";
-        } elseif (strlen($newPassword) < 8) {
-            $errorMessage = "Password must be at least 8 characters long.";
-        } else {
-            $successMessage = "Your password has been successfully set! You can now log in with your new password.";
-            $isValidToken = false; // Show success state & back to login button
+    if ($result['success']) {
+        $successMessage = $result['message'];
+        $isValidToken = false; // Form will be hidden, show success state & login button
+    } else {
+        $errorMessage = $result['message'];
+        // Re-validate token to know whether to keep showing form or show invalid link error
+        $validation = validate_reset_token($pdo, $token);
+        $isValidToken = $validation['valid'];
+        if ($isValidToken) {
+            $userEmail = $validation['entry']['email'];
         }
     }
 } else {
-    // Validate token and expiration against database
-    $stmt = $pdo->prepare("SELECT * FROM password_resets WHERE token = ? AND expires_at > NOW() LIMIT 1");
-    $stmt->execute([$token]);
-    $resetEntry = $stmt->fetch();
-
-    if (!$resetEntry) {
-        $errorMessage = "This password reset link is invalid or has expired. Please request a new one.";
+    // Initial GET request - validate token
+    if (empty($token)) {
+        $errorMessage = "Missing or invalid password reset link. Please request a new one.";
+        $isValidToken = false;
     } else {
-        $isValidToken = true;
-        $userEmail = $resetEntry['email'];
-
-        // Handle Form Submission for Real Token
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $newPassword = $_POST['new_password'] ?? '';
-            $confirmPassword = $_POST['confirm_password'] ?? '';
-
-            if (empty($newPassword) || empty($confirmPassword)) {
-                $errorMessage = "Please fill in all required fields.";
-            } elseif ($newPassword !== $confirmPassword) {
-                $errorMessage = "Passwords do not match.";
-            } elseif (strlen($newPassword) < 8) {
-                $errorMessage = "Password must be at least 8 characters long.";
-            } else {
-                try {
-                    // Update user's password
-                    $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-                    $update = $pdo->prepare("UPDATE users SET password = ? WHERE LOWER(email) = LOWER(?)");
-                    $update->execute([$hashedPassword, $userEmail]);
-
-                    // Remove all tokens for this email to prevent reuse
-                    $del = $pdo->prepare("DELETE FROM password_resets WHERE LOWER(email) = LOWER(?)");
-                    $del->execute([$userEmail]);
-
-                    $successMessage = "Your password has been set successfully! You can now log in with your new password.";
-                    $isValidToken = false; // Prevent resubmitting
-                } catch (Exception $e) {
-                    $errorMessage = "An error occurred while updating your password. Please try again.";
-                }
-            }
+        $validation = validate_reset_token($pdo, $token);
+        if ($validation['valid']) {
+            $isValidToken = true;
+            $userEmail = $validation['entry']['email'];
+        } else {
+            $isValidToken = false;
+            $errorMessage = $validation['message'];
         }
     }
 }
+
+$csrfToken = get_csrf_token();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -162,6 +137,7 @@ if ($isPlaceholderMode) {
 
           <!-- Set Password Form (Exact same UI as login page) -->
           <form class="login-form-body" method="POST" action="reset-password.php" onsubmit="return validatePasswords();">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
             <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
 
             <!-- Field 1: New Password -->

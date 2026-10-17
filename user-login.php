@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'alerto-db.php';
+require_once 'password-recovery.php';
 
 $error = '';
 $success = '';
@@ -11,76 +12,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Content-Type: application/json; charset=utf-8');
 
         $email = trim($_POST['email'] ?? $_POST['reset_verification'] ?? '');
+        $csrfToken = $_POST['csrf_token'] ?? '';
 
-        if (empty($email)) {
-            echo json_encode(['success' => false, 'message' => 'Please enter your registered email address.']);
-            exit;
-        }
+        $result = request_password_reset($pdo, $email, $csrfToken);
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            echo json_encode(['success' => false, 'message' => 'Please enter a valid email address.']);
-            exit;
-        }
-
-        try {
-            // Find user matching email address
-            $stmt = $pdo->prepare("SELECT id, student_id, email, full_name, status, role FROM users WHERE LOWER(email) = LOWER(?) LIMIT 1");
-            $stmt->execute([$email]);
-            $user = $stmt->fetch();
-
-            if (!$user) {
-                echo json_encode(['success' => false, 'message' => 'No account found with that email address.']);
-                exit;
-            }
-
-            if (isset($user['status']) && $user['status'] === 'banned') {
-                echo json_encode(['success' => false, 'message' => 'This account has been deactivated. Please contact an administrator.']);
-                exit;
-            }
-
-            // Generate secure token (64 hex characters)
-            $token = bin2hex(random_bytes(32));
-
-            // Invalidate any existing tokens for this email
-            $del = $pdo->prepare("DELETE FROM password_resets WHERE LOWER(email) = LOWER(?)");
-            $del->execute([$email]);
-
-            // Store new token in database (1-hour validity using MySQL time)
-            $ins = $pdo->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))");
-            $ins->execute([$user['email'], $token]);
-
-            // Construct password reset link to Photo 2 page (reset-password.php)
-            $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-            $host = $_SERVER['HTTP_HOST'];
-            $dir = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-            $resetUrl = $scheme . '://' . $host . $dir . '/reset-password.php?token=' . urlencode($token);
-
-            // Send Email
-            $to = $user['email'];
-            $subject = "ALERTO - Password Reset Request";
-            $message = "Hello " . htmlspecialchars($user['full_name'] ?: 'User') . ",\n\n"
-                     . "We received a request to reset or update your ALERTO account password.\n\n"
-                     . "Please click the link below to set your new password:\n"
-                     . $resetUrl . "\n\n"
-                     . "This link will expire in 1 hour. If you did not make this request, you can safely ignore this email.\n\n"
-                     . "Best regards,\n"
-                     . "ALERTO CSU-COEA Student Council";
-            $headers = "From: ALERTO Support <no-reply@alerto.csu.edu.ph>\r\n"
-                     . "Reply-To: no-reply@alerto.csu.edu.ph\r\n"
-                     . "X-Mailer: PHP/" . phpversion();
-
-            @mail($to, $subject, $message, $headers);
-
-            echo json_encode([
-                'success' => true,
-                'message' => 'Instructions to reset your password have been sent to your email address.',
-                'dev_url' => $resetUrl
-            ]);
-            exit;
-        } catch (Exception $e) {
-            echo json_encode(['success' => false, 'message' => 'A database error occurred. Please try again later.']);
-            exit;
-        }
+        echo json_encode([
+            'success' => $result['success'],
+            'message' => $result['message'],
+        ]);
+        exit;
     }
 
     $identifier = trim($_POST['identifier'] ?? $_POST['student_id'] ?? $_POST['email'] ?? '');
@@ -375,6 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form id="forgotPasswordForm" method="POST" action="user-login.php" onsubmit="handleForgotPasswordSubmit(event)">
       <input type="hidden" name="action" value="forgot_password">
       <input type="hidden" name="ajax" value="1">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(get_csrf_token()) ?>">
 
       <div class="modal-body-content">
         <!-- Live status notification inside modal -->
@@ -392,13 +333,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </span>
             <input type="email" id="resetEmail" name="email" class="portal-text-input" required autocomplete="email">
           </div>
-        </div>
-
-        <!-- Temporary Button to Access Set Password Page -->
-        <div class="modal-dev-preview-box">
-          <a href="reset-password.php" class="modal-dev-preview-btn">
-            <span>Set Password Page &rarr;</span>
-          </a>
         </div>
 
       </div>

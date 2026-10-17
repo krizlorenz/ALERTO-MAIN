@@ -1,69 +1,24 @@
 <?php
 session_start();
 require_once 'alerto-db.php';
+require_once 'password-recovery.php';
 
 $successMessage = '';
 $errorMessage = '';
-$devResetUrl = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
+    $csrfToken = $_POST['csrf_token'] ?? '';
 
-    if (empty($email)) {
-        $errorMessage = "Please enter your email address.";
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errorMessage = "Please enter a valid email address.";
+    $result = request_password_reset($pdo, $email, $csrfToken);
+    if ($result['success']) {
+        $successMessage = $result['message'];
     } else {
-        try {
-            // Check if user exists in database
-            $stmt = $pdo->prepare("SELECT id, email, full_name, role FROM users WHERE LOWER(email) = LOWER(?) LIMIT 1");
-            $stmt->execute([$email]);
-            $user = $stmt->fetch();
-
-            if ($user) {
-                // Generate a secure 64-character token
-                $token = bin2hex(random_bytes(32));
-                $expiresAt = date('Y-m-d H:i:s', strtotime('+1 hour'));
-
-                // Invalidate any existing tokens for this email
-                $del = $pdo->prepare("DELETE FROM password_resets WHERE LOWER(email) = LOWER(?)");
-                $del->execute([$email]);
-
-                // Store token in database using MySQL time to prevent timezone mismatch
-                $ins = $pdo->prepare("INSERT INTO password_resets (email, token, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))");
-                $ins->execute([$user['email'], $token]);
-
-                // Build absolute reset link
-                $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-                $host = $_SERVER['HTTP_HOST'];
-                $dir = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-                $resetUrl = $scheme . '://' . $host . $dir . '/reset-password.php?token=' . urlencode($token);
-                $devResetUrl = $resetUrl;
-
-                // Send email
-                $to = $user['email'];
-                $subject = "ALERTO - Create or Update Password";
-                $message = "Hello " . htmlspecialchars($user['full_name'] ?: 'User') . ",\n\n"
-                         . "You requested instructions to create or update your ALERTO account password.\n\n"
-                         . "Please click the link below to set your password:\n"
-                         . $resetUrl . "\n\n"
-                         . "This verification link is valid for 1 hour. If you did not make this request, you can safely ignore this email.\n\n"
-                         . "Best regards,\n"
-                         . "ALERTO CSU-COEA Student Council";
-                $headers = "From: ALERTO Support <no-reply@alerto.csu.edu.ph>\r\n"
-                         . "Reply-To: no-reply@alerto.csu.edu.ph\r\n"
-                         . "X-Mailer: PHP/" . phpversion();
-
-                @mail($to, $subject, $message, $headers);
-            }
-
-            // Always display standard generic success notice to protect user privacy
-            $successMessage = "Instructions to create or update your password have been sent to your email address.";
-        } catch (Exception $e) {
-            $errorMessage = "An unexpected error occurred. Please try again later.";
-        }
+        $errorMessage = $result['message'];
     }
 }
+
+$csrfToken = get_csrf_token();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -191,21 +146,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="alert-banner alert-success" style="margin-bottom: 20px;">
             <span><?= htmlspecialchars($successMessage) ?></span>
           </div>
-
-          <?php if (!empty($devResetUrl)): ?>
-            <!-- Local Development Simulation Helper -->
-            <div class="cisco-dev-alert">
-              <strong>Email Verification Link (Local Testing):</strong><br>
-              A password reset link was generated. Click below to proceed to the Set Password page:<br>
-              <a href="<?= htmlspecialchars($devResetUrl) ?>" style="margin-top: 6px; display: inline-block;">
-                &rarr; <?= htmlspecialchars($devResetUrl) ?>
-              </a>
-            </div>
-          <?php endif; ?>
         <?php endif; ?>
 
         <!-- Form without placeholder as requested -->
         <form method="POST" action="forgot-password.php">
+          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
           <div class="cisco-form-group">
             <label for="email" class="cisco-label">Email *</label>
             <input type="email" id="email" name="email" class="cisco-input" required autocomplete="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" autofocus>
