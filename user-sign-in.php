@@ -368,7 +368,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span>Selfie with School ID/Government ID</span>
                 <span class="form-label-tag">JPG, PNG</span>
               </label>
-              <div class="upload-card-box" onclick="document.getElementById('validIdFileInput').click()">
+              <div class="upload-card-box">
                 <input type="file" id="validIdFileInput" name="id_selfie" class="hidden-file-input" accept="image/*,.pdf" required
                   onchange="handleFileSelected(this, 'validIdBadge', 'validIdText')">
                 <div class="upload-card-icon" aria-hidden="true">
@@ -392,7 +392,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <span>Assessment Form or COG</span>
                 <span class="form-label-tag">PDF, JPG</span>
               </label>
-              <div class="upload-card-box" onclick="document.getElementById('assessmentFileInput').click()">
+              <div class="upload-card-box">
                 <input type="file" id="assessmentFileInput" name="assessment_form" class="hidden-file-input" accept=".pdf,image/*" required
                   onchange="handleFileSelected(this, 'corBadge', 'corText')">
                 <div class="upload-card-icon" aria-hidden="true">
