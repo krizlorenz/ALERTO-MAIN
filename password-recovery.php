@@ -670,7 +670,7 @@ function send_password_change_confirmation($pdo, $resetId, $userId, $recipientEm
 
     $config = get_mail_config();
     $appUrl = rtrim($config['app']['url'] ?? 'http://localhost/ALERTO-MAIN', '/');
-    $forgotPasswordUrl = $appUrl . '/forgot-password.php';
+    $forgotPasswordUrl = $appUrl . '/user-login.php?action=forgot-password';
 
     $sysSettings = get_system_settings($pdo);
     $supportEmail = $sysSettings['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';

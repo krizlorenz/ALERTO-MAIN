@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Please enter a valid email address.";
     } elseif (!preg_match('/^\d{2}-\d{5}$/', $student_id)) {
-        $error = "Student ID must be in the exact format XX-XXXXX (e.g., 24-00909).";
+        $error = "Student ID must be in the exact format XX-XXXXX (e.g., 24-XXXXX).";
     } elseif (strlen($password) < 8) {
         $error = "Password must be at least 8 characters long.";
     } elseif ($password !== $confirm) {
@@ -138,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </svg>
               </span>
               <input type="text" id="regFullName" name="full_name" class="auth-input"
-                placeholder="e.g. Kriz Bonifacio" required autocomplete="name"
+                placeholder="e.g. Juan Dela Cruz" required autocomplete="name"
                 value="<?php echo htmlspecialchars($_POST['full_name'] ?? ''); ?>">
             </div>
           </div>
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="form-field-group">
             <label for="regStudentId" class="form-label">
               <span>Student ID Number</span>
-              <span class="form-label-tag">Institutional ID</span>
+              <span class="form-label-tag">CSU ID Card</span>
             </label>
             <div class="input-with-icon">
               <span class="input-icon-slot" aria-hidden="true">
@@ -162,9 +162,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </svg>
               </span>
               <input type="text" id="regStudentId" name="student_id" class="auth-input"
-                placeholder="e.g. 24-00909" required autocomplete="username"
+                placeholder="e.g. 24-XXXXX" required autocomplete="username"
                 pattern="\d{2}-\d{5}" maxlength="8"
-                title="Format must be XX-XXXXX (e.g., 24-00909)"
+                title="Format must be XX-XXXXX (e.g., 24-XXXXX)"
                 value="<?php echo htmlspecialchars($_POST['student_id'] ?? ''); ?>">
             </div>
           </div>
@@ -243,7 +243,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                 </svg>
               </span>
-              <input type="tel" id="adminContact" name="contact_number" class="auth-input" placeholder="e.g. 0912 345 6789" required autocomplete="tel">
+              <input type="tel" id="adminContact" name="contact_number"
+                  class="auth-input" placeholder="09XXXXXXXXX"
+                  required autocomplete="tel" inputmode="numeric"
+                  minlength="11" maxlength="11" pattern="[0-9]{11}"
+                  title="Enter exactly 11 digits"
+                  oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)">
             </div>
           </div>
 
@@ -251,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="form-field-group">
             <label for="regEmail" class="form-label">
               <span>Email Address</span>
-              <span class="form-label-tag">CSU Domain</span>
+              <span class="form-label-tag">email</span>
             </label>
             <div class="input-with-icon">
               <span class="input-icon-slot" aria-hidden="true">
@@ -264,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </svg>
               </span>
               <input type="email" id="regEmail" name="email" class="auth-input"
-                placeholder="e.g. kriz@gmail.com" required autocomplete="email"
+                placeholder="e.g. student@gmail.com" required autocomplete="email"
                 value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
             </div>
           </div>
@@ -326,18 +331,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
           </div>
 
-          <!-- Quick Fill Option -->
-          <div class="auth-extras-row justify-end">
-            <button type="button" class="quick-fill-btn" onclick="quickFillRegisterProfile()">
-              <img src="icons/bolt.svg" alt="" class="icon-12"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
-              <svg class="icon-12 svg-fallback" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
-              </svg>
-              <span>Fill Sample DRRM Head</span>
-            </button>
-          </div>
-
           <!-- Submit Button -->
           <button type="submit" class="auth-submit-btn" id="regSubmitBtn">
             <span>Create Admin Account</span>
@@ -386,17 +379,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       btn.innerHTML = isPwd
         ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
         : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
-    }
-
-    // Quick Fill Register Profile
-    function quickFillRegisterProfile() {
-      document.getElementById('regFullName').value = 'Kriz Bonifacio';
-      document.getElementById('regStudentId').value = '24-00909';
-      document.getElementById('regProgram').value = 'BS in Civil Engineering';
-      document.getElementById('regYearLevel').value = '4th Year';
-      document.getElementById('regEmail').value = 'kriz@gmail.com';
-      document.getElementById('regPassword').value = 'alertoDRRM2026';
-      document.getElementById('regRepeatPassword').value = 'alertoDRRM2026';
     }
 
     // Client-side password validation

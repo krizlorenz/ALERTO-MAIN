@@ -18,6 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($full_name) || empty($student_id) || empty($program) || empty($year_level) || empty($email) || empty($password)) {
         $error = "Please fill in all required fields.";
+    } elseif (!preg_match('/^[0-9]{11}$/', $contact_number)) {
+        $error = "Contact number must contain exactly 11 digits.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Please enter a valid email address.";
     } elseif (!preg_match('/^\d{2}-\d{5}$/', $student_id)) {
@@ -331,7 +333,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </svg>
               </span>
               <input type="tel" id="studentContact" name="contact_number" class="auth-input" placeholder="09xx xxx xxxx" required
-                autocomplete="tel">
+                autocomplete="tel" inputmode="numeric" maxlength="11" pattern="[0-9]{11}" title="Enter exactly 11 digits"
+                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)">
             </div>
           </div>
 
