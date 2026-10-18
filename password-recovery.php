@@ -61,27 +61,31 @@ function get_mail_config() {
 /**
  * Generate or retrieve CSRF token.
  */
-function get_csrf_token() {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+if (!function_exists('get_csrf_token')) {
+    function get_csrf_token() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        return $_SESSION['csrf_token'];
     }
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    return $_SESSION['csrf_token'];
 }
 
 /**
  * Verify submitted CSRF token.
  */
-function verify_csrf_token($token) {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+if (!function_exists('verify_csrf_token')) {
+    function verify_csrf_token($token) {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (empty($token) || empty($_SESSION['csrf_token'])) {
+            return false;
+        }
+        return hash_equals($_SESSION['csrf_token'], $token);
     }
-    if (empty($token) || empty($_SESSION['csrf_token'])) {
-        return false;
-    }
-    return hash_equals($_SESSION['csrf_token'], $token);
 }
 
 /**
@@ -338,14 +342,29 @@ function send_password_reset_email($recipientEmail, $recipientName, $resetUrl, $
 
         $fromEmail = $smtp['from_email'] ?? 'alerto.coeasc.csu@gmail.com';
         $fromName  = $smtp['from_name'] ?? 'ALERTO';
+
+        // Enforce RFC 5322 compliant FQDN for Message-ID and HELO
+        $domain = substr(strrchr($fromEmail, "@"), 1) ?: 'gmail.com';
+        $mail->Hostname = $domain;
+
+        $pdoInstance = $GLOBALS['pdo'] ?? null;
+        $sysSettings = ($pdoInstance && function_exists('get_system_settings')) ? get_system_settings($pdoInstance) : [];
+        $supportEmail = $sysSettings['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';
+        $supportPhone = $sysSettings['contact_phone'] ?? '09556678451';
+
         $mail->setFrom($fromEmail, $fromName);
+        if (!empty($supportEmail) && filter_var($supportEmail, FILTER_VALIDATE_EMAIL)) {
+            $mail->addReplyTo($supportEmail, 'ALERTO Support');
+        }
         $mail->addAddress($recipientEmail, $recipientName ?: 'Student/Staff');
 
         $mail->isHTML(true);
         $mail->Subject = 'ALERTO - Password Reset Request';
 
-        $safeName = htmlspecialchars($recipientName ?: 'User', ENT_QUOTES, 'UTF-8');
-        $safeUrl  = htmlspecialchars($resetUrl, ENT_QUOTES, 'UTF-8');
+        $safeName         = htmlspecialchars($recipientName ?: 'User', ENT_QUOTES, 'UTF-8');
+        $safeUrl          = htmlspecialchars($resetUrl, ENT_QUOTES, 'UTF-8');
+        $safeSupportEmail = htmlspecialchars($supportEmail, ENT_QUOTES, 'UTF-8');
+        $safeSupportPhone = htmlspecialchars($supportPhone, ENT_QUOTES, 'UTF-8');
 
         $mail->Body = "
             <!DOCTYPE html>
@@ -376,6 +395,9 @@ function send_password_reset_email($recipientEmail, $recipientName, $resetUrl, $
                   <p style='font-size: 13px; line-height: 1.5; color: #64748b;'>
                     <strong>Security Notice:</strong> This link is single-use and will expire in <strong>30 minutes</strong>. If you did not make this request, you can safely ignore this email; your existing password will remain unchanged.
                   </p>
+                  <p style='font-size: 13px; line-height: 1.5; color: #64748b; margin-top: 10px;'>
+                    <strong>Need Help?</strong> Contact the COEASC DRRM Department at <a href='mailto:{$safeSupportEmail}' style='color: #700d23; font-weight: 600;'>{$safeSupportEmail}</a> or phone <strong>{$safeSupportPhone}</strong>.
+                  </p>
                   <hr style='border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;'>
                   <p style='font-size: 11px; line-height: 1.4; color: #94a3b8; word-break: break-all;'>
                     If the button above does not work, copy and paste this link into your browser:<br>
@@ -396,6 +418,7 @@ function send_password_reset_email($recipientEmail, $recipientName, $resetUrl, $
                        . $resetUrl . "\n\n"
                        . "This link is single-use and will expire in 30 minutes.\n"
                        . "If you did not make this request, please ignore this email.\n\n"
+                       . "Support: {$supportEmail} | {$supportPhone}\n\n"
                        . "ALERTO CSU-COEA Student Council";
 
         $mail->send();
@@ -435,7 +458,7 @@ function validate_reset_token($pdo, $plainToken) {
     try {
         // Check for active token
         $stmt = $pdo->prepare("
-            SELECT r.id, r.user_id, r.email, r.expires_at, r.used_at,
+            SELECT r.id, r.user_id, r.email, r.expires_at, (r.expires_at <= NOW()) as is_expired, r.used_at,
                    u.full_name, u.role, u.status, u.student_id
             FROM password_resets r
             JOIN users u ON r.user_id = u.id
@@ -459,7 +482,7 @@ function validate_reset_token($pdo, $plainToken) {
             ];
         }
 
-        if (strtotime($entry['expires_at']) <= time()) {
+        if (!empty($entry['is_expired']) || strtotime($entry['expires_at']) <= time()) {
             return [
                 'valid'   => false,
                 'message' => 'This password reset link has expired (valid for 30 minutes). Please request a new one.'
@@ -515,17 +538,17 @@ function consume_token_and_reset_password($pdo, $plainToken, $newPassword, $conf
         ];
     }
 
-    if ($newPassword !== $confirmPassword) {
-        return [
-            'success' => false,
-            'message' => 'Passwords do not match. Please verify and try again.'
-        ];
-    }
-
     if (strlen($newPassword) < 8) {
         return [
             'success' => false,
             'message' => 'Password must be at least 8 characters long.'
+        ];
+    }
+
+    if ($newPassword !== $confirmPassword) {
+        return [
+            'success' => false,
+            'message' => 'Passwords do not match. Please verify and try again.'
         ];
     }
 
@@ -544,7 +567,7 @@ function consume_token_and_reset_password($pdo, $plainToken, $newPassword, $conf
 
         // 3. Select and lock the token row
         $stmt = $pdo->prepare("
-            SELECT r.id, r.user_id, r.email, r.expires_at, r.used_at, u.id as u_id, u.role, u.status 
+            SELECT r.id, r.user_id, r.email, r.expires_at, (r.expires_at <= NOW()) as is_expired, r.used_at, u.id as u_id, u.full_name, u.email as user_email, u.role, u.status 
             FROM password_resets r
             JOIN users u ON r.user_id = u.id
             WHERE r.token_hash = ?
@@ -569,7 +592,7 @@ function consume_token_and_reset_password($pdo, $plainToken, $newPassword, $conf
             ];
         }
 
-        if (strtotime($row['expires_at']) <= time()) {
+        if (!empty($row['is_expired']) || strtotime($row['expires_at']) <= time()) {
             $pdo->rollBack();
             return [
                 'success' => false,
@@ -602,6 +625,16 @@ function consume_token_and_reset_password($pdo, $plainToken, $newPassword, $conf
 
         $pdo->commit();
 
+        // 8. Clear current browser session if it was logged into this account
+        if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['user_id']) && (int)$_SESSION['user_id'] === (int)$row['user_id']) {
+            unset($_SESSION['user_id'], $_SESSION['auth_password_hash'], $_SESSION['role'], $_SESSION['full_name'], $_SESSION['email']);
+        }
+
+        // 9. Send post-reset confirmation email once to registered account owner
+        $recipientEmail = !empty($row['user_email']) ? $row['user_email'] : $row['email'];
+        $recipientName  = $row['full_name'] ?? '';
+        send_password_change_confirmation($pdo, $row['id'], $row['user_id'], $recipientEmail, $recipientName);
+
         return [
             'success' => true,
             'message' => 'Your password has been successfully set! You can now log in with your new password.'
@@ -618,3 +651,139 @@ function consume_token_and_reset_password($pdo, $plainToken, $newPassword, $conf
         ];
     }
 }
+
+/**
+ * Send post-reset security confirmation email once to the registered account owner.
+ * Deduplicated, explicit Asia/Manila timestamp, forgot-password link, support contact.
+ * Failure does NOT undo the password change.
+ */
+function send_password_change_confirmation($pdo, $resetId, $userId, $recipientEmail, $recipientName = '') {
+    // Include notification service for build_alerto_email_html, dispatch_alerto_email, etc.
+    if (!function_exists('dispatch_alerto_email')) {
+        require_once __DIR__ . '/notification-service.php';
+    }
+
+    // Deduplication check
+    if (function_exists('has_notification_been_sent') && has_notification_been_sent($pdo, 'password_changed_confirmation', $resetId, 'changed', $recipientEmail)) {
+        return false;
+    }
+
+    $config = get_mail_config();
+    $appUrl = rtrim($config['app']['url'] ?? 'http://localhost/ALERTO-MAIN', '/');
+    $forgotPasswordUrl = $appUrl . '/forgot-password.php';
+
+    $sysSettings = get_system_settings($pdo);
+    $supportEmail = $sysSettings['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';
+    $supportPhone = $sysSettings['contact_phone'] ?? '09556678451';
+
+    // Explicit Asia/Manila (GMT+8) time
+    $tz = new DateTimeZone('Asia/Manila');
+    $now = new DateTime('now', $tz);
+    $changeTimeFormatted = $now->format('F j, Y, g:i:s A') . ' (Asia/Manila, GMT+8)';
+
+    $subject = 'ALERTO - Your password was changed';
+    $safeName = htmlspecialchars($recipientName ?: 'Student/Staff', ENT_QUOTES, 'UTF-8');
+    $safeEmail = htmlspecialchars($recipientEmail, ENT_QUOTES, 'UTF-8');
+    $safeSupportEmail = htmlspecialchars($supportEmail, ENT_QUOTES, 'UTF-8');
+    $safeSupportPhone = htmlspecialchars($supportPhone, ENT_QUOTES, 'UTF-8');
+    $safeForgotUrl = htmlspecialchars($forgotPasswordUrl, ENT_QUOTES, 'UTF-8');
+
+    $bodyHtml = "
+      <p style='margin-top: 0; font-size: 15px;'>Hello <strong>{$safeName}</strong>,</p>
+      <p style='line-height: 1.6;'>
+        This is a security confirmation that the password for your ALERTO account (<strong>{$safeEmail}</strong>) was successfully changed on:
+      </p>
+      <div style='background: #f1f5f9; border-left: 4px solid #700d23; padding: 12px 16px; margin: 16px 0; font-family: monospace; font-size: 13px; color: #0f172a;'>
+        <strong>Time:</strong> {$changeTimeFormatted}
+      </div>
+      <p style='line-height: 1.6;'>
+        All existing active sessions across other browsers and devices have been invalidated. You must log in using your new password.
+      </p>
+      <div style='background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin: 20px 0;'>
+        <p style='margin: 0 0 8px; font-weight: 700; color: #991b1b; font-size: 14px;'>Did you not make this change?</p>
+        <p style='margin: 0; font-size: 13px; line-height: 1.5; color: #7f1d1d;'>
+          If you did not perform this password change, your account may be compromised. Please immediately secure your account by submitting a fresh password reset request and securing your personal email account credentials.
+        </p>
+      </div>
+      <p style='font-size: 13px; line-height: 1.5; color: #64748b;'>
+        <strong>Support Contact:</strong> If you need assistance, please contact the CSU-COEA Student Council DRRM committee at 
+        <a href='mailto:{$safeSupportEmail}' style='color: #700d23; font-weight: 600;'>{$safeSupportEmail}</a> or phone <strong>{$safeSupportPhone}</strong>.
+      </p>
+      <p style='font-size: 12px; line-height: 1.5; color: #94a3b8; margin-top: 14px;'>
+        <em>Note: Clicking the button below opens the Forgot Password request form. It will not change your password or lock your account.</em>
+      </p>
+    ";
+
+    if (function_exists('build_alerto_email_html')) {
+        $htmlContent = build_alerto_email_html(
+            'Security Alert: Password Changed',
+            'Security Notice',
+            '#700d23',
+            $bodyHtml,
+            'Secure your account',
+            $forgotPasswordUrl
+        );
+    } else {
+        $htmlContent = "<!DOCTYPE html>
+<html>
+<head><meta charset='UTF-8'><title>{$subject}</title></head>
+<body style='font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; background-color: #f6f7f9; margin: 0; padding: 24px; color: #1e293b;'>
+  <div style='max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.06);'>
+    <div style='background: linear-gradient(135deg, #700d23 0%, #4a0917 100%); padding: 26px 30px; text-align: center;'>
+      <h1 style='color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;'>ALERTO</h1>
+      <p style='color: #fbcfe8; margin: 4px 0 0; font-size: 13px; font-weight: 500;'>COEA Student Council &bull; CSU-Carig</p>
+    </div>
+    <div style='padding: 32px;'>
+      <h2 style='margin-top: 0; color: #0f172a; font-size: 18px; font-weight: 700;'>Security Alert: Password Changed</h2>
+      {$bodyHtml}
+      <div style='text-align: center; margin: 28px 0;'>
+        <a href='{$safeForgotUrl}' style='display: inline-block; background: #700d23; color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: 600; font-size: 14px;'>
+          Secure your account &rarr;
+        </a>
+      </div>
+      <hr style='border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;'>
+      <p style='font-size: 12px; line-height: 1.5; color: #64748b; margin: 0;'>
+        <strong>Note:</strong> Clicking this link takes you to the Forgot Password page where you can request a new reset if unauthorized. It will never directly change your password or lock your account.
+      </p>
+    </div>
+    <div style='background: #f8fafc; padding: 16px 30px; text-align: center; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;'>
+      &copy; " . date('Y') . " ALERTO &bull; College of Engineering & Architecture Student Council &bull; CSU-Carig
+    </div>
+  </div>
+</body>
+</html>";
+    }
+
+    $plainTextContent = "Hello {$recipientName},\n\n"
+        . "This is a security confirmation that the password for your ALERTO account ({$recipientEmail}) was successfully changed on:\n"
+        . "Time: {$changeTimeFormatted}\n\n"
+        . "All existing active sessions across other browsers and devices have been invalidated. You must log in using your new password.\n\n"
+        . "DID YOU NOT MAKE THIS CHANGE?\n"
+        . "If you did not perform this password change, your account may be compromised. Please immediately secure your account by submitting a fresh password reset request and securing your personal email account credentials.\n\n"
+        . "Secure your account: {$forgotPasswordUrl}\n\n"
+        . "SUPPORT CONTACT:\n"
+        . "Email: {$supportEmail}\n"
+        . "Phone: {$supportPhone}\n\n"
+        . "Note: Clicking the link above navigates to the Forgot Password request page. It does not automatically change passwords or lock your account.\n\n"
+        . "ALERTO CSU-COEA Student Council";
+
+    try {
+        $dispatch = dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlContent, $plainTextContent, $config);
+
+        $status = ($dispatch['success'] ?? false) ? 'sent' : 'failed';
+        $errorMsg = $dispatch['error'] ?? null;
+
+        if (function_exists('record_notification_log')) {
+            record_notification_log($pdo, 'password_changed_confirmation', $resetId, 'changed', $recipientEmail, $subject, $status, $errorMsg, 1);
+        }
+
+        return ($status === 'sent');
+    } catch (Exception $e) {
+        error_log("Failed to send password changed confirmation: " . $e->getMessage());
+        if (function_exists('record_notification_log')) {
+            record_notification_log($pdo, 'password_changed_confirmation', $resetId, 'changed', $recipientEmail, $subject, 'failed', $e->getMessage(), 1);
+        }
+        return false;
+    }
+}
+

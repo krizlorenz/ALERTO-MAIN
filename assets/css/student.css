@@ -1914,7 +1914,7 @@
   font-family: var(--accent-font);
   font-size: 0.95rem;
   font-weight: 700;
-  color: #0369a1;
+  color: var(--user-red-mid, #700d23);
   word-break: break-all;
   margin-bottom: 4px;
 }

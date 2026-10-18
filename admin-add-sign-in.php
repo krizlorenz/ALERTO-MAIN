@@ -2,10 +2,7 @@
 session_start();
 require_once 'alerto-db.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'superadmin') {
-    header("Location: admin-login.php");
-    exit;
-}
+$currentAdmin = validate_active_session($pdo, ['superadmin']);
 
 $error = '';
 $success = '';
@@ -22,8 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($full_name) || empty($student_id) || empty($program) || empty($year_level) || empty($contact_number) || empty($email) || empty($password)) {
         $error = "Please fill in all required fields.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Please enter a valid email address.";
     } elseif (!preg_match('/^\d{2}-\d{5}$/', $student_id)) {
         $error = "Student ID must be in the exact format XX-XXXXX (e.g., 24-00909).";
+    } elseif (strlen($password) < 8) {
+        $error = "Password must be at least 8 characters long.";
     } elseif ($password !== $confirm) {
         $error = "Passwords do not match.";
     } else {
@@ -118,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <?php endif; ?>
 
-        <form class="auth-form" id="adminRegisterForm" method="POST" action="admin-add-sign-in.php">
+        <form class="auth-form" id="adminRegisterForm" method="POST" action="admin-add-sign-in.php" onsubmit="return validateAdminPasswords();">
 
           <!-- 1. Full Name -->
           <div class="form-field-group">
@@ -287,7 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   </svg>
                 </span>
                 <input type="password" id="regPassword" name="password" class="auth-input has-eye"
-                  placeholder="Create password" required autocomplete="new-password">
+                  placeholder="Create password" required minlength="8" autocomplete="new-password">
                 <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'regPassword')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -295,6 +296,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   </svg>
                 </button>
               </div>
+              <small class="input-hint">Password requirements: At least 8 characters</small>
             </div>
 
             <!-- Repeat Password -->
@@ -312,7 +314,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   </svg>
                 </span>
                 <input type="password" id="regRepeatPassword" name="confirm_password" class="auth-input has-eye"
-                  placeholder="Confirm password" required autocomplete="new-password">
+                  placeholder="Confirm password" required minlength="8" autocomplete="new-password">
                 <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'regRepeatPassword')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -395,6 +397,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       document.getElementById('regEmail').value = 'kriz@gmail.com';
       document.getElementById('regPassword').value = 'alertoDRRM2026';
       document.getElementById('regRepeatPassword').value = 'alertoDRRM2026';
+    }
+
+    // Client-side password validation
+    function validateAdminPasswords() {
+      const p1 = document.getElementById('regPassword').value;
+      const p2 = document.getElementById('regRepeatPassword').value;
+
+      if (p1.length < 8) {
+        alert('Password must be at least 8 characters long.');
+        return false;
+      }
+      if (p1 !== p2) {
+        alert('Passwords do not match.');
+        return false;
+      }
+      return true;
     }
   </script>
 </body>

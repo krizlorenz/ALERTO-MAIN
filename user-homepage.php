@@ -10,14 +10,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     exit;
 }
 
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['student', 'admin', 'superadmin'])) {
-    header("Location: user-login.php");
-    exit;
-}
-
-$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
-$stmt->execute([$_SESSION['user_id']]);
-$user = $stmt->fetch();
+$user = validate_active_session($pdo, ['student', 'admin', 'superadmin']);
 
 if (!$user) {
     session_destroy();
@@ -28,7 +21,7 @@ if (!$user) {
 // Retrieve dynamic system settings (contacts & request intake switch)
 $sysSettings = get_system_settings($pdo);
 $contactPhone = $sysSettings['contact_phone'] ?? '09556678451';
-$contactEmail = $sysSettings['contact_email'] ?? 'alertoCOEA@gmail.com';
+$contactEmail = $sysSettings['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';
 $isAssistanceEnabled = ($sysSettings['request_assistance_enabled'] ?? '1') === '1';
 
 // Handle request cancellation from user dashboard

@@ -11,38 +11,46 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 }
 
 // Session Guard
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'superadmin'])) {
-    header("Location: admin-login.php");
-    exit;
-}
+$currentAdmin = validate_active_session($pdo, ['admin', 'superadmin']);
+
+$actionError = '';
 
 // Process Admin Controls: Toggle Assistance or Update Contacts
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    if ($_POST['action'] === 'toggle_assistance' && isset($_POST['new_state'])) {
-        $newState = intval($_POST['new_state']) ? '1' : '0';
-        update_system_setting($pdo, 'request_assistance_enabled', $newState);
-        header("Location: admin-controls.php?toggled=1");
-        exit;
-    }
-
-    if ($_POST['action'] === 'update_contacts') {
+    $submittedToken = $_POST['csrf_token'] ?? '';
+    if (!verify_csrf_token($submittedToken)) {
+        $actionError = 'Invalid or expired session security token. Please refresh and try again.';
+    } elseif ($_POST['action'] === 'toggle_assistance') {
+        if (!isset($_POST['new_state']) || !in_array((string)$_POST['new_state'], ['0', '1'], true)) {
+            $actionError = 'Invalid request intake state submitted.';
+        } else {
+            $newState = ($_POST['new_state'] === '1') ? '1' : '0';
+            update_system_setting($pdo, 'request_assistance_enabled', $newState);
+            header("Location: admin-controls.php?toggled=1");
+            exit;
+        }
+    } elseif ($_POST['action'] === 'update_contacts') {
         $phone = trim($_POST['contact_phone'] ?? '');
         $email = trim($_POST['contact_email'] ?? '');
-        if (!empty($phone)) {
+        $phoneDigits = preg_replace('/\D/', '', $phone);
+
+        if (empty($phone) || !preg_match('/^[0-9+() -]{7,25}$/', $phone) || strlen($phoneDigits) < 7) {
+            $actionError = 'Please enter a valid DRRM contact phone number (7-25 digits/symbols).';
+        } elseif (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 150) {
+            $actionError = 'Please enter a valid DRRM official email address.';
+        } else {
             update_system_setting($pdo, 'contact_phone', $phone);
-        }
-        if (!empty($email)) {
             update_system_setting($pdo, 'contact_email', $email);
+            header("Location: admin-controls.php?saved_contacts=1");
+            exit;
         }
-        header("Location: admin-controls.php?saved_contacts=1");
-        exit;
     }
 }
 
 // Retrieve dynamic system settings
 $sysSettings = get_system_settings($pdo);
 $contactPhone = $sysSettings['contact_phone'] ?? '09556678451';
-$contactEmail = $sysSettings['contact_email'] ?? 'alertoCOEA@gmail.com';
+$contactEmail = $sysSettings['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';
 $isAssistanceEnabled = ($sysSettings['request_assistance_enabled'] ?? '1') === '1';
 
 // Fetch dynamic counts for sidebar badges
@@ -216,6 +224,19 @@ $activeRequestsCount = $stmtActiveReq->fetchColumn();
         </div>
 
         <!-- Flash Alert Banners -->
+        <?php if (!empty($actionError) || isset($_GET['error'])): ?>
+          <div class="alert-banner alert-warning mb-6" role="alert" style="margin-bottom: var(--space-5);">
+            <div class="alert-banner-content">
+              <svg class="alert-banner-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              <span><?= htmlspecialchars($actionError ?: ($_GET['error'] ?? 'An error occurred.')) ?></span>
+            </div>
+            <button type="button" class="alert-banner-close" onclick="this.parentElement.style.display='none'">&times;</button>
+          </div>
+        <?php endif; ?>
         <?php if (isset($_GET['toggled'])): ?>
           <div class="alert-banner alert-success mb-6" role="alert" style="margin-bottom: var(--space-5);">
             <div class="alert-banner-content">
@@ -333,6 +354,7 @@ $activeRequestsCount = $stmtActiveReq->fetchColumn();
 
             <!-- Toggle Form -->
             <form method="POST" action="admin-controls.php" onsubmit="return confirm('<?= $isAssistanceEnabled ? 'Are you sure you want to CLOSE student request submissions? The request button will be unavailable for students.' : 'Are you sure you want to ACTIVATE student request submissions? The request button will become functional again for students.' ?>')">
+              <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(get_csrf_token()) ?>">
               <input type="hidden" name="action" value="toggle_assistance">
               <input type="hidden" name="new_state" value="<?= $isAssistanceEnabled ? '0' : '1' ?>">
 
@@ -378,6 +400,7 @@ $activeRequestsCount = $stmtActiveReq->fetchColumn();
 
               <!-- Contacts Form -->
               <form method="POST" action="admin-controls.php" class="control-form-stack">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(get_csrf_token()) ?>">
                 <input type="hidden" name="action" value="update_contacts">
 
                 <div>
@@ -394,7 +417,7 @@ $activeRequestsCount = $stmtActiveReq->fetchColumn();
                 <div>
                   <label class="control-field-label" for="contactEmailInput">DRRM Official Email Address</label>
                   <div class="modal-input-group">
-                    <input type="email" id="contactEmailInput" name="contact_email" value="<?= htmlspecialchars($contactEmail) ?>" required class="modal-input-field" placeholder="e.g. alertoCOEA@gmail.com">
+                    <input type="email" id="contactEmailInput" name="contact_email" value="<?= htmlspecialchars($contactEmail) ?>" required class="modal-input-field" placeholder="e.g. alerto.coeasc.csu@gmail.com">
                     <svg class="modal-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                       <polyline points="22,6 12,13 2,6"></polyline>

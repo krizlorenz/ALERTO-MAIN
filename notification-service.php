@@ -23,16 +23,31 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 /**
- * Check if a notification for this exact event, reference, and state has already been sent.
+ * Check if a notification for this exact event, reference, state, submission version, and recipient has already been sent.
  */
-function has_notification_been_sent($pdo, $eventType, $referenceId, $transitionState) {
+function has_notification_been_sent($pdo, $eventType, $referenceId, $transitionState, $recipientEmail = null, $submissionVersion = null) {
     try {
-        $stmt = $pdo->prepare("
-            SELECT id FROM email_notifications 
-            WHERE event_type = ? AND reference_id = ? AND transition_state = ? AND status = 'sent' 
-            LIMIT 1
-        ");
-        $stmt->execute([$eventType, (int)$referenceId, (string)$transitionState]);
+        $sql = "SELECT id FROM email_notifications WHERE event_type = ? AND reference_id = ? AND transition_state = ? AND status = 'sent'";
+        $params = [$eventType, (int)$referenceId, (string)$transitionState];
+
+        if ($submissionVersion !== null) {
+            $sql .= " AND submission_version = ?";
+            $params[] = (int)$submissionVersion;
+        }
+
+        if ($recipientEmail !== null) {
+            $config = get_mail_config();
+            $override = trim($config['notifications']['recipient_override'] ?? $config['recipient_override'] ?? '');
+            $targetRecipient = (!empty($override) && filter_var($override, FILTER_VALIDATE_EMAIL)) ? $override : $recipientEmail;
+
+            $sql .= " AND LOWER(recipient_email) = LOWER(?)";
+            $params[] = trim($targetRecipient);
+        }
+
+        $sql .= " LIMIT 1";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
         return (bool)$stmt->fetchColumn();
     } catch (Exception $e) {
         error_log("Notification dedup check failed: " . $e->getMessage());
@@ -41,18 +56,19 @@ function has_notification_been_sent($pdo, $eventType, $referenceId, $transitionS
 }
 
 /**
- * Record a notification attempt (sent or failed) in the database.
+ * Record a notification attempt (sent or failed) in the database with persistent submission version.
  */
-function record_notification_log($pdo, $eventType, $referenceId, $transitionState, $recipientEmail, $subject, $status, $errorMessage = null) {
+function record_notification_log($pdo, $eventType, $referenceId, $transitionState, $recipientEmail, $subject, $status, $errorMessage = null, $submissionVersion = 1) {
     try {
         $stmt = $pdo->prepare("
-            INSERT INTO email_notifications (event_type, reference_id, transition_state, recipient_email, subject, status, error_message, created_at) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+            INSERT INTO email_notifications (event_type, reference_id, transition_state, submission_version, recipient_email, subject, status, error_message, created_at) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
         ");
         $stmt->execute([
             $eventType,
             (int)$referenceId,
             (string)$transitionState,
+            (int)$submissionVersion,
             $recipientEmail,
             $subject,
             $status,
@@ -74,6 +90,43 @@ function dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlC
     $smtp = $config['smtp'] ?? [];
     $password = $smtp['password'] ?? '';
 
+    // Check for test recipient override
+    $override = trim($config['notifications']['recipient_override'] ?? $config['recipient_override'] ?? '');
+    $effectiveRecipientEmail = $recipientEmail;
+    $effectiveRecipientName = $recipientName;
+    $isTestOverride = false;
+
+    if (!empty($override) && filter_var($override, FILTER_VALIDATE_EMAIL)) {
+        $effectiveRecipientEmail = $override;
+        $effectiveRecipientName = "[TEST] " . $recipientName;
+        $isTestOverride = true;
+
+        $overrideBannerHtml = "
+            <div style='background: #fef3c7; border: 1px solid #f59e0b; padding: 10px 14px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; color: #92400e;'>
+                <strong>[ALERTO TEST OVERRIDE ACTIVE]</strong><br>
+                Originally addressed to: <code>" . htmlspecialchars($recipientEmail, ENT_QUOTES, 'UTF-8') . "</code> (" . htmlspecialchars($recipientName, ENT_QUOTES, 'UTF-8') . ")
+            </div>
+        ";
+        $htmlContent = str_replace('<!-- TEST_OVERRIDE_BANNER -->', $overrideBannerHtml, $htmlContent);
+
+        $overrideBannerText = "[ALERTO TEST OVERRIDE ACTIVE]\n"
+                            . "Originally addressed to: {$recipientEmail} ({$recipientName})\n"
+                            . "--------------------------------------------------------\n\n";
+        $plainTextContent = $overrideBannerText . $plainTextContent;
+    } else {
+        $htmlContent = str_replace('<!-- TEST_OVERRIDE_BANNER -->', '', $htmlContent);
+    }
+
+    // Optional dry-run support for test execution without sending real emails
+    if (!empty($config['dry_run']) || !empty($config['notifications']['dry_run']) || !empty($GLOBALS['alerto_dry_run']) || (defined('ALERTO_DRY_RUN') && ALERTO_DRY_RUN)) {
+        return [
+            'success'             => true,
+            'override_used'       => $isTestOverride,
+            'effective_recipient' => $effectiveRecipientEmail,
+            'message_id'          => '<dry-run-' . bin2hex(random_bytes(8)) . '@gmail.com>',
+        ];
+    }
+
     if (empty($password)) {
         return [
             'success' => false,
@@ -86,28 +139,6 @@ function dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlC
             'success' => false,
             'error'   => 'PHPMailer library is not loaded.'
         ];
-    }
-
-    // Check for test recipient override
-    $override = trim($config['notifications']['recipient_override'] ?? $config['recipient_override'] ?? '');
-    $effectiveRecipientEmail = $recipientEmail;
-    $effectiveRecipientName = $recipientName;
-    $isTestOverride = false;
-
-    if (!empty($override) && filter_var($override, FILTER_VALIDATE_EMAIL)) {
-        $effectiveRecipientEmail = $override;
-        $effectiveRecipientName = "[TEST] " . $recipientName;
-        $isTestOverride = true;
-
-        $overrideBanner = "
-            <div style='background: #fef3c7; border: 1px solid #f59e0b; padding: 10px 14px; border-radius: 6px; margin-bottom: 20px; font-size: 13px; color: #92400e;'>
-                <strong>[ALERTO TEST OVERRIDE ACTIVE]</strong><br>
-                Originally addressed to: <code>" . htmlspecialchars($recipientEmail, ENT_QUOTES, 'UTF-8') . "</code> (" . htmlspecialchars($recipientName, ENT_QUOTES, 'UTF-8') . ")
-            </div>
-        ";
-        $htmlContent = str_replace('<!-- TEST_OVERRIDE_BANNER -->', $overrideBanner, $htmlContent);
-    } else {
-        $htmlContent = str_replace('<!-- TEST_OVERRIDE_BANNER -->', '', $htmlContent);
     }
 
     $mail = new PHPMailer(true);
@@ -123,6 +154,12 @@ function dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlC
         $mail->CharSet    = 'UTF-8';
         $mail->Timeout    = 15;
 
+        // Enforce RFC 5322 compliant FQDN for Message-ID and HELO
+        $fromEmail = $smtp['from_email'] ?? 'alerto.coeasc.csu@gmail.com';
+        $fromName  = $smtp['from_name'] ?? 'ALERTO';
+        $domain = substr(strrchr($fromEmail, "@"), 1) ?: 'gmail.com';
+        $mail->Hostname = $domain;
+
         // Strictly enforce TLS verification - NEVER disabled
         $mail->SMTPOptions = [
             'ssl' => [
@@ -132,18 +169,32 @@ function dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlC
             ],
         ];
 
-        $fromEmail = $smtp['from_email'] ?? 'alerto.coeasc.csu@gmail.com';
-        $fromName  = $smtp['from_name'] ?? 'ALERTO';
         $mail->setFrom($fromEmail, $fromName);
+
+        // Dynamic Support Reply-To
+        $pdoInstance = $GLOBALS['pdo'] ?? null;
+        $sysSettings = ($pdoInstance && function_exists('get_system_settings')) ? get_system_settings($pdoInstance) : [];
+        $supportEmail = $sysSettings['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';
+        if (!empty($supportEmail) && filter_var($supportEmail, FILTER_VALIDATE_EMAIL)) {
+            $mail->addReplyTo($supportEmail, 'ALERTO Support');
+        }
+
         $mail->addAddress($effectiveRecipientEmail, $effectiveRecipientName ?: 'ALERTO User');
 
+        // Branded HTML email with plain-text alternative (multipart/alternative)
         $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body    = $htmlContent;
         $mail->AltBody = $plainTextContent;
 
         $mail->send();
-        return ['success' => true, 'override_used' => $isTestOverride];
+        $messageId = $mail->getLastMessageID();
+        return [
+            'success'             => true,
+            'override_used'       => $isTestOverride,
+            'effective_recipient' => $effectiveRecipientEmail,
+            'message_id'          => $messageId,
+        ];
 
     } catch (PHPMailerException $e) {
         return [
@@ -161,35 +212,51 @@ function dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlC
 /**
  * Standard ALERTO Email Wrapper Template
  */
-function build_alerto_email_html($heading, $statusBadgeText, $statusBadgeColor, $bodyHtml, $ctaText, $ctaUrl) {
-    $safeHeading = htmlspecialchars($heading, ENT_QUOTES, 'UTF-8');
-    $safeBadge   = htmlspecialchars($statusBadgeText, ENT_QUOTES, 'UTF-8');
-    $safeCtaText = htmlspecialchars($ctaText, ENT_QUOTES, 'UTF-8');
-    $safeCtaUrl  = htmlspecialchars($ctaUrl, ENT_QUOTES, 'UTF-8');
+function build_alerto_email_html($heading, $statusBadgeText, $statusBadgeColor, $bodyHtml, $ctaText, $ctaUrl, $supportEmail = null, $supportPhone = null) {
+    if ($supportEmail === null || $supportPhone === null) {
+        $pdoInstance = $GLOBALS['pdo'] ?? null;
+        $sys = ($pdoInstance && function_exists('get_system_settings')) ? get_system_settings($pdoInstance) : [];
+        if ($supportEmail === null) {
+            $supportEmail = $sys['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';
+        }
+        if ($supportPhone === null) {
+            $supportPhone = $sys['contact_phone'] ?? '09556678451';
+        }
+    }
 
-    return "
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset='UTF-8'>
-      <title>{$safeHeading}</title>
-    </head>
-    <body style='font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; background-color: #f6f7f9; margin: 0; padding: 24px; color: #1e293b;'>
-      <div style='max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.06);'>
-        <!-- Header -->
-        <div style='background: linear-gradient(135deg, #700d23 0%, #4a0917 100%); padding: 26px 30px; text-align: center;'>
-          <h1 style='color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;'>ALERTO</h1>
-          <p style='color: #fbcfe8; margin: 4px 0 0; font-size: 13px; font-weight: 500;'>COEA Student Council &bull; CSU-Carig</p>
-        </div>
-        
-        <!-- Content Area -->
-        <div style='padding: 32px;'>
-          <!-- TEST_OVERRIDE_BANNER -->
-          
-          <div style='display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;'>
+    $safeHeading      = htmlspecialchars($heading, ENT_QUOTES, 'UTF-8');
+    $safeBadge        = htmlspecialchars($statusBadgeText, ENT_QUOTES, 'UTF-8');
+    $safeCtaText      = htmlspecialchars($ctaText, ENT_QUOTES, 'UTF-8');
+    $safeCtaUrl       = htmlspecialchars($ctaUrl, ENT_QUOTES, 'UTF-8');
+    $safeSupportEmail = htmlspecialchars($supportEmail, ENT_QUOTES, 'UTF-8');
+    $safeSupportPhone = htmlspecialchars($supportPhone, ENT_QUOTES, 'UTF-8');
+
+    return "<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='UTF-8'>
+  <title>{$safeHeading}</title>
+</head>
+<body style='font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif; background-color: #f6f7f9; margin: 0; padding: 24px; color: #1e293b;'>
+  <div style='max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.06);'>
+    <!-- Header -->
+    <div style='background: linear-gradient(135deg, #700d23 0%, #4a0917 100%); padding: 26px 30px; text-align: center;'>
+      <h1 style='color: #ffffff; margin: 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5px;'>ALERTO</h1>
+      <p style='color: #fbcfe8; margin: 4px 0 0; font-size: 13px; font-weight: 500;'>COEA Student Council &bull; CSU-Carig</p>
+    </div>
+    
+    <!-- Content Area -->
+    <div style='padding: 32px;'>
+      <!-- TEST_OVERRIDE_BANNER -->
+      
+      <table style='width: 100%; border-collapse: collapse; margin-bottom: 20px;'>
+        <tr>
+          <td style='vertical-align: middle;'>
             <h2 style='margin: 0; color: #0f172a; font-size: 18px; font-weight: 700;'>{$safeHeading}</h2>
-            " . (!empty($safeBadge) ? "<span style='display: inline-block; background: {$statusBadgeColor}; color: #ffffff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;'>{$safeBadge}</span>" : "") . "
-          </div>
+          </td>
+          " . (!empty($safeBadge) ? "<td style='text-align: right; vertical-align: middle;'><span style='display: inline-block; background: {$statusBadgeColor}; color: #ffffff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;'>{$safeBadge}</span></td>" : "") . "
+        </tr>
+      </table>
 
           <div style='font-size: 14px; line-height: 1.6; color: #334155; margin-bottom: 24px;'>
             {$bodyHtml}
@@ -204,8 +271,11 @@ function build_alerto_email_html($heading, $statusBadgeText, $statusBadgeColor, 
           " : "") . "
 
           <hr style='border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;'>
-          <p style='font-size: 12px; line-height: 1.5; color: #64748b; margin: 0;'>
-            <strong>Note:</strong> This is an automated notification from the ALERTO Disaster Risk Reduction and Management (DRRM) system. Please do not reply directly to this email.
+          <p style='font-size: 12px; line-height: 1.5; color: #64748b; margin: 0 0 6px 0;'>
+            <strong>Support Contact:</strong> If you have questions or require assistance, please contact the COEASC DRRM Department at <a href='mailto:{$safeSupportEmail}' style='color: #700d23; font-weight: 600;'>{$safeSupportEmail}</a> or phone <strong>{$safeSupportPhone}</strong>.
+          </p>
+          <p style='font-size: 11px; line-height: 1.4; color: #94a3b8; margin: 0;'>
+            <em>Note: This is an automated notification from the ALERTO Disaster Risk Reduction and Management (DRRM) system.</em>
           </p>
         </div>
 
@@ -224,7 +294,7 @@ function build_alerto_email_html($heading, $statusBadgeText, $statusBadgeColor, 
  */
 function notify_admin_student_registered($pdo, $studentUserId) {
     try {
-        $stmt = $pdo->prepare("SELECT id, full_name, student_id, program, year_level, email, status FROM users WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT id, full_name, student_id, program, year_level, email, status, verification_version FROM users WHERE id = ?");
         $stmt->execute([(int)$studentUserId]);
         $student = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -232,10 +302,7 @@ function notify_admin_student_registered($pdo, $studentUserId) {
             return false;
         }
 
-        // Deduplication: prevent duplicate notification for this user verification submission
-        if (has_notification_been_sent($pdo, 'student_registration', $student['id'], 'unverified')) {
-            return true;
-        }
+        $submissionVersion = (int)($student['verification_version'] ?? 1);
 
         $config = get_mail_config();
         $adminRecipients = $config['notifications']['admin_recipients'] ?? $config['admin_recipients'] ?? [];
@@ -252,11 +319,14 @@ function notify_admin_student_registered($pdo, $studentUserId) {
         $safeProgram  = htmlspecialchars($student['program'] . ' (' . $student['year_level'] . ')', ENT_QUOTES, 'UTF-8');
         $safeEmail    = htmlspecialchars($student['email'], ENT_QUOTES, 'UTF-8');
 
-        $heading = "New Student Verification Submitted";
-        $subject = "ALERTO - New Student Verification: {$student['student_id']} ({$student['full_name']})";
+        $isResubmission = ($submissionVersion > 1);
+        $heading = $isResubmission ? "Student Verification Resubmitted" : "New Student Verification Submitted";
+        $subject = $isResubmission 
+            ? "ALERTO - Student Verification Resubmitted: {$student['student_id']} ({$student['full_name']})"
+            : "ALERTO - New Student Verification: {$student['student_id']} ({$student['full_name']})";
 
         $bodyHtml = "
-            <p>A student has submitted their account credentials and documents for identity verification:</p>
+            <p>" . ($isResubmission ? "A student has resubmitted their updated credentials and documents for identity verification:" : "A student has submitted their account credentials and documents for identity verification:") . "</p>
             <table style='width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px;'>
               <tr style='border-bottom: 1px solid #f1f5f9;'>
                 <td style='padding: 8px 0; color: #64748b; font-weight: 600; width: 35%;'>Student Name:</td>
@@ -274,6 +344,10 @@ function notify_admin_student_registered($pdo, $studentUserId) {
                 <td style='padding: 8px 0; color: #64748b; font-weight: 600;'>Registered Email:</td>
                 <td style='padding: 8px 0; color: #0f172a;'>{$safeEmail}</td>
               </tr>
+              <tr style='border-bottom: 1px solid #f1f5f9;'>
+                <td style='padding: 8px 0; color: #64748b; font-weight: 600;'>Submission Version:</td>
+                <td style='padding: 8px 0; color: #0f172a;'>v{$submissionVersion}</td>
+              </tr>
               <tr>
                 <td style='padding: 8px 0; color: #64748b; font-weight: 600;'>Current Status:</td>
                 <td style='padding: 8px 0; color: #d97706; font-weight: 600;'>Pending Verification</td>
@@ -282,18 +356,19 @@ function notify_admin_student_registered($pdo, $studentUserId) {
             <p>Please log in to the Administrative Verification portal to review the applicant's submission.</p>
         ";
 
-        $plainText = "ALERTO - New Student Verification Submitted\n\n"
+        $plainText = ($isResubmission ? "ALERTO - Student Verification Resubmitted" : "ALERTO - New Student Verification Submitted") . "\n\n"
                    . "Student Name: {$student['full_name']}\n"
                    . "Student ID: {$student['student_id']}\n"
                    . "Program: {$student['program']} ({$student['year_level']})\n"
                    . "Email: {$student['email']}\n"
+                   . "Submission Version: v{$submissionVersion}\n"
                    . "Status: Pending Verification\n\n"
                    . "Please review at: {$verifyUrl}\n\n"
                    . "ALERTO CSU-COEA Student Council";
 
         $htmlContent = build_alerto_email_html($heading, 'Pending', '#d97706', $bodyHtml, 'Open Verification Portal', $verifyUrl);
 
-        // Send to configured admin recipients
+        // Send to configured admin recipients with per-submission and per-recipient deduplication
         $allSuccess = true;
         foreach ($adminRecipients as $adminEmail) {
             $adminEmail = trim($adminEmail);
@@ -301,12 +376,20 @@ function notify_admin_student_registered($pdo, $studentUserId) {
                 continue;
             }
 
+            // Deduplicate per submission version and recipient
+            if (has_notification_been_sent($pdo, 'student_registration', $student['id'], 'unverified', $adminEmail, $submissionVersion)) {
+                continue;
+            }
+
             $res = dispatch_alerto_email($adminEmail, 'ALERTO Administrator', $subject, $htmlContent, $plainText, $config);
+            $effectiveRecipient = $res['effective_recipient'] ?? $adminEmail;
+
             if ($res['success']) {
-                record_notification_log($pdo, 'student_registration', $student['id'], 'unverified', $adminEmail, $subject, 'sent');
+                $logMsg = !empty($res['message_id']) ? "Message-ID: " . $res['message_id'] : null;
+                record_notification_log($pdo, 'student_registration', $student['id'], 'unverified', $effectiveRecipient, $subject, 'sent', $logMsg, $submissionVersion);
             } else {
                 $allSuccess = false;
-                record_notification_log($pdo, 'student_registration', $student['id'], 'unverified', $adminEmail, $subject, 'failed', $res['error'] ?? 'Unknown error');
+                record_notification_log($pdo, 'student_registration', $student['id'], 'unverified', $effectiveRecipient, $subject, 'failed', $res['error'] ?? 'Unknown error', $submissionVersion);
             }
 
             // If test override is active, one email is sufficient
@@ -326,19 +409,19 @@ function notify_admin_student_registered($pdo, $studentUserId) {
 /**
  * 2. Admin verifies/rejects/bans a student -> Notify that student's registered email.
  */
-function notify_student_verification_status($pdo, $studentUserId, $newStatus, $oldStatus = null) {
+function notify_student_verification_status($pdo, $studentUserId, $newStatus, $oldStatus = null, $bypassDedup = false) {
     try {
         $validStatuses = ['verified', 'rejected', 'banned'];
         if (!in_array($newStatus, $validStatuses)) {
             return false;
         }
 
-        // Only genuine transitions
-        if ($oldStatus !== null && strtolower(trim($oldStatus)) === strtolower(trim($newStatus))) {
+        // Only genuine transitions (unless explicit manual bypass)
+        if (!$bypassDedup && $oldStatus !== null && strtolower(trim($oldStatus)) === strtolower(trim($newStatus))) {
             return false;
         }
 
-        $stmt = $pdo->prepare("SELECT id, full_name, student_id, email FROM users WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT id, full_name, student_id, email, verification_version FROM users WHERE id = ?");
         $stmt->execute([(int)$studentUserId]);
         $student = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -346,13 +429,19 @@ function notify_student_verification_status($pdo, $studentUserId, $newStatus, $o
             return false;
         }
 
-        // Deduplication
-        if (has_notification_been_sent($pdo, 'student_verification_status', $student['id'], $newStatus)) {
-            return true;
+        $submissionVersion = (int)($student['verification_version'] ?? 1);
+
+        // Deduplication per submission version and recipient (unless explicit manual bypass)
+        if (!$bypassDedup && has_notification_been_sent($pdo, 'student_verification_status', $student['id'], $newStatus, $student['email'], $submissionVersion)) {
+            return ['success' => true, 'dedup_skipped' => true];
         }
 
         $config = get_mail_config();
         $appUrl = rtrim($config['app']['url'] ?? 'http://localhost/ALERTO-MAIN', '/\\');
+
+        $sysSettings = function_exists('get_system_settings') ? get_system_settings($pdo) : [];
+        $supportEmail = $sysSettings['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';
+        $supportPhone = $sysSettings['contact_phone'] ?? '09556678451';
 
         $safeName = htmlspecialchars($student['full_name'], ENT_QUOTES, 'UTF-8');
         $safeId   = htmlspecialchars($student['student_id'], ENT_QUOTES, 'UTF-8');
@@ -369,7 +458,7 @@ function notify_student_verification_status($pdo, $studentUserId, $newStatus, $o
                 <p>We are pleased to inform you that your student verification (ID: <strong>{$safeId}</strong>) has been approved by the COEASC Administration.</p>
                 <p>You can now sign in to access your student dashboard, view official advisories, and submit assistance requests whenever emergency support is needed.</p>
             ";
-            $plainText = "Hello {$student['full_name']},\n\nYour ALERTO account ({$student['student_id']}) has been verified. You can now log in at: {$ctaUrl}\n\nALERTO CSU-COEA Student Council";
+            $plainText = "Hello {$student['full_name']},\n\nYour ALERTO account ({$student['student_id']}) has been verified. You can now log in at: {$ctaUrl}\n\nSupport: {$supportEmail} | {$supportPhone}\nALERTO CSU-COEA Student Council";
 
         } elseif ($newStatus === 'rejected') {
             $subject = "ALERTO - Student Verification Update";
@@ -383,7 +472,7 @@ function notify_student_verification_status($pdo, $studentUserId, $newStatus, $o
                 <p>Your student verification application (ID: <strong>{$safeId}</strong>) could not be approved at this time due to incomplete or unverifiable identification credentials.</p>
                 <p>You may log in to the registration page to review your details and resubmit valid documentation.</p>
             ";
-            $plainText = "Hello {$student['full_name']},\n\nYour ALERTO student verification ({$student['student_id']}) was rejected. You may resubmit credentials at: {$ctaUrl}\n\nALERTO CSU-COEA Student Council";
+            $plainText = "Hello {$student['full_name']},\n\nYour ALERTO student verification ({$student['student_id']}) was rejected. You may resubmit credentials at: {$ctaUrl}\n\nSupport: {$supportEmail} | {$supportPhone}\nALERTO CSU-COEA Student Council";
 
         } elseif ($newStatus === 'banned') {
             $subject = "ALERTO - Account Status Update";
@@ -397,19 +486,21 @@ function notify_student_verification_status($pdo, $studentUserId, $newStatus, $o
                 <p>Your ALERTO account associated with Student ID <strong>{$safeId}</strong> has been deactivated by an administrator.</p>
                 <p>If you believe this action was made in error or need assistance, please contact the CSU-COEA Student Council office.</p>
             ";
-            $plainText = "Hello {$student['full_name']},\n\nYour ALERTO account ({$student['student_id']}) has been deactivated. Please contact the administrator.\n\nALERTO CSU-COEA Student Council";
+            $plainText = "Hello {$student['full_name']},\n\nYour ALERTO account ({$student['student_id']}) has been deactivated. Please contact the administrator.\n\nSupport: {$supportEmail} | {$supportPhone}\nALERTO CSU-COEA Student Council";
         }
 
-        $htmlContent = build_alerto_email_html($heading, $badge, $color, $bodyHtml, $ctaText, $ctaUrl);
+        $htmlContent = build_alerto_email_html($heading, $badge, $color, $bodyHtml, $ctaText, $ctaUrl, $supportEmail, $supportPhone);
 
         $res = dispatch_alerto_email($student['email'], $student['full_name'], $subject, $htmlContent, $plainText, $config);
 
+        $effectiveRecipient = $res['effective_recipient'] ?? $student['email'];
         if ($res['success']) {
-            record_notification_log($pdo, 'student_verification_status', $student['id'], $newStatus, $student['email'], $subject, 'sent');
-            return true;
+            $logMsg = !empty($res['message_id']) ? "Message-ID: " . $res['message_id'] : null;
+            record_notification_log($pdo, 'student_verification_status', $student['id'], $newStatus, $effectiveRecipient, $subject, 'sent', $logMsg, $submissionVersion);
+            return $res;
         } else {
-            record_notification_log($pdo, 'student_verification_status', $student['id'], $newStatus, $student['email'], $subject, 'failed', $res['error'] ?? 'Unknown error');
-            return false;
+            record_notification_log($pdo, 'student_verification_status', $student['id'], $newStatus, $effectiveRecipient, $subject, 'failed', $res['error'] ?? 'Unknown error', $submissionVersion);
+            return $res;
         }
 
     } catch (Exception $e) {
@@ -424,7 +515,7 @@ function notify_student_verification_status($pdo, $studentUserId, $newStatus, $o
 function notify_admin_assistance_request($pdo, $requestId) {
     try {
         $stmt = $pdo->prepare("
-            SELECT r.id, r.request_code, r.resources, r.status, r.created_at,
+            SELECT r.id, r.request_code, r.resources, r.status, r.submitted_at AS created_at,
                    u.full_name, u.student_id, u.email, u.program, u.year_level
             FROM assistance_requests r
             JOIN users u ON r.user_id = u.id
@@ -434,6 +525,8 @@ function notify_admin_assistance_request($pdo, $requestId) {
         $req = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$req) {
+            error_log("notify_admin_assistance_request error: Request record ID {$requestId} not found.");
+            record_notification_log($pdo, 'assistance_request_submitted', (int)$requestId, 'pending', 'admins', 'ALERTO - New Assistance Request', 'failed', 'Request record not found');
             return false;
         }
 
@@ -445,7 +538,9 @@ function notify_admin_assistance_request($pdo, $requestId) {
         $config = get_mail_config();
         $adminRecipients = $config['notifications']['admin_recipients'] ?? $config['admin_recipients'] ?? [];
         if (empty($adminRecipients) || !is_array($adminRecipients)) {
-            error_log("No admin_recipients configured for assistance request alert.");
+            $msg = "No admin_recipients configured for assistance request alert.";
+            error_log($msg);
+            record_notification_log($pdo, 'assistance_request_submitted', $req['id'], 'pending', 'admins', 'ALERTO - New Assistance Request', 'failed', $msg);
             return false;
         }
 
@@ -511,11 +606,13 @@ function notify_admin_assistance_request($pdo, $requestId) {
             }
 
             $res = dispatch_alerto_email($adminEmail, 'ALERTO Administrator', $subject, $htmlContent, $plainText, $config);
+            $effectiveRecipient = $res['effective_recipient'] ?? $adminEmail;
             if ($res['success']) {
-                record_notification_log($pdo, 'assistance_request_submitted', $req['id'], 'pending', $adminEmail, $subject, 'sent');
+                $logMsg = !empty($res['message_id']) ? "Message-ID: " . $res['message_id'] : null;
+                record_notification_log($pdo, 'assistance_request_submitted', $req['id'], 'pending', $effectiveRecipient, $subject, 'sent', $logMsg);
             } else {
                 $allSuccess = false;
-                record_notification_log($pdo, 'assistance_request_submitted', $req['id'], 'pending', $adminEmail, $subject, 'failed', $res['error'] ?? 'Unknown error');
+                record_notification_log($pdo, 'assistance_request_submitted', $req['id'], 'pending', $effectiveRecipient, $subject, 'failed', $res['error'] ?? 'Unknown error');
             }
 
             if (!empty($res['override_used'])) {
@@ -527,6 +624,20 @@ function notify_admin_assistance_request($pdo, $requestId) {
 
     } catch (Exception $e) {
         error_log("notify_admin_assistance_request error: " . $e->getMessage());
+        try {
+            record_notification_log(
+                $pdo,
+                'assistance_request_submitted',
+                (int)$requestId,
+                'pending',
+                'admins',
+                'ALERTO - New Assistance Request',
+                'failed',
+                'Pre-send error: ' . $e->getMessage()
+            );
+        } catch (Exception $logEx) {
+            error_log("Failed to record pre-send failure log: " . $logEx->getMessage());
+        }
         return false;
     }
 }
@@ -569,6 +680,10 @@ function notify_student_request_status($pdo, $requestId, $newStatus, $oldStatus 
         $appUrl = rtrim($config['app']['url'] ?? 'http://localhost/ALERTO-MAIN', '/\\');
         $studentPortalUrl = $appUrl . '/user-homepage.php';
 
+        $sysSettings = function_exists('get_system_settings') ? get_system_settings($pdo) : [];
+        $supportEmail = $sysSettings['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';
+        $supportPhone = $sysSettings['contact_phone'] ?? '09556678451';
+
         $safeName = htmlspecialchars($req['full_name'], ENT_QUOTES, 'UTF-8');
         $safeCode = htmlspecialchars($req['request_code'], ENT_QUOTES, 'UTF-8');
         $safeType = htmlspecialchars($req['resources'] ?: 'Assistance Request', ENT_QUOTES, 'UTF-8');
@@ -583,7 +698,7 @@ function notify_student_request_status($pdo, $requestId, $newStatus, $oldStatus 
                 <p>Your assistance request <strong>{$safeCode}</strong> ({$safeType}) has been <strong>approved</strong> by the COEASC DRRM Department.</p>
                 <p>Your request has been queued for dispatch and relief operations. Please keep your communication line active.</p>
             ";
-            $plainText = "Hello {$req['full_name']},\n\nYour assistance request {$req['request_code']} has been approved. View status: {$studentPortalUrl}\n\nALERTO CSU-COEA Student Council";
+            $plainText = "Hello {$req['full_name']},\n\nYour assistance request {$req['request_code']} has been approved. View status: {$studentPortalUrl}\n\nSupport: {$supportEmail} | {$supportPhone}\nALERTO CSU-COEA Student Council";
 
         } elseif ($newStatus === 'in_progress') {
             $subject = "ALERTO - Assistance Request In Progress ({$req['request_code']})";
@@ -595,7 +710,7 @@ function notify_student_request_status($pdo, $requestId, $newStatus, $oldStatus 
                 <p>Your assistance request <strong>{$safeCode}</strong> is now <strong>in progress</strong>.</p>
                 <p>Emergency response personnel and resources are currently being deployed to assist you. Please stay in a safe location.</p>
             ";
-            $plainText = "Hello {$req['full_name']},\n\nYour assistance request {$req['request_code']} is in progress (dispatched). View status: {$studentPortalUrl}\n\nALERTO CSU-COEA Student Council";
+            $plainText = "Hello {$req['full_name']},\n\nYour assistance request {$req['request_code']} is in progress (dispatched). View status: {$studentPortalUrl}\n\nSupport: {$supportEmail} | {$supportPhone}\nALERTO CSU-COEA Student Council";
 
         } elseif ($newStatus === 'completed') {
             $subject = "ALERTO - Assistance Request Completed ({$req['request_code']})";
@@ -607,7 +722,7 @@ function notify_student_request_status($pdo, $requestId, $newStatus, $oldStatus 
                 <p>Your assistance request <strong>{$safeCode}</strong> ({$safeType}) has been marked as <strong>completed</strong>.</p>
                 <p>We hope you and your companions are safe. You can view your record or submit another request if further support is required.</p>
             ";
-            $plainText = "Hello {$req['full_name']},\n\nYour assistance request {$req['request_code']} has been marked as completed.\n\nALERTO CSU-COEA Student Council";
+            $plainText = "Hello {$req['full_name']},\n\nYour assistance request {$req['request_code']} has been marked as completed.\n\nSupport: {$supportEmail} | {$supportPhone}\nALERTO CSU-COEA Student Council";
 
         } elseif ($newStatus === 'rejected') {
             $subject = "ALERTO - Assistance Request Update ({$req['request_code']})";
@@ -619,10 +734,10 @@ function notify_student_request_status($pdo, $requestId, $newStatus, $oldStatus 
                 <p>We regret to inform you that your assistance request <strong>{$safeCode}</strong> could not be fulfilled at this time.</p>
                 <p>Please check your student dashboard or contact the COEASC Student Council hotline if you require urgent alternative assistance.</p>
             ";
-            $plainText = "Hello {$req['full_name']},\n\nYour assistance request {$req['request_code']} could not be approved at this time.\n\nALERTO CSU-COEA Student Council";
+            $plainText = "Hello {$req['full_name']},\n\nYour assistance request {$req['request_code']} could not be approved at this time.\n\nSupport: {$supportEmail} | {$supportPhone}\nALERTO CSU-COEA Student Council";
         }
 
-        $htmlContent = build_alerto_email_html($heading, $badge, $color, $bodyHtml, 'View Status in Dashboard', $studentPortalUrl);
+        $htmlContent = build_alerto_email_html($heading, $badge, $color, $bodyHtml, 'View Status in Dashboard', $studentPortalUrl, $supportEmail, $supportPhone);
 
         $res = dispatch_alerto_email($req['email'], $req['full_name'], $subject, $htmlContent, $plainText, $config);
 

@@ -3,10 +3,7 @@ session_start();
 require_once 'alerto-db.php';
 require_once 'notification-service.php';
 
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['student', 'admin', 'superadmin'])) {
-    header("Location: user-login.php");
-    exit;
-}
+$currentUser = validate_active_session($pdo, ['student', 'admin', 'superadmin']);
 
 $user_id = $_SESSION['user_id'];
 $error = '';

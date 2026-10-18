@@ -12,35 +12,47 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 }
 
 // 2. Protect page with session guard
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['admin', 'superadmin'])) {
-    header("Location: admin-login.php");
-    exit;
-}
+$currentAdmin = validate_active_session($pdo, ['admin', 'superadmin']);
 
 // 3. Handle Admin Controls: Toggle Assistance or Update Contacts
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
-    if ($_POST['action'] === 'toggle_assistance' && isset($_POST['new_state'])) {
-        $newState = intval($_POST['new_state']) ? '1' : '0';
-        update_system_setting($pdo, 'request_assistance_enabled', $newState);
-        header("Location: admin-request.php?toggled=1");
-        exit;
-    }
+    $submittedToken = $_POST['csrf_token'] ?? '';
+    if (in_array($_POST['action'], ['toggle_assistance', 'update_contacts'], true)) {
+        if (!verify_csrf_token($submittedToken)) {
+            header("Location: admin-request.php?error=" . urlencode('Invalid or expired security token.'));
+            exit;
+        }
 
-    if ($_POST['action'] === 'update_contacts') {
-        $phone = trim($_POST['contact_phone'] ?? '');
-        $email = trim($_POST['contact_email'] ?? '');
-        if (!empty($phone)) {
+        if ($_POST['action'] === 'toggle_assistance') {
+            if (!isset($_POST['new_state']) || !in_array((string)$_POST['new_state'], ['0', '1'], true)) {
+                header("Location: admin-request.php?error=" . urlencode('Invalid intake state.'));
+                exit;
+            }
+            $newState = ($_POST['new_state'] === '1') ? '1' : '0';
+            update_system_setting($pdo, 'request_assistance_enabled', $newState);
+            header("Location: admin-request.php?toggled=1");
+            exit;
+        }
+
+        if ($_POST['action'] === 'update_contacts') {
+            $phone = trim($_POST['contact_phone'] ?? '');
+            $email = trim($_POST['contact_email'] ?? '');
+            $phoneDigits = preg_replace('/\D/', '', $phone);
+
+            if (empty($phone) || !preg_match('/^[0-9+() -]{7,25}$/', $phone) || strlen($phoneDigits) < 7) {
+                header("Location: admin-request.php?error=" . urlencode('Invalid phone format.'));
+                exit;
+            }
+            if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 150) {
+                header("Location: admin-request.php?error=" . urlencode('Invalid email format.'));
+                exit;
+            }
+
             update_system_setting($pdo, 'contact_phone', $phone);
-        }
-        if (!empty($email)) {
             update_system_setting($pdo, 'contact_email', $email);
+            header("Location: admin-request.php?saved_settings=1");
+            exit;
         }
-        if (isset($_POST['request_assistance_enabled'])) {
-            $reqEnabled = intval($_POST['request_assistance_enabled']) ? '1' : '0';
-            update_system_setting($pdo, 'request_assistance_enabled', $reqEnabled);
-        }
-        header("Location: admin-request.php?saved_settings=1");
-        exit;
     }
 }
 
@@ -73,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['request_id'], $_POST[
 // Retrieve dynamic system settings
 $sysSettings = get_system_settings($pdo);
 $contactPhone = $sysSettings['contact_phone'] ?? '09556678451';
-$contactEmail = $sysSettings['contact_email'] ?? 'alertoCOEA@gmail.com';
+$contactEmail = $sysSettings['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';
 $isAssistanceEnabled = ($sysSettings['request_assistance_enabled'] ?? '1') === '1';
 
 // 5. Fetch all student assistance requests from database (excluding cancelled requests)

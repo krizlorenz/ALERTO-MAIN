@@ -18,20 +18,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($full_name) || empty($student_id) || empty($program) || empty($year_level) || empty($email) || empty($password)) {
         $error = "Please fill in all required fields.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Please enter a valid email address.";
     } elseif (!preg_match('/^\d{2}-\d{5}$/', $student_id)) {
         $error = "Student ID must be in the exact format XX-XXXXX (e.g., 24-00909).";
+    } elseif (strlen($password) < 8) {
+        $error = "Password must be at least 8 characters long.";
     } elseif ($password !== $confirm_pass) {
         $error = "Passwords do not match.";
     } elseif (!isset($_FILES['id_selfie']) || !isset($_FILES['assessment_form'])) {
         $error = "Please upload both your ID selfie and Certificate of Registration (COR).";
     } else {
-        $stmt = $pdo->prepare("SELECT id, status FROM users WHERE student_id = ? OR email = ?");
-        $stmt->execute([$student_id, $email]);
-        $existingUser = $stmt->fetch();
-        
-        if ($existingUser) {
+        $stmtStudent = $pdo->prepare("SELECT id, full_name, student_id, email, status FROM users WHERE student_id = ? LIMIT 1");
+        $stmtStudent->execute([$student_id]);
+        $existingStudent = $stmtStudent->fetch(PDO::FETCH_ASSOC);
+
+        $stmtEmail = $pdo->prepare("SELECT id, full_name, student_id, email, status FROM users WHERE LOWER(email) = LOWER(?) LIMIT 1");
+        $stmtEmail->execute([$email]);
+        $existingEmailUser = $stmtEmail->fetch(PDO::FETCH_ASSOC);
+
+        if ($existingEmailUser && (!$existingStudent || (int)$existingStudent['id'] !== (int)$existingEmailUser['id'])) {
+            $error = "An account with this email already exists.";
+        } elseif ($existingStudent) {
             // Allow resubmission if the previous account was rejected
-            if ($existingUser['status'] === 'rejected') {
+            if ($existingStudent['status'] === 'rejected') {
                 $target_dir = "uploads/documents/";
                 $id_selfie_name = time() . "_selfie_" . basename($_FILES["id_selfie"]["name"]);
                 $cor_name       = time() . "_cor_" . basename($_FILES["assessment_form"]["name"]);
@@ -43,28 +53,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     move_uploaded_file($_FILES["assessment_form"]["tmp_name"], $target_cor)) {
                     
                     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+                    $oldEmail = $existingStudent['email'];
+                    $emailChanged = (strcasecmp($oldEmail, $email) !== 0);
 
-                    // Update user details and reset status to unverified
+                    // Update user details including email, increment submission version, and reset status to unverified
                     $updateUser = $pdo->prepare("
                         UPDATE users 
-                        SET full_name = ?, program = ?, year_level = ?, contact_number = ?, password = ?, status = 'unverified', created_at = NOW() 
+                        SET full_name = ?, program = ?, year_level = ?, contact_number = ?, email = ?, password = ?, status = 'unverified', verification_version = COALESCE(verification_version, 1) + 1, created_at = NOW() 
                         WHERE id = ?
                     ");
-                    $updateUser->execute([$full_name, $program, $year_level, $contact_number, $hashed_password, $existingUser['id']]);
+                    $updateUser->execute([$full_name, $program, $year_level, $contact_number, $email, $hashed_password, $existingStudent['id']]);
+
+                    // Invalidate outstanding password-reset tokens when the email changes
+                    if ($emailChanged) {
+                        $stmtInv = $pdo->prepare("
+                            UPDATE password_resets 
+                            SET used_at = NOW() 
+                            WHERE (user_id = ? OR LOWER(email) = LOWER(?)) AND used_at IS NULL
+                        ");
+                        $stmtInv->execute([$existingStudent['id'], $oldEmail]);
+                    }
 
                     // Update or insert new verification documents
                     $checkDoc = $pdo->prepare("SELECT id FROM documents WHERE user_id = ?");
-                    $checkDoc->execute([$existingUser['id']]);
+                    $checkDoc->execute([$existingStudent['id']]);
                     if ($checkDoc->fetch()) {
                         $updateDoc = $pdo->prepare("UPDATE documents SET id_selfie_path = ?, assessment_form_path = ? WHERE user_id = ?");
-                        $updateDoc->execute([$target_selfie, $target_cor, $existingUser['id']]);
+                        $updateDoc->execute([$target_selfie, $target_cor, $existingStudent['id']]);
                     } else {
                         $insertDoc = $pdo->prepare("INSERT INTO documents (user_id, id_selfie_path, assessment_form_path) VALUES (?, ?, ?)");
-                        $insertDoc->execute([$existingUser['id'], $target_selfie, $target_cor]);
+                        $insertDoc->execute([$existingStudent['id'], $target_selfie, $target_cor]);
                     }
 
                     $success = "Resubmission successful! Your updated profile is pending verification.";
-                    notify_admin_student_registered($pdo, $existingUser['id']);
+                    notify_admin_student_registered($pdo, $existingStudent['id']);
                 } else {
                     $error = "Failed to upload verification documents. Please try again.";
                 }
@@ -85,8 +107,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
                 $stmtUser = $pdo->prepare("
-                    INSERT INTO users (role, full_name, student_id, program, year_level, contact_number, email, password, status) 
-                    VALUES ('student', ?, ?, ?, ?, ?, ?, ?, 'unverified')
+                    INSERT INTO users (role, full_name, student_id, program, year_level, contact_number, email, password, status, verification_version) 
+                    VALUES ('student', ?, ?, ?, ?, ?, ?, ?, 'unverified', 1)
                 ");
                 $stmtUser->execute([$full_name, $student_id, $program, $year_level, $contact_number, $email, $hashed_password]);
                 $user_id = $pdo->lastInsertId();
@@ -182,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
         <?php endif; ?>
 
-        <form class="auth-form" id="studentRegisterForm" action="user-sign-in.php" method="POST" enctype="multipart/form-data">
+        <form class="auth-form" id="studentRegisterForm" action="user-sign-in.php" method="POST" enctype="multipart/form-data" onsubmit="return validateStudentPasswords();">
 
           <!-- 1. Full Name -->
           <div class="form-field-group">
@@ -408,7 +430,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   </svg>
                 </span>
                 <input type="password" id="studentPassword" name="password" class="auth-input has-eye" placeholder="Create password"
-                  required autocomplete="new-password">
+                  required minlength="8" autocomplete="new-password">
                 <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'studentPassword')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -416,6 +438,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   </svg>
                 </button>
               </div>
+              <small class="input-hint">Password requirements: At least 8 characters</small>
             </div>
 
             <!-- Re-enter Password -->
@@ -433,7 +456,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   </svg>
                 </span>
                 <input type="password" id="studentRepeatPassword" name="confirm_password" class="auth-input has-eye"
-                  placeholder="Re-enter password" required autocomplete="new-password">
+                  placeholder="Re-enter password" required minlength="8" autocomplete="new-password">
                 <button type="button" class="password-eye-toggle-btn" aria-label="Show password" onclick="togglePasswordEye(this, 'studentRepeatPassword')">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -502,6 +525,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       btn.innerHTML = isPwd
         ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>'
         : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+    }
+    // Client-side password validation
+    function validateStudentPasswords() {
+      const p1 = document.getElementById('studentPassword').value;
+      const p2 = document.getElementById('studentRepeatPassword').value;
+
+      if (p1.length < 8) {
+        alert('Password must be at least 8 characters long.');
+        return false;
+      }
+      if (p1 !== p2) {
+        alert('Passwords do not match.');
+        return false;
+      }
+      return true;
     }
   </script>
 </body>

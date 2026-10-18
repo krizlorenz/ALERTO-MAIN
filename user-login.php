@@ -43,15 +43,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $userRole = strtolower(trim($user['role'] ?? ''));
 
                 if (in_array($userRole, ['admin', 'superadmin'])) {
-                    $_SESSION['user_id']        = $user['id'];
-                    $_SESSION['role']           = $user['role'];
-                    $_SESSION['full_name']      = $user['full_name'];
-                    $_SESSION['email']          = $user['email'];
-                    $_SESSION['student_id']     = $user['student_id'] ?? '';
-                    $_SESSION['program']        = $user['program'] ?? '';
-                    $_SESSION['year_level']     = $user['year_level'] ?? '';
-                    $_SESSION['contact_number'] = $user['contact_number'] ?? '';
-                    $_SESSION['status']         = $user['status'] ?? 'approved';
+                    $_SESSION['user_id']            = $user['id'];
+                    $_SESSION['role']               = $user['role'];
+                    $_SESSION['full_name']          = $user['full_name'];
+                    $_SESSION['email']              = $user['email'];
+                    $_SESSION['student_id']         = $user['student_id'] ?? '';
+                    $_SESSION['program']            = $user['program'] ?? '';
+                    $_SESSION['year_level']         = $user['year_level'] ?? '';
+                    $_SESSION['contact_number']     = $user['contact_number'] ?? '';
+                    $_SESSION['status']             = $user['status'] ?? 'approved';
+                    $_SESSION['auth_password_hash'] = $user['password'];
 
                     header("Location: admin-homepage.php");
                     exit;
@@ -76,15 +77,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } elseif ($user['status'] === 'banned') {
                     $error = "Your account has been deactivated. Please contact an administrator.";
                 } else {
-                    $_SESSION['user_id']        = $user['id'];
-                    $_SESSION['role']           = 'student';
-                    $_SESSION['full_name']      = $user['full_name'];
-                    $_SESSION['student_id']     = $user['student_id'];
-                    $_SESSION['email']          = $user['email'];
-                    $_SESSION['program']        = $user['program'];
-                    $_SESSION['year_level']     = $user['year_level'];
-                    $_SESSION['contact_number'] = $user['contact_number'];
-                    $_SESSION['status']         = $user['status'];
+                    $_SESSION['user_id']            = $user['id'];
+                    $_SESSION['role']               = 'student';
+                    $_SESSION['full_name']          = $user['full_name'];
+                    $_SESSION['student_id']         = $user['student_id'];
+                    $_SESSION['email']              = $user['email'];
+                    $_SESSION['program']            = $user['program'];
+                    $_SESSION['year_level']         = $user['year_level'];
+                    $_SESSION['contact_number']     = $user['contact_number'];
+                    $_SESSION['status']             = $user['status'];
+                    $_SESSION['auth_password_hash'] = $user['password'];
 
                     header("Location: user-homepage.php");
                     exit;
