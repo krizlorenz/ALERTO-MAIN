@@ -1,9 +1,5 @@
 <?php
-/**
- * ALERTO Shared Password Recovery Service
- * Consolidates token generation, storage (hashed only), PHPMailer dispatch,
- * persistent rate limiting, CSRF protection, and atomic password updates.
- */
+// ALERTO Password Recovery Service
 
 require_once __DIR__ . '/alerto-db.php';
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
@@ -13,9 +9,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
-/**
- * Load private mail configuration from outside web root/repository.
- */
+// Load private mail configuration
 function get_mail_config() {
     static $config = null;
     if ($config !== null) {
@@ -23,6 +17,7 @@ function get_mail_config() {
     }
 
     $candidates = [
+        __DIR__ . '/private/alerto-mail-config.php',
         'C:/laragon/config/alerto-mail-config.php',
         'C:/laragon/alerto-mail-config.php',
         dirname(__DIR__, 2) . '/config/alerto-mail-config.php',
@@ -39,7 +34,7 @@ function get_mail_config() {
         }
     }
 
-    // Default configuration placeholder
+
     $config = [
         'smtp' => [
             'host'       => 'smtp.gmail.com',
@@ -58,9 +53,7 @@ function get_mail_config() {
     return $config;
 }
 
-/**
- * Generate or retrieve CSRF token.
- */
+// CSRF token
 if (!function_exists('get_csrf_token')) {
     function get_csrf_token() {
         if (session_status() === PHP_SESSION_NONE) {
@@ -73,9 +66,7 @@ if (!function_exists('get_csrf_token')) {
     }
 }
 
-/**
- * Verify submitted CSRF token.
- */
+// CSRF token verification
 if (!function_exists('verify_csrf_token')) {
     function verify_csrf_token($token) {
         if (session_status() === PHP_SESSION_NONE) {
@@ -88,26 +79,20 @@ if (!function_exists('verify_csrf_token')) {
     }
 }
 
-/**
- * Get client IP address safely.
- */
+// Client IP
 function get_client_ip() {
     $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
     return filter_var($ip, FILTER_VALIDATE_IP) ? $ip : '127.0.0.1';
 }
 
-/**
- * Check persistent rate limits for password reset requests (by email and IP).
- * Email limit: max 3 requests per 15 minutes.
- * IP limit: max 10 requests per 15 minutes.
- */
+// Password reset throttle check
 function check_password_reset_throttling($pdo, $email, $ip) {
     $windowMinutes = 15;
     $maxPerEmail = 3;
     $maxPerIp = 10;
 
     try {
-        // Check IP throttling
+
         $stmtIp = $pdo->prepare("
             SELECT COUNT(*) FROM password_reset_throttles 
             WHERE ip_address = ? AND requested_at >= DATE_SUB(NOW(), INTERVAL ? MINUTE)
@@ -122,7 +107,7 @@ function check_password_reset_throttling($pdo, $email, $ip) {
             ];
         }
 
-        // Check Email throttling
+
         if (!empty($email)) {
             $stmtEmail = $pdo->prepare("
                 SELECT COUNT(*) FROM password_reset_throttles 
@@ -141,15 +126,13 @@ function check_password_reset_throttling($pdo, $email, $ip) {
 
         return ['allowed' => true];
     } catch (Exception $e) {
-        // If throttle table check fails, allow with warning to prevent lockout
+
         error_log("Throttling check error: " . $e->getMessage());
         return ['allowed' => true];
     }
 }
 
-/**
- * Record a password reset request attempt for persistent rate limiting.
- */
+// Record reset throttle attempt
 function record_password_reset_attempt($pdo, $email, $ip) {
     try {
         $stmt = $pdo->prepare("
@@ -158,7 +141,7 @@ function record_password_reset_attempt($pdo, $email, $ip) {
         ");
         $stmt->execute([$email, $ip]);
 
-        // Periodic cleanup of records older than 24 hours (1 in 50 chance)
+
         if (random_int(1, 50) === 1) {
             $pdo->exec("DELETE FROM password_reset_throttles WHERE requested_at < DATE_SUB(NOW(), INTERVAL 24 HOUR)");
         }
@@ -167,21 +150,12 @@ function record_password_reset_attempt($pdo, $email, $ip) {
     }
 }
 
-/**
- * Process a password recovery request.
- * - Validates input and CSRF
- * - Applies persistent rate limits
- * - Generates single-use 30-minute token stored only as SHA-256 hash
- * - Invalidates earlier tokens
- * - Sends email via PHPMailer using configured APP_URL
- * - Handles SMTP errors safely without falsely claiming confirmed delivery
- * - Returns uniform generic public response for existing/unknown accounts
- */
+// Password reset request
 function request_password_reset($pdo, $email, $csrfToken) {
     $email = trim($email ?? '');
     $ip = get_client_ip();
 
-    // 1. CSRF Verification
+    // CSRF check
     if (!verify_csrf_token($csrfToken)) {
         return [
             'success' => false,
@@ -189,7 +163,7 @@ function request_password_reset($pdo, $email, $csrfToken) {
         ];
     }
 
-    // 2. Input validation
+    // Input validation
     if (empty($email)) {
         return [
             'success' => false,
@@ -204,7 +178,7 @@ function request_password_reset($pdo, $email, $csrfToken) {
         ];
     }
 
-    // 3. Persistent rate limiting check
+    // Rate limiting
     $throttle = check_password_reset_throttling($pdo, $email, $ip);
     if (!$throttle['allowed']) {
         return [
@@ -213,14 +187,14 @@ function request_password_reset($pdo, $email, $csrfToken) {
         ];
     }
 
-    // Record this attempt immediately
+
     record_password_reset_attempt($pdo, $email, $ip);
 
-    // Uniform generic success response to protect privacy (existing vs non-existing accounts)
+
     $genericSuccessMessage = 'If an account is associated with this email address, instructions to reset your password have been sent.';
 
     try {
-        // 4. Lookup user (supports students, admins, superadmins)
+        // Lookup user
         $stmt = $pdo->prepare("
             SELECT id, email, full_name, role, status 
             FROM users 
@@ -230,9 +204,9 @@ function request_password_reset($pdo, $email, $csrfToken) {
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // If no user found or user is deactivated/banned, do not send email but return generic message
+
         if (!$user || (isset($user['status']) && $user['status'] === 'banned')) {
-            // Simulated delay to mitigate timing attacks
+
             usleep(random_int(100000, 250000));
             return [
                 'success' => true,
@@ -240,11 +214,11 @@ function request_password_reset($pdo, $email, $csrfToken) {
             ];
         }
 
-        // 5. Generate secure random 32-byte token (64 hex characters)
+        // Generate token
         $plainToken = bin2hex(random_bytes(32));
         $tokenHash = hash('sha256', $plainToken);
 
-        // 6. Invalidate all previous active tokens for this user
+        // Invalidate previous tokens
         $stmtInv = $pdo->prepare("
             UPDATE password_resets 
             SET used_at = NOW() 
@@ -252,23 +226,23 @@ function request_password_reset($pdo, $email, $csrfToken) {
         ");
         $stmtInv->execute([$user['id'], $user['email']]);
 
-        // 7. Store new token hash with exactly 30 minutes validity
+        // Store new token
         $stmtIns = $pdo->prepare("
             INSERT INTO password_resets (user_id, email, token_hash, created_at, expires_at) 
             VALUES (?, ?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 30 MINUTE))
         ");
         $stmtIns->execute([$user['id'], $user['email'], $tokenHash]);
 
-        // 8. Build reset URL using configured APP_URL (never relying on untrusted HTTP_HOST)
+        // Build reset URL
         $config = get_mail_config();
         $appUrl = rtrim($config['app']['url'] ?? 'http://localhost/ALERTO-MAIN', '/\\');
         $resetUrl = $appUrl . '/reset-password.php?token=' . urlencode($plainToken);
 
-        // 9. Send email via PHPMailer
+        // Send reset email
         $sendResult = send_password_reset_email($user['email'], $user['full_name'], $resetUrl, $config);
 
         if (!$sendResult['success']) {
-            // SMTP failure: do NOT claim confirmed delivery!
+
             error_log("Password reset email dispatch failed for user ID {$user['id']}: " . $sendResult['error']);
             return [
                 'success' => false,
@@ -290,11 +264,7 @@ function request_password_reset($pdo, $email, $csrfToken) {
     }
 }
 
-/**
- * Dispatch password reset email via PHPMailer.
- * Uses strict TLS verification (never disabled).
- * Credentials are read from private config and never logged or printed.
- */
+// Send password reset email via PHPMailer
 function send_password_reset_email($recipientEmail, $recipientName, $resetUrl, $config = null) {
     if ($config === null) {
         $config = get_mail_config();
@@ -303,7 +273,7 @@ function send_password_reset_email($recipientEmail, $recipientName, $resetUrl, $
     $smtp = $config['smtp'] ?? [];
     $password = $smtp['password'] ?? '';
 
-    // If password is not configured yet, fail safely without attempting connection
+
     if (empty($password)) {
         return [
             'success' => false,
@@ -311,7 +281,7 @@ function send_password_reset_email($recipientEmail, $recipientName, $resetUrl, $
         ];
     }
 
-    if (!class_exists('PHPMailer\PHPMailer\PHPMailer')) {
+    if (!class_exists('PHPMailer\\PHPMailer\\PHPMailer')) {
         return [
             'success' => false,
             'error'   => 'PHPMailer library is not loaded.'
@@ -331,7 +301,7 @@ function send_password_reset_email($recipientEmail, $recipientName, $resetUrl, $
         $mail->CharSet    = 'UTF-8';
         $mail->Timeout    = 15;
 
-        // Strictly enforce TLS verification - NEVER disabled
+
         $mail->SMTPOptions = [
             'ssl' => [
                 'verify_peer'       => true,
@@ -343,7 +313,7 @@ function send_password_reset_email($recipientEmail, $recipientName, $resetUrl, $
         $fromEmail = $smtp['from_email'] ?? 'alerto.coeasc.csu@gmail.com';
         $fromName  = $smtp['from_name'] ?? 'ALERTO';
 
-        // Enforce RFC 5322 compliant FQDN for Message-ID and HELO
+
         $domain = substr(strrchr($fromEmail, "@"), 1) ?: 'gmail.com';
         $mail->Hostname = $domain;
 
@@ -425,7 +395,7 @@ function send_password_reset_email($recipientEmail, $recipientName, $resetUrl, $
         return ['success' => true];
 
     } catch (PHPMailerException $e) {
-        // Safe error description without credential leakage
+
         return [
             'success' => false,
             'error'   => 'PHPMailer Error: ' . $mail->ErrorInfo
@@ -438,11 +408,7 @@ function send_password_reset_email($recipientEmail, $recipientName, $resetUrl, $
     }
 }
 
-/**
- * Validate a password reset token from URL or form.
- * Looks up token by SHA-256 hash.
- * Rejects missing, invalid, expired, or previously consumed tokens.
- */
+// Validate password reset token
 function validate_reset_token($pdo, $plainToken) {
     $plainToken = trim($plainToken ?? '');
 
@@ -456,7 +422,7 @@ function validate_reset_token($pdo, $plainToken) {
     $tokenHash = hash('sha256', $plainToken);
 
     try {
-        // Check for active token
+
         $stmt = $pdo->prepare("
             SELECT r.id, r.user_id, r.email, r.expires_at, (r.expires_at <= NOW()) as is_expired, r.used_at,
                    u.full_name, u.role, u.status, u.student_id
@@ -482,7 +448,7 @@ function validate_reset_token($pdo, $plainToken) {
             ];
         }
 
-        if (!empty($entry['is_expired']) || strtotime($entry['expires_at']) <= time()) {
+        if ((int)$entry['is_expired'] === 1) {
             return [
                 'valid'   => false,
                 'message' => 'This password reset link has expired (valid for 30 minutes). Please request a new one.'
@@ -510,16 +476,9 @@ function validate_reset_token($pdo, $plainToken) {
     }
 }
 
-/**
- * Atomically consume token and update the user's password.
- * - Enforces minimum 8 characters and password confirmation
- * - Atomically marks token as used (single-use)
- * - Updates user's password with password_hash(PASSWORD_BCRYPT)
- * - Preserves user's role and account status
- * - No automatic login
- */
+// Atomically consume token and update password
 function consume_token_and_reset_password($pdo, $plainToken, $newPassword, $confirmPassword, $csrfToken) {
-    // 1. Verify CSRF
+    // CSRF check
     if (!verify_csrf_token($csrfToken)) {
         return [
             'success' => false,
@@ -527,7 +486,7 @@ function consume_token_and_reset_password($pdo, $plainToken, $newPassword, $conf
         ];
     }
 
-    // 2. Validate passwords server-side
+    // Validate passwords
     $newPassword = (string)$newPassword;
     $confirmPassword = (string)$confirmPassword;
 
@@ -565,9 +524,9 @@ function consume_token_and_reset_password($pdo, $plainToken, $newPassword, $conf
     try {
         $pdo->beginTransaction();
 
-        // 3. Select and lock the token row
+        // Lock token row
         $stmt = $pdo->prepare("
-            SELECT r.id, r.user_id, r.email, r.expires_at, (r.expires_at <= NOW()) as is_expired, r.used_at, u.id as u_id, u.full_name, u.email as user_email, u.role, u.status 
+            SELECT r.id, r.user_id, r.email, r.expires_at, (r.expires_at <= NOW()) as is_expired, r.used_at, u.id as u_id, u.full_name, u.email as user_email, u.student_id, u.role, u.status 
             FROM password_resets r
             JOIN users u ON r.user_id = u.id
             WHERE r.token_hash = ?
@@ -592,7 +551,7 @@ function consume_token_and_reset_password($pdo, $plainToken, $newPassword, $conf
             ];
         }
 
-        if (!empty($row['is_expired']) || strtotime($row['expires_at']) <= time()) {
+        if ((int)$row['is_expired'] === 1) {
             $pdo->rollBack();
             return [
                 'success' => false,
@@ -608,29 +567,44 @@ function consume_token_and_reset_password($pdo, $plainToken, $newPassword, $conf
             ];
         }
 
-        // 4. Mark token as used
+        // Mark token as used
         $stmtUse = $pdo->prepare("UPDATE password_resets SET used_at = NOW() WHERE id = ?");
         $stmtUse->execute([$row['id']]);
 
-        // 5. Invalidate all other pending tokens for this user
+        // Invalidate other pending tokens
         $stmtInv = $pdo->prepare("UPDATE password_resets SET used_at = NOW() WHERE user_id = ? AND used_at IS NULL");
         $stmtInv->execute([$row['user_id']]);
 
-        // 6. Hash new password securely
+        // Hash new password
         $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
 
-        // 7. Update user password (strictly preserving role and account status!)
+        // Update user password
         $stmtUser = $pdo->prepare("UPDATE users SET password = ?, updated_at = NOW() WHERE id = ?");
         $stmtUser->execute([$hashedPassword, $row['user_id']]);
 
+        // Clear login security record for this user/IP
+        require_once __DIR__ . '/login-security.php';
+        $resetIp = get_server_observed_ip();
+        $userHash = compute_login_identifier_hash_for_user($row);
+        $cleared = clear_login_security_for_user_ip($pdo, (int)$row['user_id'], $resetIp, $userHash);
+
+        if (!$cleared) {
+            $pdo->rollBack();
+            error_log("Password reset failed: clear_login_security_for_user_ip failed for user ID {$row['user_id']}");
+            return [
+                'success' => false,
+                'message' => 'An error occurred while updating your password. Please try again.'
+            ];
+        }
+
         $pdo->commit();
 
-        // 8. Clear current browser session if it was logged into this account
+
         if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['user_id']) && (int)$_SESSION['user_id'] === (int)$row['user_id']) {
             unset($_SESSION['user_id'], $_SESSION['auth_password_hash'], $_SESSION['role'], $_SESSION['full_name'], $_SESSION['email']);
         }
 
-        // 9. Send post-reset confirmation email once to registered account owner
+        // Send confirmation email
         $recipientEmail = !empty($row['user_email']) ? $row['user_email'] : $row['email'];
         $recipientName  = $row['full_name'] ?? '';
         send_password_change_confirmation($pdo, $row['id'], $row['user_id'], $recipientEmail, $recipientName);
@@ -652,18 +626,14 @@ function consume_token_and_reset_password($pdo, $plainToken, $newPassword, $conf
     }
 }
 
-/**
- * Send post-reset security confirmation email once to the registered account owner.
- * Deduplicated, explicit Asia/Manila timestamp, forgot-password link, support contact.
- * Failure does NOT undo the password change.
- */
+// Post-reset security confirmation email
 function send_password_change_confirmation($pdo, $resetId, $userId, $recipientEmail, $recipientName = '') {
-    // Include notification service for build_alerto_email_html, dispatch_alerto_email, etc.
+
     if (!function_exists('dispatch_alerto_email')) {
         require_once __DIR__ . '/notification-service.php';
     }
 
-    // Deduplication check
+
     if (function_exists('has_notification_been_sent') && has_notification_been_sent($pdo, 'password_changed_confirmation', $resetId, 'changed', $recipientEmail)) {
         return false;
     }
@@ -676,7 +646,7 @@ function send_password_change_confirmation($pdo, $resetId, $userId, $recipientEm
     $supportEmail = $sysSettings['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';
     $supportPhone = $sysSettings['contact_phone'] ?? '09556678451';
 
-    // Explicit Asia/Manila (GMT+8) time
+
     $tz = new DateTimeZone('Asia/Manila');
     $now = new DateTime('now', $tz);
     $changeTimeFormatted = $now->format('F j, Y, g:i:s A') . ' (Asia/Manila, GMT+8)';
@@ -786,4 +756,3 @@ function send_password_change_confirmation($pdo, $resetId, $userId, $recipientEm
         return false;
     }
 }
-

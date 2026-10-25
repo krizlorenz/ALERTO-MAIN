@@ -3,10 +3,50 @@ session_start();
 require_once 'alerto-db.php';
 
 $currentAdmin = validate_active_session($pdo, ['superadmin']);
+if (!$currentAdmin || $currentAdmin['role'] !== 'superadmin') {
+    http_response_code(403);
+    exit('Superadmin access required.');
+}
 
 $error = '';
 $success = '';
 
+// Superadmin-only account lookup.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'lookup_student') {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Cache-Control: no-store');
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        http_response_code(403);
+        echo json_encode(['state' => 'error', 'message' => 'Session expired. Refresh this page.']);
+        exit;
+    }
+    $lookupId = trim($_POST['student_id'] ?? '');
+    if (!preg_match('/^[0-9]{2}-[0-9]{5}$/', $lookupId)) {
+        http_response_code(422);
+        echo json_encode(['state' => 'error', 'message' => 'Enter a valid Student ID: XX-XXXXX.']);
+        exit;
+    }
+    try {
+        $stmt = $pdo->prepare('SELECT id, role, status, full_name, student_id, program, year_level, contact_number, email FROM users WHERE student_id = ? LIMIT 1');
+        $stmt->execute([$lookupId]);
+        $account = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$account) {
+            echo json_encode(['state' => 'new']);
+        } elseif ($account['role'] !== 'student' || $account['status'] === 'banned') {
+            echo json_encode(['state' => 'blocked', 'message' => 'This ID belongs to an admin, superadmin, or banned account and cannot be promoted.']);
+        } else {
+            unset($account['id'], $account['role'], $account['status']);
+            echo json_encode(['state' => 'student', 'profile' => $account]);
+        }
+    } catch (PDOException $e) {
+        error_log('Admin account lookup failed: ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['state' => 'error', 'message' => 'Unable to check this ID. Try again.']);
+    }
+    exit;
+}
+
+// Recheck the database on submission; browser lookup is advisory only.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $full_name      = trim($_POST['full_name'] ?? '');
     $student_id     = trim($_POST['student_id'] ?? '');
@@ -17,30 +57,163 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password       = $_POST['password'] ?? '';
     $confirm        = $_POST['confirm_password'] ?? '';
 
-    if (empty($full_name) || empty($student_id) || empty($program) || empty($year_level) || empty($contact_number) || empty($email) || empty($password)) {
-        $error = "Please fill in all required fields.";
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        $error = 'Session expired. Refresh this page and try again.';
+    } elseif (!preg_match('/^[0-9]{2}-[0-9]{5}$/', $student_id)) {
+        $error = 'Student ID must use XX-XXXXX format.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = "Please enter a valid email address.";
-    } elseif (!preg_match('/^\d{2}-\d{5}$/', $student_id)) {
-        $error = "Student ID must be in the exact format XX-XXXXX (e.g., 24-XXXXX).";
-    } elseif (strlen($password) < 8) {
-        $error = "Password must be at least 8 characters long.";
-    } elseif ($password !== $confirm) {
-        $error = "Passwords do not match.";
+        $error = 'Please enter a valid email address.';
     } else {
-        $stmt = $pdo->prepare("SELECT id FROM users WHERE student_id = ? OR email = ?");
-        $stmt->execute([$student_id, $email]);
+        try {
+            $pdo->beginTransaction();
+            $stmt = $pdo->prepare('SELECT id, student_id, email, role, status FROM users WHERE student_id = ? OR email = ? FOR UPDATE');
+            $stmt->execute([$student_id, $email]);
+            $matches = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $student = null;
+            foreach ($matches as $account) {
+                if ($account['student_id'] === $student_id) {
+                    $student = $account;
+                }
+            }
 
-        if ($stmt->fetch()) {
-            $error = "An account with this Student ID or Email already exists.";
-        } else {
-            $hashed = password_hash($password, PASSWORD_BCRYPT);
-            $stmtIns = $pdo->prepare("
-                INSERT INTO users (role, full_name, student_id, program, year_level, contact_number, email, password, status)
-                VALUES ('admin', ?, ?, ?, ?, ?, ?, ?, 'verified')
-            ");
-            $stmtIns->execute([$full_name, $student_id, $program, $year_level, $contact_number, $email, $hashed]);
-            $success = "Admin account for " . htmlspecialchars($full_name) . " has been created successfully.";
+            if ($student !== null) {
+                if ($student['role'] !== 'student') {
+                    throw new RuntimeException('This account is already an admin or superadmin.');
+                }
+                if ($student['status'] === 'banned') {
+                    throw new RuntimeException('A banned student account cannot be promoted.');
+                }
+                if (count($matches) !== 1 || strcasecmp($student['email'], $email) !== 0) {
+                    throw new RuntimeException('The Student ID and registered email must belong to the same student. Accounts cannot be merged.');
+                }
+                $update = $pdo->prepare("UPDATE users SET role = 'admin' WHERE id = ? AND role = 'student'");
+                $update->execute([$student['id']]);
+                if ($update->rowCount() !== 1) {
+                    throw new RuntimeException('The account changed during processing. Please try again.');
+                }
+                $success = 'Student account promoted to admin. Tell this user to log out, then log in using their existing email and password. All existing account data is retained.';
+            } else {
+                if ($matches) {
+                    throw new RuntimeException('This email belongs to another account. Check the Student ID and email.');
+                }
+                if ($full_name === '' || $program === '' || $year_level === '') {
+                    throw new RuntimeException('Please fill in all required profile fields.');
+                }
+                if (!preg_match('/^[0-9]{11}$/', $contact_number)) {
+                    throw new RuntimeException('Contact number must contain exactly 11 digits.');
+                }
+                if (strlen($password) < 8) {
+                    throw new RuntimeException('New admin accounts require a password of at least 8 characters.');
+                }
+                if ($password !== $confirm) {
+                    throw new RuntimeException('Passwords do not match.');
+                }
+                $hashed = password_hash($password, PASSWORD_BCRYPT);
+                $insert = $pdo->prepare("INSERT INTO users (role, full_name, student_id, program, year_level, contact_number, email, password, status) VALUES ('admin', ?, ?, ?, ?, ?, ?, ?, 'verified')");
+                $insert->execute([$full_name, $student_id, $program, $year_level, $contact_number, $email, $hashed]);
+                $success = 'New admin account created successfully.';
+            }
+                $pdo->commit();
+
+            // Notify the existing student after successful promotion.
+            if ($student !== null) {
+                try {
+                    require_once __DIR__ . '/notification-service.php';
+
+                    $recipientStmt = $pdo->prepare(
+                        'SELECT full_name, email FROM users WHERE id = ?'
+                    );
+                    $recipientStmt->execute([$student['id']]);
+                    $recipient = $recipientStmt->fetch(PDO::FETCH_ASSOC);
+
+                    if (!$recipient) {
+                        throw new RuntimeException('Promotion email recipient not found.');
+                    }
+
+                    $config = get_mail_config();
+                    $appUrl = rtrim($config['app']['url'] ?? '', '/');
+
+                    if (!filter_var($appUrl, FILTER_VALIDATE_URL)) {
+                        throw new RuntimeException('Invalid app URL in mail configuration.');
+                    }
+
+                    $loginUrl = $appUrl . '/admin-login.php';
+                    $safeName = htmlspecialchars(
+                        $recipient['full_name'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                    );
+
+                    $subject = 'ALERTO - Your Account Is Now an Admin';
+
+                    $bodyHtml = "
+                        <p>Hello <strong>{$safeName}</strong>,</p>
+                        <p>Your ALERTO account has been promoted to
+                        <strong>Administrator</strong>.</p>
+                        <p>You now have access to the ALERTO admin dashboard.</p>
+                        <p>Please log out, then sign in through the Admin
+                        Login page using your <strong>existing email and
+                        password</strong>.</p>
+                        <p>Your password and existing account data
+                        have been retained.</p>
+                    ";
+
+                    $htmlContent = build_alerto_email_html(
+                        'Administrator Access Granted',
+                        'Admin',
+                        '#1e6b37',
+                        $bodyHtml,
+                        'Open Admin Login',
+                        $loginUrl
+                    );
+
+                    $plainText = "Hello {$recipient['full_name']},\n\n"
+                        . "Your ALERTO account has been promoted to Administrator.\n\n"
+                        . "You now have access to the ALERTO admin dashboard.\n\n"
+                        . "Please log out, then sign in through the Admin Login page "
+                        . "using your existing email and password.\n\n"
+                        . "Your password and existing account data have been retained.\n\n"
+                        . "Admin Login: {$loginUrl}";
+
+                    $mailResult = dispatch_alerto_email(
+                        $recipient['email'],
+                        $recipient['full_name'],
+                        $subject,
+                        $htmlContent,
+                        $plainText,
+                        $config
+                    );
+
+                    if (empty($mailResult['success'])) {
+                        throw new RuntimeException(
+                            $mailResult['error'] ?? 'Email could not be sent.'
+                        );
+                    }
+
+                    $success .= ' Promotion notification email sent.';
+                } catch (Throwable $mailError) {
+                    error_log(
+                        'Admin promotion email failed: ' . $mailError->getMessage()
+                    );
+
+                    $success .= ' The promotion succeeded, but the notification email could not be sent.';
+                }
+            }
+        } catch (PDOException $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+
+            $success = '';
+            error_log('Admin creation/promotion failed: ' . $e->getMessage());
+            $error = 'Unable to save the admin account. Check for duplicate details and try again.';
+        } catch (RuntimeException $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+
+            $success = '';
+            $error = $e->getMessage();
         }
     }
 }
@@ -120,6 +293,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form class="auth-form" id="adminRegisterForm" method="POST" action="admin-add-sign-in.php" onsubmit="return validateAdminPasswords();">
+          <input type="hidden" id="adminCsrfToken" name="csrf_token"
+                 value="<?= htmlspecialchars(get_csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+          <p id="adminLookupMessage" role="status" aria-live="polite" style="color: #700d23;"></p>
 
           <!-- 1. Full Name -->
           <div class="form-field-group">
@@ -381,21 +557,128 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
     }
 
-    // Client-side password validation
-    function validateAdminPasswords() {
-      const p1 = document.getElementById('regPassword').value;
-      const p2 = document.getElementById('regRepeatPassword').value;
+    const adminForm = document.getElementById('adminRegisterForm');
+    const studentIdInput = document.getElementById('regStudentId');
+    const passwordInput = document.getElementById('regPassword');
+    const confirmInput = document.getElementById('regRepeatPassword');
+    const submitButton = document.getElementById('regSubmitBtn');
+    const lookupMessage = document.getElementById('adminLookupMessage');
+    const profileIds = ['regFullName', 'regProgram', 'regYearLevel', 'adminContact', 'regEmail'];
+    let lookupState = 'unchecked';
+    let checkedId = '';
+    let lookupVersion = 0;
+    let lookupTimer;
+    let populatedStudent = false;
 
-      if (p1.length < 8) {
+    function setPromotionFields(isStudent) {
+      for (const input of [passwordInput, confirmInput]) {
+        input.disabled = isStudent;
+        input.required = !isStudent;
+        if (isStudent) input.value = '';
+        const eye = input.parentElement.querySelector('.password-eye-toggle-btn');
+        if (eye) eye.disabled = isStudent;
+      }
+      for (const id of profileIds) {
+        const field = document.getElementById(id);
+        if (field.tagName === 'SELECT') {
+          field.disabled = isStudent;
+        } else {
+          field.readOnly = isStudent;
+        }
+      }
+    }
+
+    function invalidateLookup() {
+      lookupVersion++;
+      lookupState = 'unchecked';
+      checkedId = '';
+      submitButton.disabled = true;
+      setPromotionFields(false);
+      if (populatedStudent) {
+        for (const id of profileIds) document.getElementById(id).value = '';
+        populatedStudent = false;
+      }
+      lookupMessage.textContent = 'Enter a complete Student ID to check the account.';
+    }
+
+    async function checkStudentId() {
+      const id = studentIdInput.value.trim();
+      if (!/^[0-9]{2}-[0-9]{5}$/.test(id)) return;
+      const version = ++lookupVersion;
+      lookupState = 'checking';
+      submitButton.disabled = true;
+      lookupMessage.textContent = 'Checking Student ID...';
+      const body = new URLSearchParams({
+        action: 'lookup_student',
+        student_id: id,
+        csrf_token: document.getElementById('adminCsrfToken').value
+      });
+      try {
+        const response = await fetch(adminForm.action, {
+          method: 'POST', credentials: 'same-origin', cache: 'no-store', body
+        });
+        const result = await response.json();
+        if (version !== lookupVersion || id !== studentIdInput.value.trim()) return;
+        if (!response.ok || !['new', 'student', 'blocked'].includes(result.state)) {
+          throw new Error(result.message || 'Unable to check this ID.');
+        }
+        lookupState = result.state;
+        checkedId = id;
+        if (result.state === 'student') {
+          const mapping = {regFullName: 'full_name', regProgram: 'program', regYearLevel: 'year_level', adminContact: 'contact_number', regEmail: 'email'};
+          for (const [fieldId, key] of Object.entries(mapping)) {
+            document.getElementById(fieldId).value = result.profile[key] || '';
+          }
+          populatedStudent = true;
+          setPromotionFields(true);
+          lookupMessage.textContent = 'Existing student account found. Only the role will change. Tell this user to use their existing email and password after promotion.';
+          submitButton.disabled = false;
+        } else if (result.state === 'new') {
+          setPromotionFields(false);
+          lookupMessage.textContent = 'New account: complete the profile and set a password of at least 8 characters.';
+          submitButton.disabled = false;
+        } else {
+          setPromotionFields(false);
+          lookupMessage.textContent = result.message;
+        }
+      } catch (error) {
+        if (version !== lookupVersion) return;
+        lookupState = 'error';
+        submitButton.disabled = true;
+        lookupMessage.textContent = 'Account lookup failed. Check your connection, then edit or leave the Student ID field to retry.';
+      }
+    }
+
+    studentIdInput.addEventListener('input', () => {
+      clearTimeout(lookupTimer);
+      invalidateLookup();
+      lookupTimer = setTimeout(checkStudentId, 300);
+    });
+    studentIdInput.addEventListener('change', () => {
+      clearTimeout(lookupTimer);
+      invalidateLookup();
+      checkStudentId();
+    });
+
+    function validateAdminPasswords() {
+      if (checkedId !== studentIdInput.value.trim() || !['new', 'student'].includes(lookupState)) {
+        alert('Wait for a successful Student ID check before submitting.');
+        return false;
+      }
+      if (lookupState === 'student') return true;
+      if (passwordInput.value.length < 8) {
         alert('Password must be at least 8 characters long.');
         return false;
       }
-      if (p1 !== p2) {
+      if (passwordInput.value !== confirmInput.value) {
         alert('Passwords do not match.');
         return false;
       }
       return true;
     }
+
+    invalidateLookup();
+    checkStudentId();
   </script>
 </body>
 

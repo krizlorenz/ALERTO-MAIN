@@ -1,20 +1,5 @@
 <?php
-/**
- * ALERTO Notification Service
- * Dispatches transactional email notifications for:
- * 1. Student verification submissions -> Configured admin recipients
- * 2. Admin verification/rejection/ban status changes -> Student registered email
- * 3. Student assistance requests -> Configured admin recipients
- * 4. Admin assistance request status changes (approved/rejected/in_progress/completed) -> Student registered email
- *
- * Designed with:
- * - Reused PHPMailer configuration with strict TLS verification.
- * - Configurable admin recipients in private config.
- * - Testing recipient override support.
- * - Database deduplication to prevent duplicates from page refreshes.
- * - Resilient failure handling: mail issues never roll back or break web actions.
- * - Privacy protection: never leaks passwords, tokens, documents, or precise locations.
- */
+// ALERTO Notification Service
 
 require_once __DIR__ . '/alerto-db.php';
 require_once __DIR__ . '/password-recovery.php'; // Reuses get_mail_config()
@@ -22,9 +7,7 @@ require_once __DIR__ . '/password-recovery.php'; // Reuses get_mail_config()
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
-/**
- * Check if a notification for this exact event, reference, state, submission version, and recipient has already been sent.
- */
+// Notification deduplication check
 function has_notification_been_sent($pdo, $eventType, $referenceId, $transitionState, $recipientEmail = null, $submissionVersion = null) {
     try {
         $sql = "SELECT id FROM email_notifications WHERE event_type = ? AND reference_id = ? AND transition_state = ? AND status = 'sent'";
@@ -55,9 +38,7 @@ function has_notification_been_sent($pdo, $eventType, $referenceId, $transitionS
     }
 }
 
-/**
- * Record a notification attempt (sent or failed) in the database with persistent submission version.
- */
+// Record notification attempt
 function record_notification_log($pdo, $eventType, $referenceId, $transitionState, $recipientEmail, $subject, $status, $errorMessage = null, $submissionVersion = 1) {
     try {
         $stmt = $pdo->prepare("
@@ -79,9 +60,7 @@ function record_notification_log($pdo, $eventType, $referenceId, $transitionStat
     }
 }
 
-/**
- * Low-level dispatch helper using PHPMailer and private configuration.
- */
+// Low-level PHPMailer dispatch
 function dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlContent, $plainTextContent, $config = null) {
     if ($config === null) {
         $config = get_mail_config();
@@ -90,7 +69,7 @@ function dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlC
     $smtp = $config['smtp'] ?? [];
     $password = $smtp['password'] ?? '';
 
-    // Check for test recipient override
+
     $override = trim($config['notifications']['recipient_override'] ?? $config['recipient_override'] ?? '');
     $effectiveRecipientEmail = $recipientEmail;
     $effectiveRecipientName = $recipientName;
@@ -117,7 +96,7 @@ function dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlC
         $htmlContent = str_replace('<!-- TEST_OVERRIDE_BANNER -->', '', $htmlContent);
     }
 
-    // Optional dry-run support for test execution without sending real emails
+    // Dry-run support for test execution
     if (!empty($config['dry_run']) || !empty($config['notifications']['dry_run']) || !empty($GLOBALS['alerto_dry_run']) || (defined('ALERTO_DRY_RUN') && ALERTO_DRY_RUN)) {
         return [
             'success'             => true,
@@ -154,13 +133,13 @@ function dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlC
         $mail->CharSet    = 'UTF-8';
         $mail->Timeout    = 15;
 
-        // Enforce RFC 5322 compliant FQDN for Message-ID and HELO
+
         $fromEmail = $smtp['from_email'] ?? 'alerto.coeasc.csu@gmail.com';
         $fromName  = $smtp['from_name'] ?? 'ALERTO';
         $domain = substr(strrchr($fromEmail, "@"), 1) ?: 'gmail.com';
         $mail->Hostname = $domain;
 
-        // Strictly enforce TLS verification - NEVER disabled
+
         $mail->SMTPOptions = [
             'ssl' => [
                 'verify_peer'       => true,
@@ -171,7 +150,7 @@ function dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlC
 
         $mail->setFrom($fromEmail, $fromName);
 
-        // Dynamic Support Reply-To
+
         $pdoInstance = $GLOBALS['pdo'] ?? null;
         $sysSettings = ($pdoInstance && function_exists('get_system_settings')) ? get_system_settings($pdoInstance) : [];
         $supportEmail = $sysSettings['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';
@@ -181,7 +160,7 @@ function dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlC
 
         $mail->addAddress($effectiveRecipientEmail, $effectiveRecipientName ?: 'ALERTO User');
 
-        // Branded HTML email with plain-text alternative (multipart/alternative)
+
         $mail->isHTML(true);
         $mail->Subject = $subject;
         $mail->Body    = $htmlContent;
@@ -209,9 +188,7 @@ function dispatch_alerto_email($recipientEmail, $recipientName, $subject, $htmlC
     }
 }
 
-/**
- * Standard ALERTO Email Wrapper Template
- */
+// ALERTO email HTML template
 function build_alerto_email_html($heading, $statusBadgeText, $statusBadgeColor, $bodyHtml, $ctaText, $ctaUrl, $supportEmail = null, $supportPhone = null) {
     if ($supportEmail === null || $supportPhone === null) {
         $pdoInstance = $GLOBALS['pdo'] ?? null;
@@ -289,9 +266,7 @@ function build_alerto_email_html($heading, $statusBadgeText, $statusBadgeColor, 
     ";
 }
 
-/**
- * 1. Student submits registration/verification -> Notify configured admin recipients.
- */
+// Notify admins: new student verification
 function notify_admin_student_registered($pdo, $studentUserId) {
     try {
         $stmt = $pdo->prepare("SELECT id, full_name, student_id, program, year_level, email, status, verification_version FROM users WHERE id = ?");
@@ -368,7 +343,7 @@ function notify_admin_student_registered($pdo, $studentUserId) {
 
         $htmlContent = build_alerto_email_html($heading, 'Pending', '#d97706', $bodyHtml, 'Open Verification Portal', $verifyUrl);
 
-        // Send to configured admin recipients with per-submission and per-recipient deduplication
+        // Send to admin recipients with deduplication
         $allSuccess = true;
         foreach ($adminRecipients as $adminEmail) {
             $adminEmail = trim($adminEmail);
@@ -376,7 +351,7 @@ function notify_admin_student_registered($pdo, $studentUserId) {
                 continue;
             }
 
-            // Deduplicate per submission version and recipient
+
             if (has_notification_been_sent($pdo, 'student_registration', $student['id'], 'unverified', $adminEmail, $submissionVersion)) {
                 continue;
             }
@@ -392,7 +367,7 @@ function notify_admin_student_registered($pdo, $studentUserId) {
                 record_notification_log($pdo, 'student_registration', $student['id'], 'unverified', $effectiveRecipient, $subject, 'failed', $res['error'] ?? 'Unknown error', $submissionVersion);
             }
 
-            // If test override is active, one email is sufficient
+
             if (!empty($res['override_used'])) {
                 break;
             }
@@ -406,9 +381,7 @@ function notify_admin_student_registered($pdo, $studentUserId) {
     }
 }
 
-/**
- * 2. Admin verifies/rejects/bans a student -> Notify that student's registered email.
- */
+// Notify student: verification status change
 function notify_student_verification_status($pdo, $studentUserId, $newStatus, $oldStatus = null, $bypassDedup = false) {
     try {
         $validStatuses = ['verified', 'rejected', 'banned'];
@@ -416,7 +389,7 @@ function notify_student_verification_status($pdo, $studentUserId, $newStatus, $o
             return false;
         }
 
-        // Only genuine transitions (unless explicit manual bypass)
+
         if (!$bypassDedup && $oldStatus !== null && strtolower(trim($oldStatus)) === strtolower(trim($newStatus))) {
             return false;
         }
@@ -431,7 +404,7 @@ function notify_student_verification_status($pdo, $studentUserId, $newStatus, $o
 
         $submissionVersion = (int)($student['verification_version'] ?? 1);
 
-        // Deduplication per submission version and recipient (unless explicit manual bypass)
+
         if (!$bypassDedup && has_notification_been_sent($pdo, 'student_verification_status', $student['id'], $newStatus, $student['email'], $submissionVersion)) {
             return ['success' => true, 'dedup_skipped' => true];
         }
@@ -509,9 +482,7 @@ function notify_student_verification_status($pdo, $studentUserId, $newStatus, $o
     }
 }
 
-/**
- * 3. Student submits assistance request -> Notify configured admin recipients.
- */
+// Notify admins: new assistance request
 function notify_admin_assistance_request($pdo, $requestId) {
     try {
         $stmt = $pdo->prepare("
@@ -530,7 +501,7 @@ function notify_admin_assistance_request($pdo, $requestId) {
             return false;
         }
 
-        // Deduplication
+
         if (has_notification_been_sent($pdo, 'assistance_request_submitted', $req['id'], 'pending')) {
             return true;
         }
@@ -642,9 +613,7 @@ function notify_admin_assistance_request($pdo, $requestId) {
     }
 }
 
-/**
- * 4. Admin changes request to approved/rejected/in_progress/completed -> Notify student's registered email.
- */
+// Notify student: assistance request status change
 function notify_student_request_status($pdo, $requestId, $newStatus, $oldStatus = null) {
     try {
         $allowedStatuses = ['approved', 'rejected', 'in_progress', 'completed'];
@@ -652,7 +621,7 @@ function notify_student_request_status($pdo, $requestId, $newStatus, $oldStatus 
             return false;
         }
 
-        // Genuine transition only
+
         if ($oldStatus !== null && strtolower(trim($oldStatus)) === strtolower(trim($newStatus))) {
             return false;
         }
@@ -671,7 +640,7 @@ function notify_student_request_status($pdo, $requestId, $newStatus, $oldStatus 
             return false;
         }
 
-        // Deduplication
+
         if (has_notification_been_sent($pdo, 'assistance_request_status', $req['id'], $newStatus)) {
             return true;
         }
@@ -754,3 +723,62 @@ function notify_student_request_status($pdo, $requestId, $newStatus, $oldStatus 
         return false;
     }
 }
+
+// Cooldown email alert
+function send_login_cooldown_alert($pdo, $user, $durationLabel, $config = null) {
+    if (empty($user['email']) || !filter_var($user['email'], FILTER_VALIDATE_EMAIL)) {
+        return ['success' => false, 'error' => 'Invalid recipient email'];
+    }
+
+    if ($config === null) {
+        $config = get_mail_config();
+    }
+
+    $appUrl = rtrim($config['app']['url'] ?? 'http://localhost/ALERTO-MAIN', '/\\');
+    $forgotPasswordUrl = $appUrl . '/user-login.php?action=forgot-password';
+
+    $sysSettings = function_exists('get_system_settings') ? get_system_settings($pdo) : [];
+    $supportEmail = $sysSettings['contact_email'] ?? 'alerto.coeasc.csu@gmail.com';
+    $supportPhone = $sysSettings['contact_phone'] ?? '09556678451';
+
+    $subject = 'ALERTO — Unsuccessful Login Attempts';
+    $heading = 'Unsuccessful Login Attempts';
+    $badge   = 'Security Notice';
+    $color   = '#700d23';
+
+    $safeDuration = htmlspecialchars($durationLabel, ENT_QUOTES, 'UTF-8');
+
+    $bodyHtml = "
+        <p style='margin-top: 0;'>Several unsuccessful login attempts triggered a {$safeDuration} cooldown for your account from one internet connection.</p>
+        <p>If this was you, please wait before trying again. If you forgot your password, use the button below to request a password reset.</p>
+        <p>If this wasn&rsquo;t you, the attempts were unsuccessful. You may ignore this notice, or reset your password if you believe it may be compromised.</p>
+    ";
+
+    $htmlContent = build_alerto_email_html(
+        $heading,
+        $badge,
+        $color,
+        $bodyHtml,
+        'Reset Password',
+        $forgotPasswordUrl,
+        $supportEmail,
+        $supportPhone
+    );
+
+    $plainText = "Several unsuccessful login attempts triggered a {$durationLabel} cooldown for your account from one internet connection.\n\n"
+               . "If this was you, please wait before trying again. If you forgot your password, use the button below to request a password reset.\n\n"
+               . "If this wasn't you, the attempts were unsuccessful. You may ignore this notice, or reset your password if you believe it may be compromised.\n\n"
+               . "Reset Password: {$forgotPasswordUrl}\n\n"
+               . "Support: {$supportEmail} | {$supportPhone}\n"
+               . "ALERTO CSU-COEA Student Council";
+
+    return dispatch_alerto_email(
+        $user['email'],
+        $user['full_name'] ?? 'ALERTO User',
+        $subject,
+        $htmlContent,
+        $plainText,
+        $config
+    );
+}
+

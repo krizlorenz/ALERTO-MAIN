@@ -2,9 +2,18 @@
 session_start();
 require_once 'alerto-db.php';
 require_once 'password-recovery.php';
+require_once 'login-security.php';
 
 $error = '';
 $success = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && !empty($_GET['identifier'])) {
+    $getId = trim($_GET['identifier']);
+    $cooldownCheck = check_login_cooldown($pdo, compute_login_identifier_hash($getId), get_server_observed_ip());
+    if ($cooldownCheck['is_blocked']) {
+        $error = $cooldownCheck['error'];
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Forgot Password Action (AJAX / JSON)
@@ -31,69 +40,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($error)) {
-        $isEmail = (strpos($identifier, '@') !== false);
+        $loginResult = verify_and_process_login($pdo, $identifier, $password);
 
-        if ($isEmail) {
-            // ADMIN LOGIN (Email format)
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
-            $stmt->execute([$identifier]);
-            $user = $stmt->fetch();
+        if (!empty($loginResult['success'])) {
+            $user = $loginResult['user'];
 
-            if ($user && password_verify($password, $user['password'])) {
-                $userRole = strtolower(trim($user['role'] ?? ''));
+            if (($loginResult['redirect'] ?? '') === 'admin-homepage.php') {
+                $_SESSION['user_id']            = $user['id'];
+                $_SESSION['role']               = $user['role'];
+                $_SESSION['full_name']          = $user['full_name'];
+                $_SESSION['email']              = $user['email'];
+                $_SESSION['student_id']         = $user['student_id'] ?? '';
+                $_SESSION['program']            = $user['program'] ?? '';
+                $_SESSION['year_level']         = $user['year_level'] ?? '';
+                $_SESSION['contact_number']     = $user['contact_number'] ?? '';
+                $_SESSION['status']             = $user['status'] ?? 'approved';
+                $_SESSION['auth_password_hash'] = $user['password'];
 
-                if (in_array($userRole, ['admin', 'superadmin'])) {
-                    $_SESSION['user_id']            = $user['id'];
-                    $_SESSION['role']               = $user['role'];
-                    $_SESSION['full_name']          = $user['full_name'];
-                    $_SESSION['email']              = $user['email'];
-                    $_SESSION['student_id']         = $user['student_id'] ?? '';
-                    $_SESSION['program']            = $user['program'] ?? '';
-                    $_SESSION['year_level']         = $user['year_level'] ?? '';
-                    $_SESSION['contact_number']     = $user['contact_number'] ?? '';
-                    $_SESSION['status']             = $user['status'] ?? 'approved';
-                    $_SESSION['auth_password_hash'] = $user['password'];
-
-                    header("Location: admin-homepage.php");
-                    exit;
-                } else {
-                    $error = "This email is not registered as an administrative account. For student access, please enter your Student ID.";
-                }
+                header("Location: admin-homepage.php");
+                exit;
             } else {
-                $error = "Invalid admin credentials. Please verify your email and password.";
+                $_SESSION['user_id']            = $user['id'];
+                $_SESSION['role']               = 'student';
+                $_SESSION['full_name']          = $user['full_name'];
+                $_SESSION['student_id']         = $user['student_id'];
+                $_SESSION['email']              = $user['email'];
+                $_SESSION['program']            = $user['program'];
+                $_SESSION['year_level']         = $user['year_level'];
+                $_SESSION['contact_number']     = $user['contact_number'];
+                $_SESSION['status']             = $user['status'];
+                $_SESSION['auth_password_hash'] = $user['password'];
+
+                header("Location: user-homepage.php");
+                exit;
             }
         } else {
-            // STUDENT / USER LOGIN (Student ID format XX-XXXXX)
-            $stmt = $pdo->prepare("SELECT * FROM users WHERE student_id = ? LIMIT 1");
-            $stmt->execute([$identifier]);
-            $user = $stmt->fetch();
-
-            if ($user && password_verify($password, $user['password'])) {
-                // Student account status check
-                if ($user['status'] === 'unverified' || $user['status'] === 'pending') {
-                    $error = "Your student registration is still pending admin approval.";
-                } elseif ($user['status'] === 'rejected') {
-                    $error = "Your registration application was rejected. Please contact support.";
-                } elseif ($user['status'] === 'banned') {
-                    $error = "Your account has been deactivated. Please contact an administrator.";
-                } else {
-                    $_SESSION['user_id']            = $user['id'];
-                    $_SESSION['role']               = 'student';
-                    $_SESSION['full_name']          = $user['full_name'];
-                    $_SESSION['student_id']         = $user['student_id'];
-                    $_SESSION['email']              = $user['email'];
-                    $_SESSION['program']            = $user['program'];
-                    $_SESSION['year_level']         = $user['year_level'];
-                    $_SESSION['contact_number']     = $user['contact_number'];
-                    $_SESSION['status']             = $user['status'];
-                    $_SESSION['auth_password_hash'] = $user['password'];
-
-                    header("Location: user-homepage.php");
-                    exit;
-                }
-            } else {
-                $error = "Invalid student credentials. Please verify your Student ID and password.";
-            }
+            $error = $loginResult['error'] ?? 'Sign-in is temporarily unavailable. Please try again in a few moments.';
         }
     }
 }
